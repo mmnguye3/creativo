@@ -1,10 +1,9 @@
 const TermsOfService = () => {
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold mb-8">Terms of Service</h1>
-          <p className="text-muted-foreground mb-8">Last updated: January 2024</p>
+          <p className="text-muted-foreground mb-8">Last updated: January 2025</p>
 
           <div className="space-y-8">
             <section>
@@ -141,8 +140,6 @@ const TermsOfService = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default TermsOfService;
