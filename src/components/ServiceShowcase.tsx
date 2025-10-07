@@ -217,7 +217,7 @@ const ServiceShowcase = () => {
               onClick={() => setSelectedCategory(key)}
               className={`px-6 py-2 rounded-full ${
                 selectedCategory === key 
-                  ? "bg-orange-500 text-white hover:bg-orange-600" 
+                  ? "bg-gradient-to-r from-purple-600 to-blue-500 text-white hover:from-purple-700 hover:to-blue-600" 
                   : "border-gray-300 text-gray-700 hover:bg-gray-50"
               }`}
             >
@@ -233,19 +233,19 @@ const ServiceShowcase = () => {
             .map((service, index) => (
             <Card 
               key={service.id} 
-              className="relative bg-white border-2 hover:border-orange-200 transition-all duration-300 hover:shadow-2xl group"
+              className="relative bg-white border-2 hover:border-purple-200 transition-all duration-300 hover:shadow-2xl group"
             >
               {(service as any).popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-orange-500 text-white px-4 py-1 rounded-full">
+                  <Badge className="bg-gradient-to-r from-purple-600 to-blue-500 text-white px-4 py-1 rounded-full">
                     🔥 Most Popular
                   </Badge>
                 </div>
               )}
               
               <CardHeader className="text-center pb-4">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-200 transition-colors">
-                  <service.icon className="w-8 h-8 text-orange-600" />
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:from-purple-200 group-hover:to-blue-200 transition-colors">
+                  <service.icon className="w-8 h-8 text-purple-600" />
                 </div>
                 <CardTitle className="text-xl font-bold text-black mb-2">{service.title}</CardTitle>
                 <p className="text-gray-600 text-sm">{service.description}</p>
@@ -285,7 +285,7 @@ const ServiceShowcase = () => {
                 {/* CTA Button */}
                 <Button 
                   onClick={() => handleAddToCart(service)}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg"
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white py-3 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg"
                 >
                   <Plus className="w-5 h-5 mr-2" />
                   Add to Cart - ${service.price}
@@ -296,14 +296,14 @@ const ServiceShowcase = () => {
         </div>
 
         {/* Bottom CTA */}
-        <div className="text-center mt-16 p-8 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-2xl">
+        <div className="text-center mt-16 p-8 bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl">
           <h3 className="text-2xl font-bold mb-4 text-black">Need Something Custom?</h3>
           <p className="text-gray-600 mb-6">
             Don't see exactly what you need? We create custom design solutions for any project.
           </p>
           <Button 
             variant="outline" 
-            className="border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white"
+            className="border-purple-500 text-purple-600 hover:bg-gradient-to-r hover:from-purple-600 hover:to-blue-500 hover:text-white"
             onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
           >
             Request Custom Quote

@@ -34,12 +34,12 @@ const Features = () => {
     title: "Multi-Service Platform",
     description: "Offer logos, social media ads, presentations, packaging, and more from one platform."
   }];
-  return <section className="py-24 bg-gradient-to-b from-blue-50/30 via-purple-50/20 to-background relative overflow-hidden">
+    return <section className="py-24 bg-gradient-to-b from-blue-50/30 via-purple-50/20 to-background relative overflow-hidden">
       {/* Decorative underlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-100/40 via-yellow-50/30 to-orange-200/50"></div>
-      <div className="absolute inset-0 bg-gradient-to-tl from-amber-100/20 via-transparent to-orange-100/30"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-100/40 via-blue-50/30 to-purple-200/50"></div>
+      <div className="absolute inset-0 bg-gradient-to-tl from-blue-100/20 via-transparent to-purple-100/30"></div>
       <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-16 relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-orange-200/50 shadow-lg">
+        <div className="text-center max-w-3xl mx-auto mb-16 relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-purple-200/50 shadow-lg">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Everything You Need to
             <span className="block bg-gradient-primary bg-clip-text text-transparent mx-0 py-[20px] my-0">
@@ -53,7 +53,7 @@ const Features = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, index) => <Card key={index} className="bg-gradient-to-br from-orange-500/95 via-orange-600/90 to-yellow-500/95 border-orange-400/50 hover:border-black/40 transition-all duration-500 hover:shadow-card group relative hover-lift animate-fade-in-up text-black hover:scale-110 hover:z-20 hover:-translate-y-2 hover:rotate-1" style={{
+          {features.map((feature, index) => <Card key={index} className="bg-gradient-to-br from-purple-600/95 via-purple-700/90 to-blue-600/95 border-purple-400/50 hover:border-black/40 transition-all duration-500 hover:shadow-card group relative hover-lift animate-fade-in-up text-white hover:scale-110 hover:z-20 hover:-translate-y-2 hover:rotate-1" style={{
           animationDelay: `${index * 0.15}s`
         }}>
               <CardContent className="p-6">

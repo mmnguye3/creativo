@@ -94,13 +94,13 @@ const Services = () => {
   ];
 
   return (
-    <section className="py-24 bg-gradient-to-b from-orange-50/30 via-yellow-50/20 to-background relative overflow-hidden">
+    <section className="py-24 bg-gradient-to-b from-purple-50/30 via-blue-50/20 to-background relative overflow-hidden">
       {/* Decorative underlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-100/20 via-transparent to-yellow-100/20"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-100/20 via-transparent to-blue-100/20"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            What We <span className="bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent">Create</span>
+            What We <span className="bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">Create</span>
           </h2>
           <p className="text-xl text-black font-bold">
             From stunning brand identities to engaging digital content, we deliver professional designs that help your business succeed.
@@ -111,8 +111,8 @@ const Services = () => {
           {services.map((service, index) => (
             <Card 
               key={index} 
-              className={`bg-gradient-to-br from-gray-900/95 via-black/90 to-gray-800/95 border-gray-700/50 hover:border-orange-500/40 transition-all duration-500 hover:shadow-card group relative hover-lift animate-fade-in-up text-white hover:scale-110 hover:z-20 hover:-translate-y-2 hover:rotate-1 ${
-                service.popular ? 'ring-2 ring-orange-500/50 animate-pulse-glow bg-gradient-to-br from-gray-800/95 via-black/90 to-orange-900/30' : ''
+              className={`bg-gradient-to-br from-gray-900/95 via-black/90 to-gray-800/95 border-gray-700/50 hover:border-purple-500/40 transition-all duration-500 hover:shadow-card group relative hover-lift animate-fade-in-up text-white hover:scale-110 hover:z-20 hover:-translate-y-2 hover:rotate-1 ${
+                service.popular ? 'ring-2 ring-purple-500/50 animate-pulse-glow bg-gradient-to-br from-gray-800/95 via-black/90 to-purple-900/30' : ''
               }`}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
