@@ -110,7 +110,7 @@ const PrivacyPolicy = () => {
                 <ul className="mt-4 space-y-2">
                   <li>Email: support@creativo.io</li>
                   <li>Phone: (725) 224-7202</li>
-                  <li>Address: San Francisco, CA</li>
+                  <li>Address: 1111b South Governors Avenue. Dover,DE 19904</li>
                 </ul>
               </div>
             </section>

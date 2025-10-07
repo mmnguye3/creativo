@@ -1,45 +1,58 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { 
-  Twitter, 
-  Linkedin, 
-  Github, 
-  Mail,
-  MapPin,
-  Phone
-} from "lucide-react";
-
+import { Twitter, Linkedin, Github, Mail, MapPin, Phone } from "lucide-react";
 const Footer = () => {
-  const footerSections = [
-    {
-      title: "Product",
-      links: [
-        { label: "Features", href: "/features", isRoute: true },
-        { label: "Pricing", href: "/pricing", isRoute: true },
-      ]
-    },
-    {
-      title: "Support", 
-      links: [
-        { label: "Contact Us", href: "/contact", isRoute: true },
-        { label: "Email Support", href: "mailto:support@creativo.io", isRoute: false },
-        { label: "Phone Support", href: "tel:+17252247202", isRoute: false },
-      ]
-    },
-    {
-      title: "Company",
-      links: [
-        { label: "About Us", href: "/about", isRoute: true },
-        { label: "Contact", href: "/contact", isRoute: true },
-        { label: "Resources", href: "/resources", isRoute: true },
-        { label: "Privacy Policy", href: "/privacy-policy", isRoute: true },
-        { label: "Terms of Service", href: "/terms-of-service", isRoute: true },
-      ]
-    }
-  ];
-
-  return (
-    <footer className="bg-white border-t border-gray-200 text-black">
+  const footerSections = [{
+    title: "Product",
+    links: [{
+      label: "Features",
+      href: "/features",
+      isRoute: true
+    }, {
+      label: "Pricing",
+      href: "/pricing",
+      isRoute: true
+    }]
+  }, {
+    title: "Support",
+    links: [{
+      label: "Contact Us",
+      href: "/contact",
+      isRoute: true
+    }, {
+      label: "Email Support",
+      href: "mailto:support@creativo.io",
+      isRoute: false
+    }, {
+      label: "Phone Support",
+      href: "tel:+17252247202",
+      isRoute: false
+    }]
+  }, {
+    title: "Company",
+    links: [{
+      label: "About Us",
+      href: "/about",
+      isRoute: true
+    }, {
+      label: "Contact",
+      href: "/contact",
+      isRoute: true
+    }, {
+      label: "Resources",
+      href: "/resources",
+      isRoute: true
+    }, {
+      label: "Privacy Policy",
+      href: "/privacy-policy",
+      isRoute: true
+    }, {
+      label: "Terms of Service",
+      href: "/terms-of-service",
+      isRoute: true
+    }]
+  }];
+  return <footer className="bg-white border-t border-gray-200 text-black">
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-12">
           {/* Brand section */}
@@ -68,42 +81,28 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <MapPin className="w-4 h-4" />
-                <span>San Francisco, CA</span>
+                <span>Dover,DE 19904</span>
               </div>
             </div>
             
           </div>
 
           {/* Links sections */}
-          {footerSections.map((section, index) => (
-            <div key={index} className="space-y-4">
+          {footerSections.map((section, index) => <div key={index} className="space-y-4">
               <h3 className="font-semibold text-black">{section.title}</h3>
               <ul className="space-y-2">
-                {section.links.map((link, linkIndex) => (
-                  <li key={linkIndex}>
-                    {link.isRoute ? (
-                      <Link
-                        to={link.href}
-                        className="text-gray-600 hover:text-black transition-colors text-sm"
-                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                      >
+                {section.links.map((link, linkIndex) => <li key={linkIndex}>
+                    {link.isRoute ? <Link to={link.href} className="text-gray-600 hover:text-black transition-colors text-sm" onClick={() => window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+              })}>
                         {link.label}
-                      </Link>
-                    ) : (
-                      <a 
-                        href={link.href}
-                        className="text-gray-600 hover:text-black transition-colors text-sm"
-                        target={link.href.startsWith('http') ? '_blank' : undefined}
-                        rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      >
+                      </Link> : <a href={link.href} className="text-gray-600 hover:text-black transition-colors text-sm" target={link.href.startsWith('http') ? '_blank' : undefined} rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
                         {link.label}
-                      </a>
-                    )}
-                  </li>
-                ))}
+                      </a>}
+                  </li>)}
               </ul>
-            </div>
-          ))}
+            </div>)}
         </div>
 
         {/* CTA Section */}
@@ -131,8 +130,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
