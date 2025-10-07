@@ -10,7 +10,7 @@ const TermsOfService = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">1. Acceptance of Terms</h2>
               <p className="text-muted-foreground">
-                By accessing and using Terrix Creative Studios' services, you accept and agree to be 
+                By accessing and using Creativo's services, you accept and agree to be 
                 bound by the terms and provision of this agreement. If you do not agree to abide by 
                 the above, please do not use this service.
               </p>
@@ -19,7 +19,7 @@ const TermsOfService = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">2. Description of Service</h2>
               <p className="text-muted-foreground">
-                Terrix Creative Studios provides a white-label design platform for agencies, offering 
+                Creativo provides a white-label design platform for agencies, offering 
                 unlimited design services, project management tools, and comprehensive business solutions. 
                 We reserve the right to modify or discontinue services at any time.
               </p>
@@ -57,7 +57,7 @@ const TermsOfService = () => {
               <h2 className="text-2xl font-semibold mb-4">5. Intellectual Property</h2>
               <div className="space-y-4 text-muted-foreground">
                 <p>
-                  All content, features, and functionality of our service are owned by Terrix Creative Studios 
+                  All content, features, and functionality of our service are owned by Creativo 
                   and are protected by copyright, trademark, and other intellectual property laws.
                 </p>
                 <p>Design deliverables created for clients become the property of the client upon full payment.</p>
@@ -90,7 +90,7 @@ const TermsOfService = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">8. Limitation of Liability</h2>
               <p className="text-muted-foreground">
-                In no event shall Terrix Creative Studios be liable for any indirect, incidental, 
+                In no event shall Creativo be liable for any indirect, incidental, 
                 special, consequential, or punitive damages, including lost profits, arising from 
                 your use of the service.
               </p>

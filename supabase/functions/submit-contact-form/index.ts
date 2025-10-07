@@ -65,7 +65,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send confirmation email to user
     const userEmailResponse = await resend.emails.send({
-      from: "Terrix Creative Studio <onboarding@resend.dev>",
+      from: "Creativo <onboarding@resend.dev>",
       to: [formData.email],
       subject: "Thank you for contacting us!",
       html: `
@@ -75,7 +75,7 @@ const handler = async (req: Request): Promise<Response> => {
           <p style="color: #666; line-height: 1.6;">Dear ${formData.name},</p>
           
           <p style="color: #666; line-height: 1.6;">
-            Thank you for contacting Terrix Creative Studio. We have received your message and will get back to you within 24 hours.
+            Thank you for contacting Creativo. We have received your message and will get back to you within 24 hours.
           </p>
           
           <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -92,7 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
           
           <p style="color: #666; line-height: 1.6;">
             Best regards,<br>
-            The Terrix Creative Studio Team
+            The Creativo Team
           </p>
           
           <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;" />

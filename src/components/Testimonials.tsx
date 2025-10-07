@@ -5,7 +5,7 @@ const Testimonials = () => {
     name: "Sarah Johnson",
     company: "Digital Marketing Pro",
     role: "Agency Owner",
-    content: "Terrix Creative has transformed our agency. We went from struggling to deliver designs on time to having a reliable partner that never misses a deadline. Our clients are amazed by the quality.",
+    content: "Creativo has transformed our agency. We went from struggling to deliver designs on time to having a reliable partner that never misses a deadline. Our clients are amazed by the quality.",
     rating: 5,
     avatar: "/placeholder-avatar1.jpg"
   }, {
@@ -19,7 +19,7 @@ const Testimonials = () => {
     name: "Jessica Williams",
     company: "Growth Agency Co",
     role: "Creative Director",
-    content: "I was skeptical about outsourcing design work, but Terrix Creative proved me wrong. The consistency and quality are better than most freelancers, and the turnaround time is unmatched.",
+    content: "I was skeptical about outsourcing design work, but Creativo proved me wrong. The consistency and quality are better than most freelancers, and the turnaround time is unmatched.",
     rating: 5,
     avatar: "/placeholder-avatar3.jpg"
   }, {
@@ -40,7 +40,7 @@ const Testimonials = () => {
     name: "Robert Kim",
     company: "Digital Growth Hub",
     role: "Founder",
-    content: "From social media ads to complete rebrands, Terrix Creative handles it all. The unlimited revisions give us confidence to push for perfection with every project.",
+    content: "From social media ads to complete rebrands, Creativo handles it all. The unlimited revisions give us confidence to push for perfection with every project.",
     rating: 5,
     avatar: "/placeholder-avatar6.jpg"
   }];

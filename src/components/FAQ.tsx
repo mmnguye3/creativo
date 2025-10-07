@@ -9,7 +9,7 @@ const FAQ = () => {
   const faqs = [
     {
       question: "How do I know which plan is best for me?",
-      answer: "You will first want to determine which types of designs you need on a monthly basis which helps you determine which bucket you will fall into. Then, you can choose a price point that fits your budget and volume needs. You can also book a call to speak to a Terrix Creative expert to help determine what plan fits your needs the best."
+      answer: "You will first want to determine which types of designs you need on a monthly basis which helps you determine which bucket you will fall into. Then, you can choose a price point that fits your budget and volume needs. You can also book a call to speak to a Creativo expert to help determine what plan fits your needs the best."
     },
     {
       question: "Are there any contracts or long-term commitments?",

@@ -45,7 +45,7 @@ const Footer = () => {
           {/* Brand section */}
           <div className="lg:col-span-2 space-y-2">
             <div className="flex items-center">
-              <img src="/lovable-uploads/98cdf8d2-6ea9-4755-8010-f50719c67e76.png" alt="TERRiX Creative Studio" className="h-32" />
+              <img src="/lovable-uploads/98cdf8d2-6ea9-4755-8010-f50719c67e76.png" alt="Creativo" className="h-32" />
             </div>
             
             <p className="text-gray-600 max-w-md">
@@ -122,7 +122,7 @@ const Footer = () => {
         {/* Bottom section */}
         <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center">
           <div className="text-sm text-gray-600">
-            © 2024 Terrix Creative Studios. All rights reserved.
+            © 2024 Creativo. All rights reserved.
           </div>
           <div className="flex items-center space-x-6 mt-4 md:mt-0">
             <span className="text-sm text-gray-600">
