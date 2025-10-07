@@ -1,0 +1,399 @@
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Navigate } from 'react-router-dom';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { User, Settings, FileText, MessageSquare, Sparkles, History, Users, Building2, ShoppingCart } from 'lucide-react';
+import { AIGenerator } from '@/components/AIGenerator';
+import { GenerationHistory } from '@/components/GenerationHistory';
+import { ClientProjects } from '@/components/ClientProjects';
+import { OrderManagement } from '@/components/OrderManagement';
+import AgencySettingsForm from '@/components/AgencySettingsForm';
+
+interface Profile {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  company: string | null;
+  phone: string | null;
+  avatar_url: string | null;
+}
+
+const Dashboard = () => {
+  const { user, loading, signOut } = useAuth();
+  const { toast } = useToast();
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+  
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [company, setCompany] = useState('');
+  const [phone, setPhone] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      fetchProfile();
+    }
+  }, [user]);
+
+  const fetchProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user?.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        throw error;
+      }
+
+      if (data) {
+        setProfile(data);
+        setFirstName(data.first_name || '');
+        setLastName(data.last_name || '');
+        setCompany(data.company || '');
+        setPhone(data.phone || '');
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      toast({
+        title: "Error loading profile",
+        description: "Please refresh the page and try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
+  const updateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUpdating(true);
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user?.id,
+          first_name: firstName,
+          last_name: lastName,
+          company: company,
+          phone: phone
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Profile updated",
+        description: "Your profile has been updated successfully."
+      });
+      
+      fetchProfile();
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast({
+        title: "Error updating profile",
+        description: "Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
+  if (loading || profileLoading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-gray-300">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  const userInitials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U';
+
+  return (
+    <div className="min-h-screen bg-black pt-20">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white">Welcome back, {firstName || user.email}!</h1>
+          <p className="text-gray-300 mt-2">Manage your account and projects from your dashboard.</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content with Tabs */}
+          <div className="lg:col-span-2">
+            <Tabs defaultValue="ai-generator" className="w-full">
+              <TabsList className="grid w-full grid-cols-6 bg-gray-800 border-gray-700">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <TabsTrigger value="ai-generator" className="flex items-center gap-2">
+                      <Sparkles className="h-4 w-4" />
+                      AI Generator
+                    </TabsTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Create new AI-powered content with intelligent assistance</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <TabsTrigger value="history" className="flex items-center gap-2">
+                      <History className="h-4 w-4" />
+                      History
+                    </TabsTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>View and manage all your previously generated content</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <TabsTrigger value="client-projects" className="flex items-center gap-2">
+                      <Users className="h-4 w-4" />
+                      Client Projects
+                    </TabsTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Track completed projects with client emails and purchase orders</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <TabsTrigger value="orders" className="flex items-center gap-2">
+                      <ShoppingCart className="h-4 w-4" />
+                      Orders
+                    </TabsTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>View and manage customer orders for your agency</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <TabsTrigger value="agency-settings" className="flex items-center gap-2">
+                      <Building2 className="h-4 w-4" />
+                      Agency
+                    </TabsTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Configure your white-label agency website</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <TabsTrigger value="profile" className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      Profile
+                    </TabsTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Manage your account information and preferences</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TabsList>
+              
+              <TabsContent value="ai-generator" className="mt-6 bg-gray-900 rounded-lg p-4">
+                <AIGenerator onGenerationComplete={() => {
+                  // Refresh history when new generation is complete
+                  window.location.reload();
+                }} />
+              </TabsContent>
+              
+              <TabsContent value="history" className="mt-6 bg-gray-900 rounded-lg p-4">
+                <GenerationHistory />
+              </TabsContent>
+              
+              <TabsContent value="client-projects" className="mt-6 bg-gray-900 rounded-lg p-4">
+                <ClientProjects />
+              </TabsContent>
+              
+              <TabsContent value="orders" className="mt-6 bg-gray-900 rounded-lg p-4">
+                <OrderManagement />
+              </TabsContent>
+              
+              <TabsContent value="agency-settings" className="mt-6 bg-gray-900 rounded-lg p-4">
+                <AgencySettingsForm />
+              </TabsContent>
+              
+              <TabsContent value="profile" className="mt-6 bg-gray-900 rounded-lg p-4">
+                <Card className="bg-black border-orange-200/50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-white">
+                      <User className="h-5 w-5" />
+                      Profile Information
+                    </CardTitle>
+                    <CardDescription className="text-gray-400">
+                      Update your personal information and preferences.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={updateProfile} className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Label htmlFor="firstName">First Name</Label>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Keep your information updated for personalized content suggestions</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          <Input
+                            id="firstName"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="lastName">Last Name</Label>
+                          <Input
+                            id="lastName"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Label htmlFor="email">Email</Label>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Email cannot be changed - contact support if needed</p>
+                          </TooltipContent>
+                        </Tooltip>
+                        <Input
+                          id="email"
+                          value={user.email || ''}
+                          disabled
+                          className="opacity-50"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="company">Company</Label>
+                        <Input
+                          id="company"
+                          value={company}
+                          onChange={(e) => setCompany(e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="phone">Phone</Label>
+                        <Input
+                          id="phone"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                        />
+                      </div>
+                      <Button type="submit" disabled={updating}>
+                        {updating ? 'Updating...' : 'Update Profile'}
+                      </Button>
+                    </form>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* User Info Card */}
+            <Card className="bg-black border-orange-200/50">
+              <CardContent className="pt-6">
+                <div className="flex flex-col items-center text-center">
+                  <Avatar className="h-20 w-20 mb-4">
+                    <AvatarFallback className="text-lg">
+                      {userInitials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <h3 className="font-semibold text-lg text-white">
+                    {firstName && lastName ? `${firstName} ${lastName}` : 'User'}
+                  </h3>
+                  <p className="text-sm text-gray-400">{user.email}</p>
+                  {company && (
+                    <p className="text-sm text-gray-400">{company}</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card className="bg-black border-orange-200/50">
+              <CardHeader>
+                <CardTitle className="text-lg text-white">Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" className="w-full justify-start text-white border-gray-600 hover:bg-gray-800" asChild>
+                      <a href="/contact">
+                        <MessageSquare className="h-4 w-4 mr-2" />
+                        Contact Support
+                      </a>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Get help with technical issues or content questions</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" className="w-full justify-start text-white border-gray-600 hover:bg-gray-800" asChild>
+                      <a href="/services">
+                        <FileText className="h-4 w-4 mr-2" />
+                        Browse Services
+                      </a>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Explore all available AI content generation services</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" className="w-full justify-start text-white border-gray-600 hover:bg-gray-800">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Account Settings
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Manage your subscription and preferences</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Button 
+                  variant="destructive" 
+                  className="w-full" 
+                  onClick={handleSignOut}
+                >
+                  Sign Out
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
