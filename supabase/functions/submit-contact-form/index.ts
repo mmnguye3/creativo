@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { Resend } from "npm:resend@2.0.0";
+import { Resend } from "https://esm.sh/resend@2.0.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -107,7 +107,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Send notification email to support team
     const supportEmailResponse = await resend.emails.send({
       from: "Website Contact Form <onboarding@resend.dev>",
-      to: ["Support@terrixcreativestud.io"],
+      to: ["support@creativo.io"],
       subject: `New Contact Form Submission: ${formData.subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

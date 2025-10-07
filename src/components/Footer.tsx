@@ -22,7 +22,7 @@ const Footer = () => {
       title: "Support", 
       links: [
         { label: "Contact Us", href: "/contact", isRoute: true },
-        { label: "Email Support", href: "mailto:Support@terrixcreativestud.io", isRoute: false },
+        { label: "Email Support", href: "mailto:support@creativo.io", isRoute: false },
         { label: "Phone Support", href: "tel:+17252247202", isRoute: false },
       ]
     },
@@ -56,8 +56,8 @@ const Footer = () => {
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Mail className="w-4 h-4" />
-                <a href="mailto:Support@terrixcreativestud.io" className="hover:text-black transition-colors">
-                  Support@terrixcreativestud.io
+                <a href="mailto:support@creativo.io" className="hover:text-black transition-colors">
+                  support@creativo.io
                 </a>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
