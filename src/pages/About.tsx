@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 import { 
   Users, 
   Target, 
@@ -170,10 +171,12 @@ const About = () => {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             Join hundreds of successful agencies who have transformed their business with our platform.
           </p>
-          <Button size="lg" className="group">
-            Start Your Journey Today
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          <Link to="/contact">
+            <Button size="lg" className="group">
+              Start Your Journey Today
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
         </div>
       </section>
     </div>
