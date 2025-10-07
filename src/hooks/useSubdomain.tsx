@@ -18,7 +18,7 @@ export const useSubdomain = (): SubdomainInfo => {
     const parts = hostname.split('.');
     
     // Check if this is a Lovable project domain (should NOT be treated as white-label)
-    const isLovableProject = hostname.includes('lovableproject.com');
+    const isLovableProject = hostname.includes('lovableproject.com') || hostname.includes('lovable.app');
     const isLocalDev = hostname.includes('localhost') || hostname.includes('127.0.0.1');
     
     // For development/testing, check for subdomain parameter
