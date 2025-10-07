@@ -120,9 +120,7 @@ const Footer = () => {
 
         {/* Bottom section */}
         <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <div className="text-sm text-gray-600">
-            © 2024 Creativo. All rights reserved.
-          </div>
+          <div className="text-sm text-gray-600">© 2024 Cretivo. All rights reserved.</div>
           <div className="flex items-center space-x-6 mt-4 md:mt-0">
             <span className="text-sm text-gray-600">
               Built with ❤️ for agencies worldwide
