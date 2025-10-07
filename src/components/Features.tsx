@@ -46,7 +46,7 @@ const Features = () => {
               Scale Your Agency
             </span>
           </h2>
-          <p className="text-xl text-black font-bold">
+          <p className="text-xl text-white font-bold">
             Our comprehensive platform provides all the tools and infrastructure 
             needed to launch and grow a successful design agency.
           </p>
@@ -62,10 +62,10 @@ const Features = () => {
                     <feature.icon className="w-6 h-6 text-white" />
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold mb-2 text-black group-hover:text-white transition-colors">
+                <h3 className="text-lg font-semibold mb-2 text-white transition-colors">
                   {feature.title}
                 </h3>
-                <p className="text-black font-bold text-sm leading-relaxed">
+                <p className="text-white font-bold text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </CardContent>
