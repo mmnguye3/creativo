@@ -58,7 +58,7 @@ const Footer = () => {
           {/* Brand section */}
           <div className="lg:col-span-2 space-y-2">
             <div className="flex items-center">
-              <img src="/creativo-logo.png" alt="Creativo" className="h-20 w-auto" />
+              <img src="/cretivo-logo.png" alt="Cretivo" className="h-20 w-auto" />
             </div>
             
             <p className="text-gray-600 max-w-md">

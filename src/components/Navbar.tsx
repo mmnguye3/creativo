@@ -17,8 +17,8 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
             <img 
-              src="/creativo-logo.png" 
-              alt="Creativo" 
+              src="/cretivo-logo.png" 
+              alt="Cretivo" 
               className="h-16 w-auto" 
             />
           </Link>
