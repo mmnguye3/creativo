@@ -109,8 +109,7 @@ const PrivacyPolicy = () => {
                 <p>If you have any questions about this privacy policy, please contact us:</p>
                 <ul className="mt-4 space-y-2">
                   <li>Email: support@creativo.io</li>
-                  <li>Phone: (725) 224-7202</li>
-                  <li>Address: 1111b South Governors Avenue. Dover,DE 19904</li>
+                  <li>Website: www.creativo.io</li>
                 </ul>
               </div>
             </section>
