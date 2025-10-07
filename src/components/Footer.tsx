@@ -69,9 +69,7 @@ const Footer = () => {
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Mail className="w-4 h-4" />
-                <a href="mailto:support@creativo.io" className="hover:text-black transition-colors">
-                  support@creativo.io
-                </a>
+                <a href="mailto:support@creativo.io" className="hover:text-black transition-colors">support@cretivo.io</a>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Phone className="w-4 h-4" />
