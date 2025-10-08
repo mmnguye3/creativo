@@ -21,7 +21,7 @@ serve(async (req) => {
 
     // Create a Supabase client with service role permissions
     const supabaseAdmin = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
+      'https://ukabvhdvfajudrtqnfpm.supabase.co',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
       {
         auth: {
@@ -33,8 +33,8 @@ serve(async (req) => {
 
     // Create a regular client to verify the user's admin status
     const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      'https://ukabvhdvfajudrtqnfpm.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVrYWJ2aGR2ZmFqdWRydHFuZnBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4ODA0ODMsImV4cCI6MjA3NTQ1NjQ4M30.s_k6lT11c0PzxjBEjF1BztJ6zaovuFI93tcxx5yo5Ms',
       {
         global: {
           headers: {
