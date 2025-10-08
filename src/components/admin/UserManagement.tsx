@@ -30,7 +30,7 @@ const UserManagement = () => {
         throw new Error('No session found')
       }
 
-      const response = await fetch(`https://tzamkhsfakswrwlhtjro.supabase.co/functions/v1/admin-list-users`, {
+      const response = await fetch(`https://ukabvhdvfajudrtqnfpm.supabase.co/functions/v1/admin-list-users`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
@@ -64,7 +64,7 @@ const UserManagement = () => {
         throw new Error('No session found')
       }
 
-      const response = await fetch(`https://tzamkhsfakswrwlhtjro.supabase.co/functions/v1/admin-create-user`, {
+      const response = await fetch(`https://ukabvhdvfajudrtqnfpm.supabase.co/functions/v1/admin-create-user`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
@@ -136,7 +136,7 @@ const UserManagement = () => {
         throw new Error('No session found')
       }
 
-      const response = await fetch(`https://tzamkhsfakswrwlhtjro.supabase.co/functions/v1/admin-delete-user`, {
+      const response = await fetch(`https://ukabvhdvfajudrtqnfpm.supabase.co/functions/v1/admin-delete-user`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
