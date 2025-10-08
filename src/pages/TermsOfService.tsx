@@ -8,20 +8,12 @@ const TermsOfService = () => {
           <div className="space-y-8">
             <section>
               <h2 className="text-2xl font-semibold mb-4">1. Acceptance of Terms</h2>
-              <p className="text-muted-foreground">
-                By accessing and using Creativo's services, you accept and agree to be 
-                bound by the terms and provision of this agreement. If you do not agree to abide by 
-                the above, please do not use this service.
-              </p>
+              <p className="text-muted-foreground">By accessing and using Cretivo's services, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
             </section>
 
             <section>
               <h2 className="text-2xl font-semibold mb-4">2. Description of Service</h2>
-              <p className="text-muted-foreground">
-                Creativo provides a white-label design platform for agencies, offering 
-                unlimited design services, project management tools, and comprehensive business solutions. 
-                We reserve the right to modify or discontinue services at any time.
-              </p>
+              <p className="text-muted-foreground">Cretivo provides a white-label design platform for agencies, offering unlimited design services, project management tools, and comprehensive business solutions. We reserve the right to modify or discontinue services at any time.</p>
             </section>
 
             <section>
@@ -55,10 +47,7 @@ const TermsOfService = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">5. Intellectual Property</h2>
               <div className="space-y-4 text-muted-foreground">
-                <p>
-                  All content, features, and functionality of our service are owned by Creativo 
-                  and are protected by copyright, trademark, and other intellectual property laws.
-                </p>
+                <p>All content, features, and functionality of our service are owned by Cretivo and are protected by copyright, trademark, and other intellectual property laws.</p>
                 <p>Design deliverables created for clients become the property of the client upon full payment.</p>
               </div>
             </section>
@@ -88,11 +77,7 @@ const TermsOfService = () => {
 
             <section>
               <h2 className="text-2xl font-semibold mb-4">8. Limitation of Liability</h2>
-              <p className="text-muted-foreground">
-                In no event shall Creativo be liable for any indirect, incidental, 
-                special, consequential, or punitive damages, including lost profits, arising from 
-                your use of the service.
-              </p>
+              <p className="text-muted-foreground">In no event shall Cretivo be liable for any indirect, incidental, special, consequential, or punitive damages, including lost profits, arising from your use of the service.</p>
             </section>
 
             <section>
@@ -131,8 +116,8 @@ const TermsOfService = () => {
               <div className="text-muted-foreground">
                 <p>For questions about these terms, contact us:</p>
                 <ul className="mt-4 space-y-2">
-                  <li>Email: support@creativo.io</li>
-                  <li>Website: www.creativo.io</li>
+                  <li>Email: support@cretivo.io</li>
+                  <li>Website: www.cretivo.io</li>
                 </ul>
               </div>
             </section>
