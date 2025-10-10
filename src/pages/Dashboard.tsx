@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdmin } from '@/hooks/useAdmin';
 import { Navigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,12 +11,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { User, Settings, FileText, MessageSquare, Sparkles, History, Users, Building2, ShoppingCart } from 'lucide-react';
+import { User, Settings, FileText, MessageSquare, Sparkles, History, Users, Building2, ShoppingCart, Shield } from 'lucide-react';
 import { AIGenerator } from '@/components/AIGenerator';
 import { GenerationHistory } from '@/components/GenerationHistory';
 import { ClientProjects } from '@/components/ClientProjects';
 import { OrderManagement } from '@/components/OrderManagement';
 import AgencySettingsForm from '@/components/AgencySettingsForm';
+import UserManagement from '@/components/admin/UserManagement';
+import SubdomainManagement from '@/components/admin/SubdomainManagement';
+import AdminAnalytics from '@/components/admin/AdminAnalytics';
 
 interface Profile {
   id: string;
@@ -28,6 +32,7 @@ interface Profile {
 
 const Dashboard = () => {
   const { user, loading, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
   const { toast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
@@ -143,7 +148,7 @@ const Dashboard = () => {
           {/* Main Content with Tabs */}
           <div className="lg:col-span-2">
             <Tabs defaultValue="ai-generator" className="w-full">
-              <TabsList className="grid w-full grid-cols-6 bg-gray-800 border-gray-700">
+              <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-7' : 'grid-cols-6'} bg-gray-800 border-gray-700`}>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <TabsTrigger value="ai-generator" className="flex items-center gap-2">
@@ -210,6 +215,19 @@ const Dashboard = () => {
                     <p>Manage your account information and preferences</p>
                   </TooltipContent>
                 </Tooltip>
+                {isAdmin && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="admin" className="flex items-center gap-2">
+                        <Shield className="h-4 w-4" />
+                        Admin
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Admin dashboard for managing users and platform</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
               </TabsList>
               
               <TabsContent value="ai-generator" className="mt-6 bg-gray-900 rounded-lg p-4">
@@ -312,6 +330,42 @@ const Dashboard = () => {
                   </CardContent>
                 </Card>
               </TabsContent>
+              
+              {isAdmin && (
+                <TabsContent value="admin" className="mt-6 space-y-6">
+                  <Card className="bg-gray-900 border-gray-700">
+                    <CardHeader>
+                      <CardTitle className="text-white flex items-center gap-2">
+                        <Shield className="h-5 w-5" />
+                        Admin Dashboard
+                      </CardTitle>
+                      <CardDescription>
+                        Manage users, subdomains, and view platform analytics
+                      </CardDescription>
+                    </CardHeader>
+                  </Card>
+                  
+                  <Tabs defaultValue="analytics" className="w-full">
+                    <TabsList className="grid w-full grid-cols-3 bg-gray-800 border-gray-700">
+                      <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                      <TabsTrigger value="users">User Management</TabsTrigger>
+                      <TabsTrigger value="subdomains">Subdomains</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="analytics" className="mt-4">
+                      <AdminAnalytics />
+                    </TabsContent>
+                    
+                    <TabsContent value="users" className="mt-4">
+                      <UserManagement />
+                    </TabsContent>
+                    
+                    <TabsContent value="subdomains" className="mt-4">
+                      <SubdomainManagement />
+                    </TabsContent>
+                  </Tabs>
+                </TabsContent>
+              )}
             </Tabs>
           </div>
 

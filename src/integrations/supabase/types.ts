@@ -14,6 +14,224 @@ export type Database = {
   }
   public: {
     Tables: {
+      agency_settings: {
+        Row: {
+          about_content: string | null
+          agency_name: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string | null
+          favicon_url: string | null
+          features_enabled: boolean | null
+          hero_subtitle: string | null
+          hero_title: string | null
+          hide_powered_by: boolean | null
+          id: string
+          logo_url: string | null
+          meta_description: string | null
+          meta_title: string | null
+          pricing_enabled: boolean | null
+          primary_color: string | null
+          secondary_color: string | null
+          services_enabled: boolean | null
+          testimonials_enabled: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          about_content?: string | null
+          agency_name?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          favicon_url?: string | null
+          features_enabled?: boolean | null
+          hero_subtitle?: string | null
+          hero_title?: string | null
+          hide_powered_by?: boolean | null
+          id?: string
+          logo_url?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          pricing_enabled?: boolean | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          services_enabled?: boolean | null
+          testimonials_enabled?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          about_content?: string | null
+          agency_name?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string | null
+          favicon_url?: string | null
+          features_enabled?: boolean | null
+          hero_subtitle?: string | null
+          hero_title?: string | null
+          hide_powered_by?: boolean | null
+          id?: string
+          logo_url?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          pricing_enabled?: boolean | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          services_enabled?: boolean | null
+          testimonials_enabled?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      agency_subdomains: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          subdomain: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          subdomain: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          subdomain?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_generations: {
+        Row: {
+          content_type: string | null
+          created_at: string | null
+          description: string | null
+          generated_content: string | null
+          id: string
+          metadata: Json | null
+          project_name: string | null
+          service_type: string
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content_type?: string | null
+          created_at?: string | null
+          description?: string | null
+          generated_content?: string | null
+          id?: string
+          metadata?: Json | null
+          project_name?: string | null
+          service_type: string
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content_type?: string | null
+          created_at?: string | null
+          description?: string | null
+          generated_content?: string | null
+          id?: string
+          metadata?: Json | null
+          project_name?: string | null
+          service_type?: string
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      customer_order_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          order_id: string
+          price: number
+          quantity: number | null
+          service_description: string | null
+          service_name: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          order_id: string
+          price: number
+          quantity?: number | null
+          service_description?: string | null
+          service_name: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          order_id?: string
+          price?: number
+          quantity?: number | null
+          service_description?: string | null
+          service_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "customer_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_orders: {
+        Row: {
+          agency_id: string
+          created_at: string | null
+          customer_email: string
+          customer_name: string
+          customer_phone: string | null
+          id: string
+          notes: string | null
+          status: string | null
+          total_amount: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          agency_id: string
+          created_at?: string | null
+          customer_email: string
+          customer_name: string
+          customer_phone?: string | null
+          id?: string
+          notes?: string | null
+          status?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          agency_id?: string
+          created_at?: string | null
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string | null
+          id?: string
+          notes?: string | null
+          status?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
