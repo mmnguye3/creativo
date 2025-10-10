@@ -21,6 +21,7 @@ export const OrderForm = ({ onBack }: OrderFormProps) => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submittedTotal, setSubmittedTotal] = useState(0);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -123,6 +124,7 @@ export const OrderForm = ({ onBack }: OrderFormProps) => {
 
       if (itemsError) throw itemsError;
 
+      setSubmittedTotal(cart.total);
       setIsSuccess(true);
       clearCart();
       toast({
@@ -164,7 +166,7 @@ export const OrderForm = ({ onBack }: OrderFormProps) => {
             </p>
             <div className="bg-gradient-to-r from-orange-50 to-yellow-50 p-4 rounded-lg">
               <p className="text-sm text-gray-600 mb-2">
-                <strong>Project Total:</strong> <span className="text-orange-600 font-bold">${cart.total}</span>
+                <strong>Project Total:</strong> <span className="text-orange-600 font-bold">${submittedTotal}</span>
               </p>
               <p className="text-xs text-gray-500">
                 💳 No payment required now • We'll invoice after project completion
