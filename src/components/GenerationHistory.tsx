@@ -43,7 +43,7 @@ export const GenerationHistory: React.FC = () => {
         throw error;
       }
 
-      setGenerations(data as Generation[] || []);
+      setGenerations(data as unknown as Generation[] || []);
     } catch (error) {
       console.error('Error fetching generations:', error);
       toast({

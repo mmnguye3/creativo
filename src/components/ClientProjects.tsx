@@ -46,8 +46,8 @@ export const ClientProjects: React.FC = () => {
         throw error;
       }
 
-      setClientProjects(data as ClientProject[] || []);
-      setFilteredProjects(data as ClientProject[] || []);
+      setClientProjects(data as unknown as ClientProject[] || []);
+      setFilteredProjects(data as unknown as ClientProject[] || []);
     } catch (error) {
       console.error('Error fetching client projects:', error);
       toast({

@@ -28,20 +28,24 @@ const WhiteLabelContact = () => {
 
     setIsSubmitting(true);
     try {
-      const { error } = await supabase
-        .from('customer_inquiries')
-        .insert({
-          agency_id: agencySettings.id,
-          name: formData.name,
-          email: formData.email,
-          company: formData.company || null,
-          phone: formData.phone || null,
-          message: formData.message,
-          inquiry_type: formData.inquiryType,
-          source: 'website'
-        });
+      // Submit contact form via edge function
+      const response = await fetch('https://ukabvhdvfajudrtqnfpm.supabase.co/functions/v1/submit-contact-form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          agency_id: agencySettings.user_id,
+          customer_name: formData.name,
+          customer_email: formData.email,
+          customer_phone: formData.phone,
+          message: formData.message
+        })
+      });
 
-      if (error) throw error;
+      if (!response.ok) {
+        throw new Error('Failed to submit contact form');
+      }
 
       toast({
         title: "Message Sent!",

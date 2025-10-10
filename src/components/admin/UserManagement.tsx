@@ -109,9 +109,14 @@ const UserManagement = () => {
         .eq('user_id', userId);
 
       // Add new role
-      await supabase
+      const { error: roleError } = await supabase
         .from('user_roles')
-        .insert({ user_id: userId, role: newRole as 'admin' | 'user' | 'customer' });
+        .insert({
+          user_id: userId,
+          role: newRole as any
+        });
+
+      if (roleError) throw roleError;
 
       toast({
         title: "Success",

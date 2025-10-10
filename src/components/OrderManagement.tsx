@@ -89,7 +89,7 @@ export const OrderManagement = () => {
 
       if (error) throw error;
 
-      setOrders(data || []);
+      setOrders(data as unknown as Order[] || []);
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast({

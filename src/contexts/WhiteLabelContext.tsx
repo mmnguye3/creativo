@@ -4,6 +4,7 @@ import { useSubdomain } from '@/hooks/useSubdomain';
 
 export interface AgencySettings {
   id: string;
+  user_id: string;
   agency_name: string | null;
   logo_url: string | null;
   primary_color: string;
@@ -103,7 +104,7 @@ export const WhiteLabelProvider: React.FC<WhiteLabelProviderProps> = ({ children
         }
 
         console.log('Successfully loaded agency settings:', settingsData);
-        setAgencySettings(settingsData);
+        setAgencySettings(settingsData as unknown as AgencySettings);
       } catch (err) {
         console.error('Error fetching agency settings:', err);
         setError(err instanceof Error ? err.message : 'Unknown error occurred');
