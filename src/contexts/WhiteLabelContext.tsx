@@ -52,69 +52,114 @@ export const WhiteLabelProvider: React.FC<WhiteLabelProviderProps> = ({ children
   const [agencySettings, setAgencySettings] = useState<AgencySettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { subdomain, isSubdomain } = useSubdomain();
+  const { subdomain, isSubdomain, isValid } = useSubdomain();
 
   useEffect(() => {
     const fetchAgencySettings = async () => {
-      if (!isSubdomain || !subdomain) {
-        console.log('Not a subdomain or no subdomain found:', { isSubdomain, subdomain });
+      // Validate subdomain before fetching
+      if (!isSubdomain || !subdomain || !isValid) {
+        if (subdomain && !isValid) {
+          console.error(`[Production] Invalid subdomain format: "${subdomain}"`);
+          setError('Invalid subdomain format. Please use lowercase letters, numbers, and hyphens only.');
+        } else {
+          console.log('[Production] Not a white-label subdomain, using main site');
+        }
         setLoading(false);
         return;
       }
+
+      console.log(`[Production] Initializing white-label site for subdomain: "${subdomain}"`);
 
       try {
         setLoading(true);
         setError(null);
 
-        console.log('Fetching agency settings for subdomain:', subdomain);
+        // First get the subdomain record with retry logic
+        let subdomainAttempts = 3;
+        let subdomainData = null;
+        let lastSubdomainError = null;
 
-        // First get the subdomain record
-        const { data: subdomainData, error: subdomainError } = await supabase
-          .from('agency_subdomains')
-          .select('user_id')
-          .eq('subdomain', subdomain)
-          .eq('is_active', true)
-          .maybeSingle();
+        while (subdomainAttempts > 0 && !subdomainData) {
+          const { data, error } = await supabase
+            .from('agency_subdomains')
+            .select('user_id, is_active')
+            .eq('subdomain', subdomain)
+            .eq('is_active', true)
+            .maybeSingle();
 
-        console.log('Subdomain query result:', { subdomainData, subdomainError });
+          if (error) {
+            lastSubdomainError = error;
+            console.warn(`[Production] Subdomain lookup attempt failed (${subdomainAttempts} left):`, error);
+            subdomainAttempts--;
+            if (subdomainAttempts > 0) {
+              await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+          } else {
+            subdomainData = data;
+            break;
+          }
+        }
 
-        if (subdomainError) {
-          throw new Error(`Subdomain lookup failed: ${subdomainError.message}`);
+        if (lastSubdomainError && !subdomainData) {
+          throw new Error(`Database connection issue. Please try again later. (Error: ${lastSubdomainError.message})`);
         }
 
         if (!subdomainData) {
-          throw new Error(`Subdomain "${subdomain}" not found or inactive. Please contact your agency to activate your subdomain.`);
+          throw new Error(`Subdomain "${subdomain}" not found. Please verify the URL or contact support.`);
         }
 
-        // Then get the agency settings for this user
-        const { data: settingsData, error: settingsError } = await supabase
-          .from('agency_settings')
-          .select('*')
-          .eq('user_id', subdomainData.user_id)
-          .maybeSingle();
+        console.log(`[Production] Found subdomain mapping for user: ${subdomainData.user_id}`);
 
-        console.log('Settings query result:', { settingsData, settingsError });
+        // Then get the agency settings with retry logic
+        let settingsAttempts = 3;
+        let settingsData = null;
+        let lastSettingsError = null;
 
-        if (settingsError) {
-          throw new Error(`Agency settings lookup failed: ${settingsError.message}`);
+        while (settingsAttempts > 0 && !settingsData) {
+          const { data, error } = await supabase
+            .from('agency_settings')
+            .select('*')
+            .eq('user_id', subdomainData.user_id)
+            .maybeSingle();
+
+          if (error) {
+            lastSettingsError = error;
+            console.warn(`[Production] Settings lookup attempt failed (${settingsAttempts} left):`, error);
+            settingsAttempts--;
+            if (settingsAttempts > 0) {
+              await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+          } else {
+            settingsData = data;
+            break;
+          }
+        }
+
+        if (lastSettingsError && !settingsData) {
+          throw new Error(`Unable to load agency configuration. Please try again later.`);
         }
 
         if (!settingsData) {
-          throw new Error(`Agency settings not configured for subdomain "${subdomain}". Please contact your agency to complete setup.`);
+          throw new Error(`This subdomain is not configured yet. Please contact the agency owner to complete setup.`);
         }
 
-        console.log('Successfully loaded agency settings:', settingsData);
+        console.log('[Production] Successfully loaded white-label configuration:', {
+          agency: settingsData.agency_name,
+          hasLogo: !!settingsData.logo_url,
+          theme: { primary: settingsData.primary_color, secondary: settingsData.secondary_color }
+        });
+        
         setAgencySettings(settingsData as unknown as AgencySettings);
       } catch (err) {
-        console.error('Error fetching agency settings:', err);
-        setError(err instanceof Error ? err.message : 'Unknown error occurred');
+        console.error('[Production] White-label initialization failed:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load site configuration');
       } finally {
         setLoading(false);
       }
     };
 
     fetchAgencySettings();
-  }, [subdomain, isSubdomain]);
+  }, [subdomain, isSubdomain, isValid]);
 
   // Apply custom CSS when agency settings are loaded
   useEffect(() => {

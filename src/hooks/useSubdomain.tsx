@@ -4,13 +4,21 @@ export interface SubdomainInfo {
   subdomain: string | null;
   isSubdomain: boolean;
   hostname: string;
+  isValid: boolean;
 }
+
+// Validate subdomain format (alphanumeric, hyphens, lowercase)
+const isValidSubdomain = (subdomain: string): boolean => {
+  const subdomainRegex = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;
+  return subdomainRegex.test(subdomain) && subdomain.length >= 3 && subdomain.length <= 63;
+};
 
 export const useSubdomain = (): SubdomainInfo => {
   const [subdomainInfo, setSubdomainInfo] = useState<SubdomainInfo>({
     subdomain: null,
     isSubdomain: false,
-    hostname: ''
+    hostname: '',
+    isValid: false
   });
 
   useEffect(() => {
@@ -25,11 +33,29 @@ export const useSubdomain = (): SubdomainInfo => {
     const urlParams = new URLSearchParams(window.location.search);
     const devSubdomain = urlParams.get('subdomain');
     
-    // Only treat as subdomain if:
-    // 1. Has subdomain parameter (dev mode), OR
-    // 2. Is a real subdomain (not Lovable project domain)
-    const isRealSubdomain = parts.length > 2 && !isLovableProject && !isLocalDev;
-    const subdomain = isRealSubdomain ? parts[0] : null;
+    let subdomain: string | null = null;
+    let isRealSubdomain = false;
+    
+    // Development mode: use URL parameter
+    if (devSubdomain) {
+      subdomain = devSubdomain.toLowerCase();
+      isRealSubdomain = false;
+    }
+    // Production mode: detect from hostname
+    else if (!isLovableProject && !isLocalDev && parts.length >= 3) {
+      // For example: subdomain.yourdomain.com has 3 parts
+      // subdomain.yourdomain.co.uk has 4 parts (handle country TLDs)
+      const potentialSubdomain = parts[0];
+      
+      // Exclude common non-subdomain prefixes
+      if (potentialSubdomain !== 'www' && potentialSubdomain !== 'api') {
+        subdomain = potentialSubdomain.toLowerCase();
+        isRealSubdomain = true;
+      }
+    }
+    
+    // Validate subdomain format
+    const isValid = subdomain ? isValidSubdomain(subdomain) : false;
     
     console.log('Subdomain detection:', { 
       hostname, 
@@ -38,15 +64,23 @@ export const useSubdomain = (): SubdomainInfo => {
       isLocalDev, 
       devSubdomain, 
       isRealSubdomain, 
-      subdomain 
+      subdomain,
+      isValid,
+      mode: devSubdomain ? 'development' : isRealSubdomain ? 'production' : 'main-site'
     });
     
+    // Warn if invalid subdomain format
+    if (subdomain && !isValid) {
+      console.warn(`Invalid subdomain format: "${subdomain}". Subdomains must be 3-63 characters, lowercase alphanumeric with hyphens.`);
+    }
+    
     setSubdomainInfo({
-      subdomain: devSubdomain || subdomain,
-      isSubdomain: !!devSubdomain || isRealSubdomain,
-      hostname
+      subdomain: isValid ? subdomain : null,
+      isSubdomain: isValid && (!!devSubdomain || isRealSubdomain),
+      hostname,
+      isValid
     });
-  }, [window.location.search]); // Add dependency on search params
+  }, []);
 
   return subdomainInfo;
 };
