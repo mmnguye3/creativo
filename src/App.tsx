@@ -18,6 +18,7 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import NotFound from "@/pages/NotFound";
 import WhiteLabelSite from "@/pages/WhiteLabelSite";
 import CartPage from "@/pages/CartPage";
+import ThankYou from "@/pages/ThankYou";
 import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { WhiteLabelProvider, useWhiteLabel } from "@/contexts/WhiteLabelContext";
@@ -54,6 +55,11 @@ const AppContent = () => {
       <Route path="/:agencySlug/cart" element={
         <CartProvider>
           <CartPage />
+        </CartProvider>
+      } />
+      <Route path="/:agencySlug/thank-you" element={
+        <CartProvider>
+          <ThankYou />
         </CartProvider>
       } />
       <Route path="/:agencySlug/privacy-policy" element={

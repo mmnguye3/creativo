@@ -1,15 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useCart } from "@/contexts/CartContext";
 import { useWhiteLabel } from "@/contexts/WhiteLabelContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, CheckCircle } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 interface OrderFormProps {
   onBack: () => void;
@@ -17,11 +17,10 @@ interface OrderFormProps {
 
 export const OrderForm = ({ onBack }: OrderFormProps) => {
   const { cart, clearCart } = useCart();
-  const { agencySettings } = useWhiteLabel();
+  const { agencySettings, agencySlug } = useWhiteLabel();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [submittedTotal, setSubmittedTotal] = useState(0);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -124,12 +123,12 @@ export const OrderForm = ({ onBack }: OrderFormProps) => {
 
       if (itemsError) throw itemsError;
 
-      setSubmittedTotal(cart.total);
-      setIsSuccess(true);
+      const orderTotal = cart.total;
       clearCart();
-      toast({
-        title: "Order Submitted!",
-        description: "We'll review your order and contact you within 24 hours to discuss next steps."
+      
+      // Navigate to thank you page with order total
+      navigate(`/${agencySlug}/thank-you`, { 
+        state: { orderTotal }
       });
     } catch (error) {
       console.error('Error submitting order:', error);
@@ -151,35 +150,7 @@ export const OrderForm = ({ onBack }: OrderFormProps) => {
   };
 
   return (
-    <>
-      <Dialog open={isSuccess} onOpenChange={() => setIsSuccess(false)}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-center">
-              <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-              Request Sent Successfully! 🎉
-            </DialogTitle>
-          </DialogHeader>
-          <div className="text-center space-y-4">
-            <p className="text-gray-600">
-              Thank you for choosing {agencySettings?.agency_name}! We've received your project request and will contact you within 2 hours to discuss details and payment arrangements for your project.
-            </p>
-            <div className="bg-gradient-to-r from-orange-50 to-yellow-50 p-4 rounded-lg">
-              <p className="text-sm text-gray-600 mb-2">
-                <strong>Project Total:</strong> <span className="text-orange-600 font-bold">${submittedTotal}</span>
-              </p>
-              <p className="text-xs text-gray-500">
-                💳 No payment required now • We'll invoice after project completion
-              </p>
-            </div>
-            <Button onClick={() => setIsSuccess(false)} className="w-full">
-              Close
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <div className="w-full h-full min-h-screen overflow-y-auto">
+    <div className="w-full h-full min-h-screen overflow-y-auto">
       <Card className="bg-white border shadow-lg w-full max-w-none min-h-full">
         <CardHeader className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white">
           <CardTitle className="flex items-center gap-2">
@@ -307,6 +278,5 @@ export const OrderForm = ({ onBack }: OrderFormProps) => {
       </CardContent>
       </Card>
     </div>
-    </>
   );
 };
