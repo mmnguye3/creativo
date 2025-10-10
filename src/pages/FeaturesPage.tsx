@@ -9,19 +9,10 @@ import {
   Clock, 
   Globe,
   ArrowRight,
-  CheckCircle2,
-  Settings
+  CheckCircle2
 } from "lucide-react";
-import { useAdmin } from "@/hooks/useAdmin";
-import { useNavigate } from "react-router-dom";
-import UserManagement from "@/components/admin/UserManagement";
-import SubdomainManagement from "@/components/admin/SubdomainManagement";
-import AdminAnalytics from "@/components/admin/AdminAnalytics";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const FeaturesPage = () => {
-  const { isAdmin, loading } = useAdmin();
-  const navigate = useNavigate();
   const additionalFeatures = [
     {
       category: "Platform Features",
@@ -73,57 +64,6 @@ const FeaturesPage = () => {
 
   return (
     <div className="pt-20">
-      {/* Admin Dashboard Section */}
-      {!loading && isAdmin && (
-        <section className="py-12 bg-black border-b border-primary/20">
-          <div className="container mx-auto px-4">
-            <div className="mb-8 flex items-center justify-between">
-              <div>
-                <h2 className="text-3xl font-bold mb-2 text-white flex items-center gap-2">
-                  <Settings className="w-8 h-8" />
-                  Admin Dashboard
-                </h2>
-                <p className="text-muted-foreground">
-                  Manage users, subdomains, and view analytics
-                </p>
-              </div>
-            </div>
-            
-            <Tabs defaultValue="users" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="users">User Management</TabsTrigger>
-                <TabsTrigger value="subdomains">Subdomains</TabsTrigger>
-                <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="users" className="mt-6">
-                <Card className="bg-gradient-card border-white/10">
-                  <CardContent className="pt-6">
-                    <UserManagement />
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              <TabsContent value="subdomains" className="mt-6">
-                <Card className="bg-gradient-card border-white/10">
-                  <CardContent className="pt-6">
-                    <SubdomainManagement />
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              <TabsContent value="analytics" className="mt-6">
-                <Card className="bg-gradient-card border-white/10">
-                  <CardContent className="pt-6">
-                    <AdminAnalytics />
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </div>
-        </section>
-      )}
-      
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-hero">
         <div className="absolute inset-0 bg-black/40"></div>
