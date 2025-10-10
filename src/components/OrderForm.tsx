@@ -124,11 +124,28 @@ export const OrderForm = ({ onBack }: OrderFormProps) => {
       if (itemsError) throw itemsError;
 
       const orderTotal = cart.total;
+      
+      console.log('Order created successfully, navigating to thank you page', {
+        orderId: orderData.id,
+        agencySlug,
+        orderTotal
+      });
+
+      if (!agencySlug) {
+        console.error('Agency slug is missing, cannot navigate');
+        toast({
+          title: "Order Submitted",
+          description: "Your order was submitted successfully! We'll contact you soon.",
+        });
+        return;
+      }
+      
       clearCart();
       
       // Navigate to thank you page with order total
       navigate(`/${agencySlug}/thank-you`, { 
-        state: { orderTotal }
+        state: { orderTotal },
+        replace: true
       });
     } catch (error) {
       console.error('Error submitting order:', error);
