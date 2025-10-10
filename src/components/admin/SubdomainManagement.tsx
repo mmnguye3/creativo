@@ -3,10 +3,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from '@/hooks/use-toast';
 import { Plus, Edit, Trash2, ExternalLink } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
@@ -26,12 +29,55 @@ interface User {
   email: string;
 }
 
+interface AgencySettingsForm {
+  agency_name: string;
+  logo_url: string;
+  primary_color: string;
+  secondary_color: string;
+  contact_email: string;
+  contact_phone: string;
+  hero_title: string;
+  hero_subtitle: string;
+  about_content: string;
+  services_enabled: boolean;
+  features_enabled: boolean;
+  testimonials_enabled: boolean;
+  pricing_enabled: boolean;
+  meta_title: string;
+  meta_description: string;
+  favicon_url: string;
+  hide_powered_by: boolean;
+}
+
 const SubdomainManagement = () => {
   const [subdomains, setSubdomains] = useState<Subdomain[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
-  const [newSubdomain, setNewSubdomain] = useState({ subdomain: '', user_id: '', agency_name: '' });
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingSubdomain, setEditingSubdomain] = useState<Subdomain | null>(null);
+  const [newSubdomain, setNewSubdomain] = useState({ subdomain: '', user_id: '' });
+  
+  // Agency settings form state
+  const [agencySettings, setAgencySettings] = useState<AgencySettingsForm>({
+    agency_name: '',
+    logo_url: '',
+    primary_color: '#6366f1',
+    secondary_color: '#8b5cf6',
+    contact_email: '',
+    contact_phone: '',
+    hero_title: 'Professional Design Services',
+    hero_subtitle: 'Transform your business with our expert team',
+    about_content: '',
+    services_enabled: true,
+    features_enabled: true,
+    testimonials_enabled: true,
+    pricing_enabled: true,
+    meta_title: '',
+    meta_description: '',
+    favicon_url: '',
+    hide_powered_by: false,
+  });
 
   const fetchSubdomains = async () => {
     try {
@@ -123,44 +169,144 @@ const SubdomainManagement = () => {
   };
 
   const createSubdomain = async () => {
+    if (!newSubdomain.subdomain || !newSubdomain.user_id) {
+      toast({
+        title: "Error",
+        description: "Subdomain and user are required",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       // Create subdomain
-      const { data, error } = await supabase
+      const { data: subdomainData, error: subdomainError } = await supabase
         .from('agency_subdomains')
         .insert({
-          subdomain: newSubdomain.subdomain,
+          subdomain: newSubdomain.subdomain.toLowerCase(),
           user_id: newSubdomain.user_id
         })
         .select()
         .single();
 
-      if (error) {
-        throw error;
-      }
+      if (subdomainError) throw subdomainError;
 
-      // Create or update agency settings if agency name is provided
-      if (newSubdomain.agency_name) {
-        await supabase
-          .from('agency_settings')
-          .upsert({
-            user_id: newSubdomain.user_id,
-            agency_name: newSubdomain.agency_name
-          });
-      }
+      // Create or update agency settings with all fields
+      const { error: settingsError } = await supabase
+        .from('agency_settings')
+        .upsert({
+          user_id: newSubdomain.user_id,
+          ...agencySettings,
+        }, { onConflict: 'user_id' });
+
+      if (settingsError) throw settingsError;
 
       toast({
         title: "Success",
-        description: "Subdomain created successfully",
+        description: "Subdomain and agency settings created successfully",
       });
 
       setCreateDialogOpen(false);
-      setNewSubdomain({ subdomain: '', user_id: '', agency_name: '' });
+      setNewSubdomain({ subdomain: '', user_id: '' });
+      setAgencySettings({
+        agency_name: '',
+        logo_url: '',
+        primary_color: '#6366f1',
+        secondary_color: '#8b5cf6',
+        contact_email: '',
+        contact_phone: '',
+        hero_title: 'Professional Design Services',
+        hero_subtitle: 'Transform your business with our expert team',
+        about_content: '',
+        services_enabled: true,
+        features_enabled: true,
+        testimonials_enabled: true,
+        pricing_enabled: true,
+        meta_title: '',
+        meta_description: '',
+        favicon_url: '',
+        hide_powered_by: false,
+      });
       fetchSubdomains();
     } catch (error: any) {
       console.error('Error creating subdomain:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to create subdomain",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const loadAgencySettings = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('agency_settings')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') throw error;
+
+      if (data) {
+        setAgencySettings({
+          agency_name: data.agency_name || '',
+          logo_url: data.logo_url || '',
+          primary_color: data.primary_color || '#6366f1',
+          secondary_color: data.secondary_color || '#8b5cf6',
+          contact_email: data.contact_email || '',
+          contact_phone: data.contact_phone || '',
+          hero_title: data.hero_title || 'Professional Design Services',
+          hero_subtitle: data.hero_subtitle || 'Transform your business with our expert team',
+          about_content: data.about_content || '',
+          services_enabled: data.services_enabled ?? true,
+          features_enabled: data.features_enabled ?? true,
+          testimonials_enabled: data.testimonials_enabled ?? true,
+          pricing_enabled: data.pricing_enabled ?? true,
+          meta_title: data.meta_title || '',
+          meta_description: data.meta_description || '',
+          favicon_url: data.favicon_url || '',
+          hide_powered_by: data.hide_powered_by ?? false,
+        });
+      }
+    } catch (error) {
+      console.error('Error loading agency settings:', error);
+    }
+  };
+
+  const handleEdit = async (subdomain: Subdomain) => {
+    setEditingSubdomain(subdomain);
+    await loadAgencySettings(subdomain.user_id);
+    setEditDialogOpen(true);
+  };
+
+  const updateSubdomain = async () => {
+    if (!editingSubdomain) return;
+
+    try {
+      // Update agency settings
+      const { error: settingsError } = await supabase
+        .from('agency_settings')
+        .upsert({
+          user_id: editingSubdomain.user_id,
+          ...agencySettings,
+        }, { onConflict: 'user_id' });
+
+      if (settingsError) throw settingsError;
+
+      toast({
+        title: "Success",
+        description: "Agency settings updated successfully",
+      });
+
+      setEditDialogOpen(false);
+      setEditingSubdomain(null);
+      fetchSubdomains();
+    } catch (error: any) {
+      console.error('Error updating settings:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update settings",
         variant: "destructive",
       });
     }
@@ -238,6 +384,8 @@ const SubdomainManagement = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold">Subdomains ({subdomains.length})</h3>
+        
+        {/* CREATE DIALOG */}
         <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
           <DialogTrigger asChild>
             <Button>
@@ -245,55 +393,447 @@ const SubdomainManagement = () => {
               Create Subdomain
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-4xl max-h-[90vh]">
             <DialogHeader>
-              <DialogTitle>Create New Subdomain</DialogTitle>
+              <DialogTitle>Create New Subdomain & Agency Settings</DialogTitle>
+              <DialogDescription>
+                Configure subdomain and all agency branding settings in one place
+              </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="subdomain">Subdomain</Label>
-                <Input
-                  id="subdomain"
-                  value={newSubdomain.subdomain}
-                  onChange={(e) => setNewSubdomain({ ...newSubdomain, subdomain: e.target.value })}
-                  placeholder="myagency"
-                />
-                <p className="text-sm text-muted-foreground mt-1">
-                  Will be accessible at: {newSubdomain.subdomain}.yourdomain.com
-                </p>
+            <ScrollArea className="h-[70vh] pr-4">
+              <div className="space-y-6">
+                {/* Subdomain Basic Info */}
+                <div className="space-y-4 pb-4 border-b">
+                  <div>
+                    <Label htmlFor="subdomain">Subdomain *</Label>
+                    <Input
+                      id="subdomain"
+                      value={newSubdomain.subdomain}
+                      onChange={(e) => setNewSubdomain({ ...newSubdomain, subdomain: e.target.value.toLowerCase() })}
+                      placeholder="clientname"
+                    />
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Will be: {newSubdomain.subdomain || 'subdomain'}.cretivo.io
+                    </p>
+                  </div>
+                  <div>
+                    <Label htmlFor="user">Assign to User *</Label>
+                    <Select value={newSubdomain.user_id} onValueChange={(value) => setNewSubdomain({ ...newSubdomain, user_id: value })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a user" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {users.map((user) => (
+                          <SelectItem key={user.id} value={user.id}>
+                            {user.email}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Agency Settings Tabs */}
+                <Tabs defaultValue="branding" className="w-full">
+                  <TabsList className="grid w-full grid-cols-4">
+                    <TabsTrigger value="branding">Branding</TabsTrigger>
+                    <TabsTrigger value="content">Content</TabsTrigger>
+                    <TabsTrigger value="features">Features</TabsTrigger>
+                    <TabsTrigger value="seo">SEO</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="branding" className="space-y-4 mt-4">
+                    <div>
+                      <Label htmlFor="agency_name">Agency Name *</Label>
+                      <Input
+                        id="agency_name"
+                        value={agencySettings.agency_name}
+                        onChange={(e) => setAgencySettings({ ...agencySettings, agency_name: e.target.value })}
+                        placeholder="Acme Design Agency"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="logo_url">Logo URL</Label>
+                      <Input
+                        id="logo_url"
+                        value={agencySettings.logo_url}
+                        onChange={(e) => setAgencySettings({ ...agencySettings, logo_url: e.target.value })}
+                        placeholder="https://example.com/logo.png"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="primary_color">Primary Color</Label>
+                        <Input
+                          id="primary_color"
+                          type="color"
+                          value={agencySettings.primary_color}
+                          onChange={(e) => setAgencySettings({ ...agencySettings, primary_color: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="secondary_color">Secondary Color</Label>
+                        <Input
+                          id="secondary_color"
+                          type="color"
+                          value={agencySettings.secondary_color}
+                          onChange={(e) => setAgencySettings({ ...agencySettings, secondary_color: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="contact_email">Contact Email</Label>
+                        <Input
+                          id="contact_email"
+                          type="email"
+                          value={agencySettings.contact_email}
+                          onChange={(e) => setAgencySettings({ ...agencySettings, contact_email: e.target.value })}
+                          placeholder="info@agency.com"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="contact_phone">Contact Phone</Label>
+                        <Input
+                          id="contact_phone"
+                          value={agencySettings.contact_phone}
+                          onChange={(e) => setAgencySettings({ ...agencySettings, contact_phone: e.target.value })}
+                          placeholder="+1 (555) 123-4567"
+                        />
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="content" className="space-y-4 mt-4">
+                    <div>
+                      <Label htmlFor="hero_title">Hero Title</Label>
+                      <Input
+                        id="hero_title"
+                        value={agencySettings.hero_title}
+                        onChange={(e) => setAgencySettings({ ...agencySettings, hero_title: e.target.value })}
+                        placeholder="Professional Design Services"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="hero_subtitle">Hero Subtitle</Label>
+                      <Textarea
+                        id="hero_subtitle"
+                        value={agencySettings.hero_subtitle}
+                        onChange={(e) => setAgencySettings({ ...agencySettings, hero_subtitle: e.target.value })}
+                        placeholder="Transform your business with our expert team"
+                        rows={3}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="about_content">About Content</Label>
+                      <Textarea
+                        id="about_content"
+                        value={agencySettings.about_content}
+                        onChange={(e) => setAgencySettings({ ...agencySettings, about_content: e.target.value })}
+                        placeholder="Tell visitors about your agency..."
+                        rows={4}
+                      />
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="features" className="space-y-4 mt-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Services Section</Label>
+                        <p className="text-sm text-muted-foreground">Display services on the site</p>
+                      </div>
+                      <Switch
+                        checked={agencySettings.services_enabled}
+                        onCheckedChange={(checked) => setAgencySettings({ ...agencySettings, services_enabled: checked })}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Features Section</Label>
+                        <p className="text-sm text-muted-foreground">Display features on the site</p>
+                      </div>
+                      <Switch
+                        checked={agencySettings.features_enabled}
+                        onCheckedChange={(checked) => setAgencySettings({ ...agencySettings, features_enabled: checked })}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Testimonials Section</Label>
+                        <p className="text-sm text-muted-foreground">Display testimonials</p>
+                      </div>
+                      <Switch
+                        checked={agencySettings.testimonials_enabled}
+                        onCheckedChange={(checked) => setAgencySettings({ ...agencySettings, testimonials_enabled: checked })}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Pricing Section</Label>
+                        <p className="text-sm text-muted-foreground">Display pricing</p>
+                      </div>
+                      <Switch
+                        checked={agencySettings.pricing_enabled}
+                        onCheckedChange={(checked) => setAgencySettings({ ...agencySettings, pricing_enabled: checked })}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Hide "Powered By"</Label>
+                        <p className="text-sm text-muted-foreground">Remove branding</p>
+                      </div>
+                      <Switch
+                        checked={agencySettings.hide_powered_by}
+                        onCheckedChange={(checked) => setAgencySettings({ ...agencySettings, hide_powered_by: checked })}
+                      />
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="seo" className="space-y-4 mt-4">
+                    <div>
+                      <Label htmlFor="meta_title">Meta Title</Label>
+                      <Input
+                        id="meta_title"
+                        value={agencySettings.meta_title}
+                        onChange={(e) => setAgencySettings({ ...agencySettings, meta_title: e.target.value })}
+                        placeholder="Agency Name - Professional Services"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="meta_description">Meta Description</Label>
+                      <Textarea
+                        id="meta_description"
+                        value={agencySettings.meta_description}
+                        onChange={(e) => setAgencySettings({ ...agencySettings, meta_description: e.target.value })}
+                        placeholder="Describe your agency for search engines..."
+                        rows={3}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="favicon_url">Favicon URL</Label>
+                      <Input
+                        id="favicon_url"
+                        value={agencySettings.favicon_url}
+                        onChange={(e) => setAgencySettings({ ...agencySettings, favicon_url: e.target.value })}
+                        placeholder="https://example.com/favicon.ico"
+                      />
+                    </div>
+                  </TabsContent>
+                </Tabs>
               </div>
-              <div>
-                <Label htmlFor="user">Assign to User</Label>
-                <Select value={newSubdomain.user_id} onValueChange={(value) => setNewSubdomain({ ...newSubdomain, user_id: value })}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a user" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {users.map((user) => (
-                      <SelectItem key={user.id} value={user.id}>
-                        {user.email}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="agency_name">Agency Name (Optional)</Label>
-                <Input
-                  id="agency_name"
-                  value={newSubdomain.agency_name}
-                  onChange={(e) => setNewSubdomain({ ...newSubdomain, agency_name: e.target.value })}
-                  placeholder="Agency Name"
-                />
-              </div>
-              <Button onClick={createSubdomain} className="w-full">
-                Create Subdomain
+            </ScrollArea>
+            <div className="flex justify-end gap-2 pt-4 border-t">
+              <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={createSubdomain}>
+                Create Subdomain & Settings
               </Button>
             </div>
           </DialogContent>
         </Dialog>
       </div>
 
+      {/* EDIT DIALOG */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle>Edit Agency Settings</DialogTitle>
+            <DialogDescription>
+              Update agency branding for: {editingSubdomain?.subdomain}
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="h-[70vh] pr-4">
+            <Tabs defaultValue="branding" className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="branding">Branding</TabsTrigger>
+                <TabsTrigger value="content">Content</TabsTrigger>
+                <TabsTrigger value="features">Features</TabsTrigger>
+                <TabsTrigger value="seo">SEO</TabsTrigger>
+              </TabsList>
+
+              {/* Same tabs content as create dialog */}
+              <TabsContent value="branding" className="space-y-4 mt-4">
+                <div>
+                  <Label htmlFor="edit_agency_name">Agency Name</Label>
+                  <Input
+                    id="edit_agency_name"
+                    value={agencySettings.agency_name}
+                    onChange={(e) => setAgencySettings({ ...agencySettings, agency_name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit_logo_url">Logo URL</Label>
+                  <Input
+                    id="edit_logo_url"
+                    value={agencySettings.logo_url}
+                    onChange={(e) => setAgencySettings({ ...agencySettings, logo_url: e.target.value })}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="edit_primary_color">Primary Color</Label>
+                    <Input
+                      id="edit_primary_color"
+                      type="color"
+                      value={agencySettings.primary_color}
+                      onChange={(e) => setAgencySettings({ ...agencySettings, primary_color: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="edit_secondary_color">Secondary Color</Label>
+                    <Input
+                      id="edit_secondary_color"
+                      type="color"
+                      value={agencySettings.secondary_color}
+                      onChange={(e) => setAgencySettings({ ...agencySettings, secondary_color: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="edit_contact_email">Contact Email</Label>
+                    <Input
+                      id="edit_contact_email"
+                      type="email"
+                      value={agencySettings.contact_email}
+                      onChange={(e) => setAgencySettings({ ...agencySettings, contact_email: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="edit_contact_phone">Contact Phone</Label>
+                    <Input
+                      id="edit_contact_phone"
+                      value={agencySettings.contact_phone}
+                      onChange={(e) => setAgencySettings({ ...agencySettings, contact_phone: e.target.value })}
+                    />
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="content" className="space-y-4 mt-4">
+                <div>
+                  <Label htmlFor="edit_hero_title">Hero Title</Label>
+                  <Input
+                    id="edit_hero_title"
+                    value={agencySettings.hero_title}
+                    onChange={(e) => setAgencySettings({ ...agencySettings, hero_title: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit_hero_subtitle">Hero Subtitle</Label>
+                  <Textarea
+                    id="edit_hero_subtitle"
+                    value={agencySettings.hero_subtitle}
+                    onChange={(e) => setAgencySettings({ ...agencySettings, hero_subtitle: e.target.value })}
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit_about_content">About Content</Label>
+                  <Textarea
+                    id="edit_about_content"
+                    value={agencySettings.about_content}
+                    onChange={(e) => setAgencySettings({ ...agencySettings, about_content: e.target.value })}
+                    rows={4}
+                  />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="features" className="space-y-4 mt-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label>Services Section</Label>
+                    <p className="text-sm text-muted-foreground">Display services</p>
+                  </div>
+                  <Switch
+                    checked={agencySettings.services_enabled}
+                    onCheckedChange={(checked) => setAgencySettings({ ...agencySettings, services_enabled: checked })}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label>Features Section</Label>
+                    <p className="text-sm text-muted-foreground">Display features</p>
+                  </div>
+                  <Switch
+                    checked={agencySettings.features_enabled}
+                    onCheckedChange={(checked) => setAgencySettings({ ...agencySettings, features_enabled: checked })}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label>Testimonials Section</Label>
+                    <p className="text-sm text-muted-foreground">Display testimonials</p>
+                  </div>
+                  <Switch
+                    checked={agencySettings.testimonials_enabled}
+                    onCheckedChange={(checked) => setAgencySettings({ ...agencySettings, testimonials_enabled: checked })}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label>Pricing Section</Label>
+                    <p className="text-sm text-muted-foreground">Display pricing</p>
+                  </div>
+                  <Switch
+                    checked={agencySettings.pricing_enabled}
+                    onCheckedChange={(checked) => setAgencySettings({ ...agencySettings, pricing_enabled: checked })}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label>Hide "Powered By"</Label>
+                    <p className="text-sm text-muted-foreground">Remove branding</p>
+                  </div>
+                  <Switch
+                    checked={agencySettings.hide_powered_by}
+                    onCheckedChange={(checked) => setAgencySettings({ ...agencySettings, hide_powered_by: checked })}
+                  />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="seo" className="space-y-4 mt-4">
+                <div>
+                  <Label htmlFor="edit_meta_title">Meta Title</Label>
+                  <Input
+                    id="edit_meta_title"
+                    value={agencySettings.meta_title}
+                    onChange={(e) => setAgencySettings({ ...agencySettings, meta_title: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit_meta_description">Meta Description</Label>
+                  <Textarea
+                    id="edit_meta_description"
+                    value={agencySettings.meta_description}
+                    onChange={(e) => setAgencySettings({ ...agencySettings, meta_description: e.target.value })}
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit_favicon_url">Favicon URL</Label>
+                  <Input
+                    id="edit_favicon_url"
+                    value={agencySettings.favicon_url}
+                    onChange={(e) => setAgencySettings({ ...agencySettings, favicon_url: e.target.value })}
+                  />
+                </div>
+              </TabsContent>
+            </Tabs>
+          </ScrollArea>
+          <div className="flex justify-end gap-2 pt-4 border-t">
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={updateSubdomain}>
+              Save Changes
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* TABLE */}
       <Table>
         <TableHeader>
           <TableRow>
@@ -339,7 +879,7 @@ const SubdomainManagement = () => {
               </TableCell>
               <TableCell>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => handleEdit(subdomain)}>
                     <Edit className="h-4 w-4" />
                   </Button>
                   <Button
