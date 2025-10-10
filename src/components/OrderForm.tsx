@@ -78,12 +78,28 @@ export const OrderForm = ({ onBack }: OrderFormProps) => {
 
     setIsSubmitting(true);
     try {
-      // Debug logging
+      // Verify agency exists before attempting insert
       console.log('=== ORDER SUBMISSION DEBUG ===');
       console.log('Full agencySettings:', agencySettings);
       console.log('agency_id being sent:', agencySettings.user_id);
-      console.log('cart total:', cart.total);
-      console.log('form data:', formData);
+      
+      const { data: agencyCheck, error: agencyCheckError } = await supabase
+        .from('agency_settings')
+        .select('user_id')
+        .eq('user_id', agencySettings.user_id)
+        .maybeSingle();
+      
+      console.log('Agency verification:', { agencyCheck, agencyCheckError });
+      
+      if (agencyCheckError) {
+        console.error('Agency verification failed:', agencyCheckError);
+        throw new Error(`Agency verification failed: ${agencyCheckError.message}`);
+      }
+      
+      if (!agencyCheck) {
+        console.error('Agency not found in database');
+        throw new Error('Agency configuration not found. Please contact support.');
+      }
       
       const orderPayload = {
         agency_id: agencySettings.user_id,
