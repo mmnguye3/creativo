@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 interface WhiteLabelNavbarProps {}
 
 const WhiteLabelNavbar = ({}: WhiteLabelNavbarProps) => {
-  const { agencySettings } = useWhiteLabel();
+  const { agencySettings, agencySlug } = useWhiteLabel();
   const { cart } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ const WhiteLabelNavbar = ({}: WhiteLabelNavbarProps) => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate("/cart")}
+              onClick={() => navigate(`/${agencySlug}/cart`)}
               className="flex items-center gap-2 border border-border hover:border-transparent"
             >
               <ShoppingCart className="w-5 h-5" />

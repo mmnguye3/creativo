@@ -25,26 +25,14 @@ import { WhiteLabelProvider, useWhiteLabel } from "@/contexts/WhiteLabelContext"
 const queryClient = new QueryClient();
 
 const AppContent = () => {
-  const { isWhiteLabel } = useWhiteLabel();
-
-  if (isWhiteLabel) {
-    return (
-      <CartProvider>
-        <Routes>
-          <Route path="/" element={<WhiteLabelSite />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-service" element={<TermsOfService />} />
-        </Routes>
-      </CartProvider>
-    );
-  }
-
   return (
     <Routes>
+      {/* Auth and Admin Routes */}
       <Route path="/auth" element={<Auth />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/admin" element={<AdminDashboard />} />
+      
+      {/* Main Site Routes */}
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="services" element={<Services />} />
@@ -55,8 +43,32 @@ const AppContent = () => {
         <Route path="resources" element={<Resources />} />
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
         <Route path="terms-of-service" element={<TermsOfService />} />
-        <Route path="*" element={<NotFound />} />
       </Route>
+
+      {/* White-Label Agency Routes (Path-Based) */}
+      <Route path="/:agencySlug" element={
+        <CartProvider>
+          <WhiteLabelSite />
+        </CartProvider>
+      } />
+      <Route path="/:agencySlug/cart" element={
+        <CartProvider>
+          <CartPage />
+        </CartProvider>
+      } />
+      <Route path="/:agencySlug/privacy-policy" element={
+        <CartProvider>
+          <PrivacyPolicy />
+        </CartProvider>
+      } />
+      <Route path="/:agencySlug/terms-of-service" element={
+        <CartProvider>
+          <TermsOfService />
+        </CartProvider>
+      } />
+
+      {/* 404 - Must be last */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

@@ -2,7 +2,8 @@ import { useWhiteLabel } from "@/contexts/WhiteLabelContext";
 import { Link } from "react-router-dom";
 const WhiteLabelFooter = () => {
   const {
-    agencySettings
+    agencySettings,
+    agencySlug
   } = useWhiteLabel();
   const agencyName = agencySettings?.agency_name || "AI Agency";
   const contactEmail = agencySettings?.contact_email;
@@ -31,8 +32,8 @@ const WhiteLabelFooter = () => {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><a href="#about" className="hover:text-primary">About Us</a></li>
               <li><a href="#contact" className="hover:text-primary">Contact</a></li>
-              <li><Link to="/privacy-policy" className="hover:text-primary">Privacy Policy</Link></li>
-              <li><Link to="/terms-of-service" className="hover:text-primary">Terms of Service</Link></li>
+              <li><Link to={`/${agencySlug}/privacy-policy`} className="hover:text-primary">Privacy Policy</Link></li>
+              <li><Link to={`/${agencySlug}/terms-of-service`} className="hover:text-primary">Terms of Service</Link></li>
             </ul>
           </div>
         </div>

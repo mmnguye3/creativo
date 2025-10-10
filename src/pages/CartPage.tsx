@@ -7,7 +7,7 @@ import WhiteLabelFooter from "@/components/WhiteLabelFooter";
 import Cart from "@/components/Cart";
 
 const CartPage = () => {
-  const { agencySettings } = useWhiteLabel();
+  const { agencySettings, agencySlug } = useWhiteLabel();
   const navigate = useNavigate();
 
   if (!agencySettings) {
@@ -22,7 +22,7 @@ const CartPage = () => {
             <div className="flex items-center gap-4 mb-8">
               <Button
                 variant="ghost"
-                onClick={() => navigate("/")}
+                onClick={() => navigate(`/${agencySlug}`)}
                 className="flex items-center gap-2"
               >
                 <ArrowLeft size={20} />

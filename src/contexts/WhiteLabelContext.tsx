@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useSubdomain } from '@/hooks/useSubdomain';
+import { useAgencySlug } from '@/hooks/useAgencySlug';
 
 export interface AgencySettings {
   id: string;
@@ -31,7 +31,7 @@ interface WhiteLabelContextType {
   loading: boolean;
   error: string | null;
   isWhiteLabel: boolean;
-  subdomain: string | null;
+  agencySlug: string | null;
 }
 
 const WhiteLabelContext = createContext<WhiteLabelContextType | undefined>(undefined);
@@ -52,63 +52,63 @@ export const WhiteLabelProvider: React.FC<WhiteLabelProviderProps> = ({ children
   const [agencySettings, setAgencySettings] = useState<AgencySettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { subdomain, isSubdomain, isValid } = useSubdomain();
+  const { slug, isAgency, isValid } = useAgencySlug();
 
   useEffect(() => {
     const fetchAgencySettings = async () => {
-      // Validate subdomain before fetching
-      if (!isSubdomain || !subdomain || !isValid) {
-        if (subdomain && !isValid) {
-          console.error(`[Production] Invalid subdomain format: "${subdomain}"`);
-          setError('Invalid subdomain format. Please use lowercase letters, numbers, and hyphens only.');
+      // Validate agency slug before fetching
+      if (!isAgency || !slug || !isValid) {
+        if (slug && !isValid) {
+          console.error(`[WhiteLabel] Invalid agency slug format: "${slug}"`);
+          setError('Invalid agency slug format. Please use lowercase letters, numbers, and hyphens only.');
         } else {
-          console.log('[Production] Not a white-label subdomain, using main site');
+          console.log('[WhiteLabel] Not an agency path, using main site');
         }
         setLoading(false);
         return;
       }
 
-      console.log(`[Production] Initializing white-label site for subdomain: "${subdomain}"`);
+      console.log(`[WhiteLabel] Initializing white-label site for slug: "${slug}"`);
 
       try {
         setLoading(true);
         setError(null);
 
-        // First get the subdomain record with retry logic
-        let subdomainAttempts = 3;
-        let subdomainData = null;
-        let lastSubdomainError = null;
+        // First get the agency subdomain/slug record with retry logic
+        let slugAttempts = 3;
+        let slugData = null;
+        let lastSlugError = null;
 
-        while (subdomainAttempts > 0 && !subdomainData) {
+        while (slugAttempts > 0 && !slugData) {
           const { data, error } = await supabase
             .from('agency_subdomains')
             .select('user_id, is_active')
-            .eq('subdomain', subdomain)
+            .eq('subdomain', slug)
             .eq('is_active', true)
             .maybeSingle();
 
           if (error) {
-            lastSubdomainError = error;
-            console.warn(`[Production] Subdomain lookup attempt failed (${subdomainAttempts} left):`, error);
-            subdomainAttempts--;
-            if (subdomainAttempts > 0) {
+            lastSlugError = error;
+            console.warn(`[WhiteLabel] Agency slug lookup attempt failed (${slugAttempts} left):`, error);
+            slugAttempts--;
+            if (slugAttempts > 0) {
               await new Promise(resolve => setTimeout(resolve, 1000));
             }
           } else {
-            subdomainData = data;
+            slugData = data;
             break;
           }
         }
 
-        if (lastSubdomainError && !subdomainData) {
-          throw new Error(`Database connection issue. Please try again later. (Error: ${lastSubdomainError.message})`);
+        if (lastSlugError && !slugData) {
+          throw new Error(`Database connection issue. Please try again later. (Error: ${lastSlugError.message})`);
         }
 
-        if (!subdomainData) {
-          throw new Error(`Subdomain "${subdomain}" not found. Please verify the URL or contact support.`);
+        if (!slugData) {
+          throw new Error(`Agency "${slug}" not found. Please verify the URL or contact support.`);
         }
 
-        console.log(`[Production] Found subdomain mapping for user: ${subdomainData.user_id}`);
+        console.log(`[WhiteLabel] Found agency mapping for user: ${slugData.user_id}`);
 
         // Then get the agency settings with retry logic
         let settingsAttempts = 3;
@@ -119,12 +119,12 @@ export const WhiteLabelProvider: React.FC<WhiteLabelProviderProps> = ({ children
           const { data, error } = await supabase
             .from('agency_settings')
             .select('*')
-            .eq('user_id', subdomainData.user_id)
+            .eq('user_id', slugData.user_id)
             .maybeSingle();
 
           if (error) {
             lastSettingsError = error;
-            console.warn(`[Production] Settings lookup attempt failed (${settingsAttempts} left):`, error);
+            console.warn(`[WhiteLabel] Settings lookup attempt failed (${settingsAttempts} left):`, error);
             settingsAttempts--;
             if (settingsAttempts > 0) {
               await new Promise(resolve => setTimeout(resolve, 1000));
@@ -140,10 +140,10 @@ export const WhiteLabelProvider: React.FC<WhiteLabelProviderProps> = ({ children
         }
 
         if (!settingsData) {
-          throw new Error(`This subdomain is not configured yet. Please contact the agency owner to complete setup.`);
+          throw new Error(`This agency is not configured yet. Please contact the agency owner to complete setup.`);
         }
 
-        console.log('[Production] Successfully loaded white-label configuration:', {
+        console.log('[WhiteLabel] Successfully loaded configuration:', {
           agency: settingsData.agency_name,
           hasLogo: !!settingsData.logo_url,
           theme: { primary: settingsData.primary_color, secondary: settingsData.secondary_color }
@@ -151,7 +151,7 @@ export const WhiteLabelProvider: React.FC<WhiteLabelProviderProps> = ({ children
         
         setAgencySettings(settingsData as unknown as AgencySettings);
       } catch (err) {
-        console.error('[Production] White-label initialization failed:', err);
+        console.error('[WhiteLabel] Initialization failed:', err);
         setError(err instanceof Error ? err.message : 'Failed to load site configuration');
       } finally {
         setLoading(false);
@@ -159,7 +159,7 @@ export const WhiteLabelProvider: React.FC<WhiteLabelProviderProps> = ({ children
     };
 
     fetchAgencySettings();
-  }, [subdomain, isSubdomain, isValid]);
+  }, [slug, isAgency, isValid]);
 
   // Apply custom CSS when agency settings are loaded
   useEffect(() => {
@@ -257,8 +257,8 @@ export const WhiteLabelProvider: React.FC<WhiteLabelProviderProps> = ({ children
     agencySettings,
     loading,
     error,
-    isWhiteLabel: isSubdomain,
-    subdomain
+    isWhiteLabel: isAgency,
+    agencySlug: slug
   };
 
   return (
