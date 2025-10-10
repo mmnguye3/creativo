@@ -7,20 +7,24 @@ import WhiteLabelNavbar from "@/components/WhiteLabelNavbar";
 import WhiteLabelFooter from "@/components/WhiteLabelFooter";
 
 const ThankYou = () => {
-  const { agencySettings, agencySlug } = useWhiteLabel();
+  const { agencySettings, agencySlug, loading } = useWhiteLabel();
   const navigate = useNavigate();
   const location = useLocation();
   const orderTotal = location.state?.orderTotal || 0;
 
   useEffect(() => {
-    // Redirect if no order data
-    if (!orderTotal) {
+    // Wait for context to load before redirecting
+    if (!loading && agencySlug && !orderTotal) {
       navigate(`/${agencySlug}`);
     }
-  }, [orderTotal, navigate, agencySlug]);
+  }, [orderTotal, navigate, agencySlug, loading]);
 
-  if (!agencySettings) {
-    return <div>Loading...</div>;
+  if (loading || !agencySettings) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div>Loading...</div>
+      </div>
+    );
   }
 
   return (
