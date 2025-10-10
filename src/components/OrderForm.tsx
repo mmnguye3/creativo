@@ -40,14 +40,14 @@ export const OrderForm = ({ onBack }: OrderFormProps) => {
     e.preventDefault();
     
     console.log('Order submission started:', {
-      agencySettings: agencySettings?.id,
+      agencyUserId: agencySettings?.user_id,
       formData,
       cartItems: cart.items,
       cartTotal: cart.total
     });
 
-    if (!agencySettings?.id) {
-      console.error('Agency settings ID not found:', agencySettings);
+    if (!agencySettings?.user_id) {
+      console.error('Agency user ID not found:', agencySettings);
       toast({
         title: "Error",
         description: "Agency not found. Please try again.",
@@ -82,7 +82,7 @@ export const OrderForm = ({ onBack }: OrderFormProps) => {
       const { data: orderData, error: orderError } = await supabase
         .from('customer_orders')
         .insert({
-          agency_id: agencySettings.id,
+          agency_id: agencySettings.user_id,
           customer_name: formData.name,
           customer_email: formData.email,
           customer_phone: formData.phone || null,
