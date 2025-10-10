@@ -197,6 +197,7 @@ export type Database = {
         Row: {
           agency_id: string
           created_at: string | null
+          customer_company: string | null
           customer_email: string
           customer_name: string
           customer_phone: string | null
@@ -209,6 +210,7 @@ export type Database = {
         Insert: {
           agency_id: string
           created_at?: string | null
+          customer_company?: string | null
           customer_email: string
           customer_name: string
           customer_phone?: string | null
@@ -221,6 +223,7 @@ export type Database = {
         Update: {
           agency_id?: string
           created_at?: string | null
+          customer_company?: string | null
           customer_email?: string
           customer_name?: string
           customer_phone?: string | null
