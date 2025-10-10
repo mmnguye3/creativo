@@ -50,7 +50,7 @@ const SubdomainManagement = () => {
       }
 
       // Get user details and agency settings using the admin function
-      const response = await fetch(`https://tzamkhsfakswrwlhtjro.supabase.co/functions/v1/admin-list-users`, {
+      const response = await fetch(`https://ukabvhdvfajudrtqnfpm.supabase.co/functions/v1/admin-list-users`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
@@ -97,7 +97,7 @@ const SubdomainManagement = () => {
         throw new Error('No session found')
       }
 
-      const response = await fetch(`https://tzamkhsfakswrwlhtjro.supabase.co/functions/v1/admin-list-users`, {
+      const response = await fetch(`https://ukabvhdvfajudrtqnfpm.supabase.co/functions/v1/admin-list-users`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
