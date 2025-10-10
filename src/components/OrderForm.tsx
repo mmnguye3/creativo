@@ -78,20 +78,33 @@ export const OrderForm = ({ onBack }: OrderFormProps) => {
 
     setIsSubmitting(true);
     try {
+      // Debug logging
+      console.log('=== ORDER SUBMISSION DEBUG ===');
+      console.log('Full agencySettings:', agencySettings);
+      console.log('agency_id being sent:', agencySettings.user_id);
+      console.log('cart total:', cart.total);
+      console.log('form data:', formData);
+      
+      const orderPayload = {
+        agency_id: agencySettings.user_id,
+        customer_name: formData.name,
+        customer_email: formData.email,
+        customer_phone: formData.phone || null,
+        customer_company: formData.company || null,
+        total_amount: cart.total,
+        notes: formData.notes || null
+      };
+      
+      console.log('Order payload:', orderPayload);
+      
       // Create the order
       const { data: orderData, error: orderError } = await supabase
         .from('customer_orders')
-        .insert({
-          agency_id: agencySettings.user_id,
-          customer_name: formData.name,
-          customer_email: formData.email,
-          customer_phone: formData.phone || null,
-          customer_company: formData.company || null,
-          total_amount: cart.total,
-          notes: formData.notes || null
-        })
+        .insert(orderPayload)
         .select('id')
         .single();
+      
+      console.log('Order result:', { orderData, orderError });
 
       if (orderError) throw orderError;
 
