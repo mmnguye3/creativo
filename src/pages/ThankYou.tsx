@@ -13,6 +13,11 @@ const ThankYou = () => {
   const orderTotal = location.state?.orderTotal || 0;
 
   useEffect(() => {
+    // Scroll to top when page loads
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     // Wait for context to load before redirecting
     if (!loading && agencySlug && !orderTotal) {
       navigate(`/${agencySlug}`);
