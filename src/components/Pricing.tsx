@@ -27,9 +27,9 @@ const Pricing = () => {
     cta: "Contact Sales",
     popular: false
   }];
-  return <section className="py-24 bg-gradient-to-b from-indigo-50/30 via-violet-50/20 to-background relative overflow-hidden">
+  return <section className="py-24 bg-gradient-to-b from-orange-50/30 via-amber-50/20 to-background relative overflow-hidden">
       {/* Decorative underlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-100/20 via-transparent to-violet-100/20"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-100/20 via-transparent to-amber-100/20"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">

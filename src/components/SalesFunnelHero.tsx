@@ -62,7 +62,7 @@ const SalesFunnelHero = () => {
         <div className="animate-fade-in" style={{ animationDelay: '0.6s' }}>
           <Button 
             size="lg" 
-            className="text-xl px-12 py-6 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
+            className="text-xl px-12 py-6 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
             onClick={scrollToServices}
           >
             See Our Services & Pricing

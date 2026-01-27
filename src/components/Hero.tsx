@@ -49,7 +49,7 @@ const Hero = () => {
           {/* Main headline */}
           <h1 className="text-5xl md:text-7xl font-bold leading-tight text-white">
             Launch Your
-            <span className="block bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent leading-relaxed pb-2">
+            <span className="block bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent leading-relaxed pb-2">
               Design Agency
             </span>
             in Minutes

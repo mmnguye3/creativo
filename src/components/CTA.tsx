@@ -2,9 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, Users, Zap, Target } from "lucide-react";
 const CTA = () => {
-  return <section className="py-24 bg-gradient-to-b from-purple-50/30 via-blue-50/20 to-background relative overflow-hidden">
+  return <section className="py-24 bg-gradient-to-b from-orange-50/30 via-amber-50/20 to-background relative overflow-hidden">
       {/* Decorative underlay */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-black via-black/80 to-purple-600"></div>
+      <div className="absolute inset-0 bg-gradient-to-tr from-black via-black/80 to-orange-500"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <div className="bg-gradient-card border border-white/10 rounded-3xl p-12 relative overflow-hidden">
