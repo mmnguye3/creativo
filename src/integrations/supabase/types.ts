@@ -301,14 +301,8 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_valid_agency: {
-        Args: { _agency_id: string }
-        Returns: boolean
-      }
+      is_admin: { Args: never; Returns: boolean }
+      is_valid_agency: { Args: { _agency_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
