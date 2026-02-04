@@ -11,10 +11,23 @@ import {
   ShoppingBag,
   Printer,
   Presentation,
-  Layers,
   Brush,
   Play
 } from "lucide-react";
+
+// Import service images
+import socialMediaImg from "@/assets/services/social-media-graphics.jpg";
+import presentationsImg from "@/assets/services/presentations.jpg";
+import motionGraphicsImg from "@/assets/services/motion-graphics.jpg";
+import logoBrandingImg from "@/assets/services/logo-branding.jpg";
+import illustrationsImg from "@/assets/services/illustrations.jpg";
+import emailTemplatesImg from "@/assets/services/email-templates.jpg";
+import ecommerceImg from "@/assets/services/ecommerce-graphics.jpg";
+import videoEditingImg from "@/assets/services/video-editing.jpg";
+import packagingImg from "@/assets/services/packaging-design.jpg";
+import webDesignImg from "@/assets/services/web-design.jpg";
+import contentCreationImg from "@/assets/services/content-creation.jpg";
+import printDesignImg from "@/assets/services/print-design.jpg";
 
 const Services = () => {
   const services = [
@@ -23,73 +36,85 @@ const Services = () => {
       title: "Social Media Graphics",
       description: "Eye-catching social media designs that boost engagement and grow your following",
       popular: true,
-      link: "/services#social-media-graphics"
+      link: "/services#social-media-graphics",
+      image: socialMediaImg
     },
     {
       icon: Presentation,
       title: "Presentations",
       description: "Professional presentations that communicate your message clearly and effectively",
-      link: "/services#presentations"
+      link: "/services#presentations",
+      image: presentationsImg
     },
     {
       icon: Play,
       title: "Motion Graphics",
       description: "Dynamic animations and motion graphics that bring your brand to life",
-      link: "/services#motion-graphics"
+      link: "/services#motion-graphics",
+      image: motionGraphicsImg
     },
     {
       icon: Brush,
       title: "Logo & Brand Identity",
       description: "Distinctive brand identities that build recognition and trust with your audience",
-      link: "/services#logos-branding"
+      link: "/services#logos-branding",
+      image: logoBrandingImg
     },
     {
       icon: FileImage,
       title: "Custom Illustrations",
       description: "Original illustrations that tell your brand's unique story and captivate audiences",
-      link: "/services#illustrations"
+      link: "/services#illustrations",
+      image: illustrationsImg
     },
     {
       icon: Mail,
       title: "Email Templates",
       description: "Professional email designs that drive opens, clicks, and conversions",
-      link: "/services#email-templates"
+      link: "/services#email-templates",
+      image: emailTemplatesImg
     },
     {
       icon: ShoppingBag,
       title: "E-commerce Graphics",
       description: "Product images and graphics that convert browsers into buyers",
-      link: "/services#ecommerce-graphics"
+      link: "/services#ecommerce-graphics",
+      image: ecommerceImg
     },
     {
       icon: Video,
       title: "Video Editing",
       description: "Professional video editing that engages viewers and drives action",
-      link: "/services#video-editing"
+      link: "/services#video-editing",
+      image: videoEditingImg
     },
     {
       icon: Package,
       title: "Packaging Design",
       description: "Product packaging that stands out on shelves and drives sales",
-      link: "/services#packaging"
+      link: "/services#packaging",
+      image: packagingImg
     },
     {
       icon: Monitor,
       title: "Web Design",
       description: "Modern, responsive websites that convert visitors into customers",
-      link: "/services#website-design"
+      link: "/services#website-design",
+      image: webDesignImg
     },
     {
       icon: Video,
       title: "Content Creation",
       description: "Engaging visual content for all your marketing channels",
-      link: "/services#content-creation"
+      link: "/services#content-creation",
+      image: contentCreationImg
     },
     {
       icon: Printer,
       title: "Print Design",
       description: "High-impact print materials that make lasting impressions",
-      link: "/services#print-design"
+      link: "/services#print-design",
+      image: printDesignImg
     },
   ];
 
@@ -111,18 +136,27 @@ const Services = () => {
           {services.map((service, index) => (
             <Card 
               key={index} 
-              className={`bg-gradient-to-br from-gray-900/95 via-black/90 to-gray-800/95 border-gray-700/50 hover:border-orange-500/40 transition-all duration-500 hover:shadow-card group relative hover-lift animate-fade-in-up text-white hover:scale-110 hover:z-20 hover:-translate-y-2 hover:rotate-1 ${
+              className={`bg-gradient-to-br from-gray-900/95 via-black/90 to-gray-800/95 border-gray-700/50 hover:border-orange-500/40 transition-all duration-500 hover:shadow-card group relative hover-lift animate-fade-in-up text-white hover:scale-105 hover:z-20 hover:-translate-y-2 overflow-hidden ${
                 service.popular ? 'ring-2 ring-orange-500/50 animate-pulse-glow bg-gradient-to-br from-gray-800/95 via-black/90 to-orange-900/30' : ''
               }`}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {service.popular && (
-                <div className="absolute -top-3 left-4">
+                <div className="absolute -top-3 left-4 z-10">
                   <div className="bg-gradient-primary text-white px-3 py-1 rounded-full text-xs">
                     Most Popular
                   </div>
                 </div>
               )}
+              {/* Service Image */}
+              <div className="relative h-40 overflow-hidden">
+                <img 
+                  src={service.image} 
+                  alt={service.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent"></div>
+              </div>
               <CardContent className="p-6">
                 <div className="mb-4">
                   <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
