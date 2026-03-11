@@ -122,6 +122,7 @@ const Resources = () => {
     {
       id: 8,
       title: "Building a Profitable Design Subscription Model",
+      slug: "building-profitable-design-subscription-model",
       description: "Learn how to create recurring revenue with design subscription services.",
       category: "Business Growth",
       type: "Video",
