@@ -21,6 +21,7 @@ import {
 const Resources = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const navigate = useNavigate();
 
   const categories = ["All", "Getting Started", "Design Tips", "Business Growth", "Marketing", "Case Studies"];
 
