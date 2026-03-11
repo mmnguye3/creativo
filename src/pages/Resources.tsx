@@ -242,7 +242,7 @@ const Resources = () => {
                       <span>{resource.date}</span>
                     </div>
                     
-                    <Button className="w-full group">
+                    <Button className="w-full group" onClick={() => navigate(`/resources/${resource.slug}`)}>
                       {resource.type === "Template" ? "Download" : "Read More"}
                       <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
