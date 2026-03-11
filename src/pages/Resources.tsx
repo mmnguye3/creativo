@@ -29,6 +29,7 @@ const Resources = () => {
     {
       id: 1,
       title: "Complete Guide to Starting a Design Agency",
+      slug: "complete-guide-starting-design-agency",
       description: "Everything you need to know about launching and scaling a successful design agency from scratch.",
       category: "Getting Started",
       type: "Guide",
