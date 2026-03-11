@@ -109,6 +109,7 @@ const Resources = () => {
     {
       id: 7,
       title: "UX/UI Design Best Practices for 2025",
+      slug: "ux-ui-design-best-practices-2025",
       description: "Essential principles and practices for creating exceptional user experiences.",
       category: "Design Tips",
       type: "Article",
