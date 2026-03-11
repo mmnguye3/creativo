@@ -43,6 +43,7 @@ const Resources = () => {
     {
       id: 2,
       title: "10 Design Trends That Will Dominate 2025",
+      slug: "10-design-trends-2025",
       description: "Stay ahead of the curve with these emerging design trends that will shape the industry.",
       category: "Design Tips",
       type: "Article",
