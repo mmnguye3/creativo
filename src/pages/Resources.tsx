@@ -82,6 +82,7 @@ const Resources = () => {
     {
       id: 5,
       title: "Social Media Marketing for Design Agencies",
+      slug: "social-media-marketing-design-agencies",
       description: "Proven strategies to build your agency's presence and attract clients through social media.",
       category: "Marketing",
       type: "Guide",
