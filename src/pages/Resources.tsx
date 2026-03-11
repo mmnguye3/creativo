@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +21,7 @@ import {
 const Resources = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const navigate = useNavigate();
 
   const categories = ["All", "Getting Started", "Design Tips", "Business Growth", "Marketing", "Case Studies"];
 
@@ -27,6 +29,7 @@ const Resources = () => {
     {
       id: 1,
       title: "Complete Guide to Starting a Design Agency",
+      slug: "complete-guide-starting-design-agency",
       description: "Everything you need to know about launching and scaling a successful design agency from scratch.",
       category: "Getting Started",
       type: "Guide",
@@ -40,6 +43,7 @@ const Resources = () => {
     {
       id: 2,
       title: "10 Design Trends That Will Dominate 2025",
+      slug: "10-design-trends-2025",
       description: "Stay ahead of the curve with these emerging design trends that will shape the industry.",
       category: "Design Tips",
       type: "Article",
@@ -52,6 +56,7 @@ const Resources = () => {
     {
       id: 3,
       title: "How to Price Your Design Services",
+      slug: "how-to-price-design-services",
       description: "A comprehensive guide to pricing strategies that will help you maximize revenue and profit.",
       category: "Business Growth",
       type: "Video",
@@ -64,6 +69,7 @@ const Resources = () => {
     {
       id: 4,
       title: "Client Onboarding Template Pack",
+      slug: "client-onboarding-template-pack",
       description: "Ready-to-use templates for streamlining your client onboarding process.",
       category: "Getting Started",
       type: "Template",
@@ -76,6 +82,7 @@ const Resources = () => {
     {
       id: 5,
       title: "Social Media Marketing for Design Agencies",
+      slug: "social-media-marketing-design-agencies",
       description: "Proven strategies to build your agency's presence and attract clients through social media.",
       category: "Marketing",
       type: "Guide",
@@ -88,6 +95,7 @@ const Resources = () => {
     {
       id: 6,
       title: "From $0 to $100K: A Design Agency Success Story",
+      slug: "design-agency-success-story",
       description: "How one agency grew from startup to six figures using our white-label platform.",
       category: "Case Studies",
       type: "Case Study",
@@ -101,6 +109,7 @@ const Resources = () => {
     {
       id: 7,
       title: "UX/UI Design Best Practices for 2025",
+      slug: "ux-ui-design-best-practices-2025",
       description: "Essential principles and practices for creating exceptional user experiences.",
       category: "Design Tips",
       type: "Article",
@@ -113,6 +122,7 @@ const Resources = () => {
     {
       id: 8,
       title: "Building a Profitable Design Subscription Model",
+      slug: "building-profitable-design-subscription-model",
       description: "Learn how to create recurring revenue with design subscription services.",
       category: "Business Growth",
       type: "Video",
@@ -232,7 +242,7 @@ const Resources = () => {
                       <span>{resource.date}</span>
                     </div>
                     
-                    <Button className="w-full group">
+                    <Button className="w-full group" onClick={() => navigate(`/resources/${resource.slug}`)}>
                       {resource.type === "Template" ? "Download" : "Read More"}
                       <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
@@ -295,7 +305,7 @@ const Resources = () => {
                     <span>{resource.date}</span>
                   </div>
                   
-                  <Button variant="outline" size="sm" className="w-full group">
+                  <Button variant="outline" size="sm" className="w-full group" onClick={() => navigate(`/resources/${resource.slug}`)}>
                     {resource.type === "Template" ? "Download" : "Read More"}
                     <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                   </Button>

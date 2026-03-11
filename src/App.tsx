@@ -10,6 +10,7 @@ import Pricing from "@/pages/PricingPage";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Resources from "@/pages/Resources";
+import ResourceDetail from "@/pages/ResourceDetail";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
 import Auth from "@/pages/Auth";
@@ -42,6 +43,7 @@ const AppContent = () => {
         <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
         <Route path="resources" element={<Resources />} />
+        <Route path="resources/:slug" element={<ResourceDetail />} />
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
         <Route path="terms-of-service" element={<TermsOfService />} />
       </Route>
