@@ -56,6 +56,7 @@ const Resources = () => {
     {
       id: 3,
       title: "How to Price Your Design Services",
+      slug: "how-to-price-design-services",
       description: "A comprehensive guide to pricing strategies that will help you maximize revenue and profit.",
       category: "Business Growth",
       type: "Video",
