@@ -10,6 +10,7 @@ import Pricing from "@/pages/PricingPage";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Resources from "@/pages/Resources";
+import ResourceDetail from "@/pages/ResourceDetail";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
 import Auth from "@/pages/Auth";
