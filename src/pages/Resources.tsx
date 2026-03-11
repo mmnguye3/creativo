@@ -305,7 +305,7 @@ const Resources = () => {
                     <span>{resource.date}</span>
                   </div>
                   
-                  <Button variant="outline" size="sm" className="w-full group">
+                  <Button variant="outline" size="sm" className="w-full group" onClick={() => navigate(`/resources/${resource.slug}`)}>
                     {resource.type === "Template" ? "Download" : "Read More"}
                     <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                   </Button>
