@@ -69,6 +69,7 @@ const Resources = () => {
     {
       id: 4,
       title: "Client Onboarding Template Pack",
+      slug: "client-onboarding-template-pack",
       description: "Ready-to-use templates for streamlining your client onboarding process.",
       category: "Getting Started",
       type: "Template",
