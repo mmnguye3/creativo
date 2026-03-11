@@ -95,6 +95,7 @@ const Resources = () => {
     {
       id: 6,
       title: "From $0 to $100K: A Design Agency Success Story",
+      slug: "design-agency-success-story",
       description: "How one agency grew from startup to six figures using our white-label platform.",
       category: "Case Studies",
       type: "Case Study",
