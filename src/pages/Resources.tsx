@@ -150,8 +150,8 @@ const Resources = () => {
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-hero">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Resource <span className="text-primary-foreground">Center</span>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">
+            Resource Center
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
             Guides, tutorials, and resources to help you build and grow a successful design agency.
