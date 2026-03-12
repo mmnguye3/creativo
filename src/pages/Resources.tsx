@@ -201,34 +201,44 @@ const Resources = () => {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {featuredResources.map((resource) => (
-                <Card key={resource.id} className="hover-lift bg-gradient-card border-white/10 border-2 border-primary/20">
-                  <CardHeader>
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
-                          <resource.icon className="w-5 h-5 text-white" />
-                        </div>
-                        <div>
-                          <Badge variant="secondary">{resource.type}</Badge>
-                          <Badge className="ml-2">Featured</Badge>
-                        </div>
+              {featuredResources.map((resource) => {
+                const heroImage = resourceData[resource.slug]?.heroImage;
+                return (
+                <Card key={resource.id} className="hover-lift bg-gradient-card border-white/10 border-2 border-primary/20 overflow-hidden group cursor-pointer" onClick={() => navigate(`/resources/${resource.slug}`)}>
+                  {heroImage && (
+                    <div className="relative h-56 overflow-hidden">
+                      <img
+                        src={heroImage}
+                        alt={resource.title}
+                        className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute top-3 left-3 flex gap-2">
+                        <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm">{resource.type}</Badge>
+                        <Badge className="bg-primary/90 backdrop-blur-sm">Featured</Badge>
                       </div>
                     </div>
+                  )}
+                  <CardHeader className={heroImage ? "pt-5" : ""}>
+                    {!heroImage && (
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
+                            <resource.icon className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <Badge variant="secondary">{resource.type}</Badge>
+                            <Badge className="ml-2">Featured</Badge>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     <CardTitle className="text-xl">{resource.title}</CardTitle>
                     <CardDescription className="text-base">
                       {resource.description}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {resource.tags.map((tag, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                    
                     <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-1">
@@ -243,13 +253,14 @@ const Resources = () => {
                       <span>{resource.date}</span>
                     </div>
                     
-                    <Button className="w-full group" onClick={() => navigate(`/resources/${resource.slug}`)}>
+                    <Button className="w-full group/btn">
                       {resource.type === "Template" ? "Download" : "Read More"}
-                      <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      <ExternalLink className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                     </Button>
                   </CardContent>
                 </Card>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
