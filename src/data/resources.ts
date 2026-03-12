@@ -1025,7 +1025,7 @@ export const resources: Record<string, ResourceData> = {
     author: "David Kim",
     date: "Nov 30, 2024",
     tags: ["UX", "UI", "Best Practices"],
-    heroImage: "/src/assets/resources/ux-ui-best-practices-hero.jpg",
+    heroImage: uxUiBestPracticesHero,
     content: `
 <p>In 2025, <strong>user experience isn't a nice-to-have — it's the product</strong>. Users abandon apps within 3 seconds if the interface is confusing. They delete apps after one bad experience. And they'll pay premium prices for products that feel effortless to use.</p>
 
