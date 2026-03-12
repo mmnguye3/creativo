@@ -723,7 +723,7 @@ export const resources: Record<string, ResourceData> = {
 
 <h2>2. Onboarding Questionnaire</h2>
 
-<p>This questionnaire replaces the back-and-forth of "what do you need?" emails. Send it as a <strong>Typeform, Google Form, or Notion doc</strong> — anything the client can fill out asynchronously.</p>
+<p>This questionnaire replaces the back-and-forth of "what do you need?" emails. Cretivo's platform includes a built-in intake form system that clients can fill out directly from your branded portal.</p>
 
 <h3>Project Overview</h3>
 <ul>
