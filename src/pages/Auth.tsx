@@ -16,6 +16,8 @@ const Auth = () => {
   const [lastName, setLastName] = useState('');
   const [company, setCompany] = useState('');
   const [loading, setLoading] = useState(false);
+  const [forgotPassword, setForgotPassword] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   
   const { signIn, signUp, user } = useAuth();
   const { toast } = useToast();
