@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -15,6 +16,8 @@ const Auth = () => {
   const [lastName, setLastName] = useState('');
   const [company, setCompany] = useState('');
   const [loading, setLoading] = useState(false);
+  const [forgotPassword, setForgotPassword] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   
   const { signIn, signUp, user } = useAuth();
   const { toast } = useToast();
@@ -148,6 +151,49 @@ const Auth = () => {
                 {loading ? 'Loading...' : (isLogin ? 'Sign In' : 'Sign Up')}
               </Button>
             </form>
+
+            {isLogin && !forgotPassword && (
+              <button
+                type="button"
+                onClick={() => setForgotPassword(true)}
+                className="w-full text-sm text-muted-foreground hover:text-primary mt-3 text-center"
+              >
+                Forgot your password?
+              </button>
+            )}
+
+            {forgotPassword && (
+              <div className="mt-4 space-y-3 border-t pt-4">
+                <p className="text-sm text-muted-foreground">Enter your email above and click below to receive a reset link.</p>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  disabled={resetLoading || !email}
+                  onClick={async () => {
+                    setResetLoading(true);
+                    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                      redirectTo: `${window.location.origin}/reset-password`,
+                    });
+                    setResetLoading(false);
+                    if (error) {
+                      toast({ title: "Error", description: error.message, variant: "destructive" });
+                    } else {
+                      toast({ title: "Check your email", description: "We've sent you a password reset link." });
+                      setForgotPassword(false);
+                    }
+                  }}
+                >
+                  {resetLoading ? 'Sending...' : 'Send Reset Link'}
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => setForgotPassword(false)}
+                  className="w-full text-sm text-muted-foreground hover:text-primary"
+                >
+                  Back to sign in
+                </button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
