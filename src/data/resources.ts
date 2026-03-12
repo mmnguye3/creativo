@@ -278,7 +278,7 @@ export const resources: Record<string, ResourceData> = {
     author: "Sarah Rodriguez",
     date: "Dec 12, 2024",
     tags: ["Trends", "Design", "2025"],
-    heroImage: "/src/assets/resources/design-trends-2025-hero.jpg",
+    heroImage: designTrends2025Hero,
     content: `
 <p>Design moves fast. What felt cutting-edge twelve months ago can look dated today. For agencies and freelancers, staying ahead of visual trends isn't just about aesthetics — it's about <strong>winning clients, commanding higher rates, and positioning yourself as a forward-thinking partner</strong>.</p>
 
