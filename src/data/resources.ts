@@ -7,6 +7,7 @@ export interface ResourceData {
   author: string;
   date: string;
   tags: string[];
+  heroImage?: string;
   content: string;
 }
 
