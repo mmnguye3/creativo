@@ -716,14 +716,14 @@ export const resources: Record<string, ResourceData> = {
 
 <div class="article-callout">
   <div class="article-callout-title">💡 Customization Tip</div>
-  <p>Send this email within 1 hour of contract signing. Speed signals professionalism. Automate it with tools like <strong>Zapier + Gmail</strong> or <strong>HubSpot sequences</strong> so it fires automatically when a deal closes.</p>
+  <p>Send this email within 1 hour of contract signing. Speed signals professionalism. With Cretivo's built-in automation, this email fires automatically when a new client signs up — no manual effort required.</p>
 </div>
 
 <div class="article-divider"><div class="article-divider-icon">✦</div></div>
 
 <h2>2. Onboarding Questionnaire</h2>
 
-<p>This questionnaire replaces the back-and-forth of "what do you need?" emails. Send it as a <strong>Typeform, Google Form, or Notion doc</strong> — anything the client can fill out asynchronously.</p>
+<p>This questionnaire replaces the back-and-forth of "what do you need?" emails. Cretivo's platform includes a built-in intake form system that clients can fill out directly from your branded portal.</p>
 
 <h3>Project Overview</h3>
 <ul>
@@ -760,15 +760,15 @@ export const resources: Record<string, ResourceData> = {
 </ul>
 
 <div class="article-callout">
-  <div class="article-callout-title">🛠 Recommended Tool</div>
-  <p>Build this as a <strong>Typeform</strong> or <strong>Tally form</strong> with conditional logic. If they say "No brand guidelines," automatically show a section asking about preferred colors and fonts. It keeps the form short and relevant.</p>
+  <div class="article-callout-title">🛠 Built Into Cretivo</div>
+  <p>Your Cretivo dashboard includes a <strong>customizable onboarding questionnaire</strong> with conditional logic built right in. Clients fill it out from your branded portal — no third-party forms needed. Responses are automatically linked to their project.</p>
 </div>
 
 <div class="article-divider"><div class="article-divider-icon">✦</div></div>
 
 <h2>3. Project Timeline / Roadmap</h2>
 
-<p>A clear timeline prevents scope creep and keeps everyone accountable. Share this as a visual roadmap (Notion, Asana, or a simple PDF).</p>
+<p>A clear timeline prevents scope creep and keeps everyone accountable. Cretivo's project dashboard displays your roadmap visually so both you and your client can track progress in real time.</p>
 
 <table>
   <thead>
@@ -807,7 +807,7 @@ export const resources: Record<string, ResourceData> = {
   <li>Total project fee: <strong>{{TOTAL_FEE}}</strong></li>
   <li>50% deposit due upon signing ({{DEPOSIT_AMOUNT}})</li>
   <li>50% balance due upon final delivery</li>
-  <li>Payment method: Bank transfer / Stripe / PayPal</li>
+  <li>Payment is processed securely through your Cretivo dashboard</li>
   <li>Late payments incur a 5% monthly fee after 14 days overdue</li>
 </ul>
 
@@ -832,8 +832,8 @@ export const resources: Record<string, ResourceData> = {
 </ul>
 
 <div class="article-callout">
-  <div class="article-callout-title">⚖️ Legal Tip</div>
-  <p>Use <strong>HelloSign</strong>, <strong>DocuSign</strong>, or <strong>PandaDoc</strong> for e-signatures. They're legally binding, professional, and let you track when documents are viewed and signed. Never start work without a signed agreement.</p>
+  <div class="article-callout-title">⚖️ Built Into Cretivo</div>
+  <p>Cretivo's platform includes <strong>built-in contract management and e-signatures</strong>. Clients can review and sign agreements directly from your branded portal — no third-party tools needed. You'll be notified instantly when documents are signed.</p>
 </div>
 
 <div class="article-divider"><div class="article-divider-icon">✦</div></div>
@@ -850,7 +850,7 @@ export const resources: Record<string, ResourceData> = {
     <tr><td>0–5 min</td><td><strong>Introductions</strong></td><td>Team intros, roles, and responsibilities</td></tr>
     <tr><td>5–10 min</td><td><strong>Project Overview</strong></td><td>Review questionnaire answers, confirm goals and scope</td></tr>
     <tr><td>10–15 min</td><td><strong>Timeline Review</strong></td><td>Walk through the project roadmap and key milestones</td></tr>
-    <tr><td>15–20 min</td><td><strong>Communication Setup</strong></td><td>Agree on tools (Slack, email, portal), response times, and feedback format</td></tr>
+    <tr><td>15–20 min</td><td><strong>Communication Setup</strong></td><td>Walk through your Cretivo client portal, response times, and feedback format</td></tr>
     <tr><td>20–25 min</td><td><strong>Q&A</strong></td><td>Address any client questions or concerns</td></tr>
     <tr><td>25–30 min</td><td><strong>Next Steps</strong></td><td>Confirm first milestone, assign action items, set next check-in</td></tr>
   </tbody>
@@ -893,12 +893,12 @@ export const resources: Record<string, ResourceData> = {
 <ul>
   <li>☐ Confirm primary decision-maker for approvals</li>
   <li>☐ Confirm feedback turnaround time (we recommend 48 hours)</li>
-  <li>☐ Agree on feedback format (annotated screenshots, Loom videos, or written comments)</li>
+  <li>☐ Agree on feedback format (annotated screenshots, video walkthroughs, or written comments)</li>
 </ul>
 
 <div class="article-callout">
-  <div class="article-callout-title">📁 Pro Tip</div>
-  <p>Create a shared <strong>Google Drive</strong> or <strong>Dropbox folder</strong> with pre-labeled subfolders: "Logo Files," "Brand Guidelines," "Content," "Photography." Send the link with this checklist — clients are 3× more likely to provide assets when they have a clear place to upload them.</p>
+  <div class="article-callout-title">📁 Built Into Cretivo</div>
+  <p>Your Cretivo client portal includes a <strong>branded file upload area</strong> with pre-labeled categories for logos, brand guidelines, content, and photography. Clients upload directly to their project — everything stays organized and accessible to your design team automatically.</p>
 </div>
 
 <div class="article-divider"><div class="article-divider-icon">✦</div></div>
@@ -922,8 +922,8 @@ export const resources: Record<string, ResourceData> = {
 </blockquote>
 
 <div class="article-callout">
-  <div class="article-callout-title">⚡ Automation Tip</div>
-  <p>Use <strong>Notion</strong> or <strong>ClickUp</strong> to auto-generate weekly reports from your task boards. If tasks are tracked properly, the report practically writes itself. Pair with <strong>Loom</strong> for a 2-minute video walkthrough — clients love seeing work in motion.</p>
+  <div class="article-callout-title">⚡ Built Into Cretivo</div>
+  <p>Cretivo <strong>auto-generates weekly progress reports</strong> from your active task boards. Clients can view updates directly in their portal, and you can add a quick video walkthrough with one click. No manual report writing needed.</p>
 </div>
 
 <div class="article-divider"><div class="article-divider-icon">✦</div></div>
@@ -972,27 +972,27 @@ export const resources: Record<string, ResourceData> = {
   <ol>
     <li><strong>Customize the placeholders.</strong> Replace all {{PLACEHOLDER}} values with your agency's information, branding, and policies.</li>
     <li><strong>Brand the documents.</strong> Add your logo, colors, and fonts to each template for a cohesive, professional look.</li>
-    <li><strong>Build automations.</strong> Set up Zapier or Make workflows to auto-send the welcome email and questionnaire when a contract is signed.</li>
-    <li><strong>Create a shared workspace.</strong> Store all templates in a central location (Notion, Google Drive) so your team can access and use them consistently.</li>
+    <li><strong>Set up your Cretivo portal.</strong> Most of these templates are already built into your Cretivo dashboard — customize them from your agency settings to match your brand.</li>
+    <li><strong>Let the platform work for you.</strong> Cretivo handles onboarding flows, task scheduling, payments, and client communication automatically — so you can focus on design.</li>
     <li><strong>Iterate and improve.</strong> After every project, review what worked and what didn't. Update your templates quarterly based on client feedback.</li>
   </ol>
 </div>
 
-<h3>Recommended Tool Stack</h3>
+<h3>What's Built Into Cretivo</h3>
 
 <table>
   <thead>
-    <tr><th>Purpose</th><th>Tool</th><th>Why</th></tr>
+    <tr><th>Feature</th><th>Cretivo Handles It</th><th>How</th></tr>
   </thead>
   <tbody>
-    <tr><td>Forms & Questionnaires</td><td><strong>Typeform / Tally</strong></td><td>Beautiful, conditional logic, easy to analyze</td></tr>
-    <tr><td>Contracts & E-signatures</td><td><strong>PandaDoc / HelloSign</strong></td><td>Professional, legally binding, trackable</td></tr>
-    <tr><td>Project Management</td><td><strong>Asana / ClickUp / Notion</strong></td><td>Task tracking, timelines, client portals</td></tr>
-    <tr><td>Communication</td><td><strong>Slack / Email</strong></td><td>Organized threads, searchable history</td></tr>
-    <tr><td>File Sharing</td><td><strong>Google Drive / Dropbox</strong></td><td>Organized folders, easy client access</td></tr>
-    <tr><td>Video Updates</td><td><strong>Loom</strong></td><td>Quick walkthroughs, async communication</td></tr>
-    <tr><td>Invoicing</td><td><strong>Stripe / FreshBooks</strong></td><td>Automated billing, professional invoices</td></tr>
-    <tr><td>Scheduling</td><td><strong>Calendly / Cal.com</strong></td><td>Eliminates scheduling back-and-forth</td></tr>
+    <tr><td>Forms & Questionnaires</td><td><strong>✅ Built-in</strong></td><td>Customizable intake forms in your branded portal</td></tr>
+    <tr><td>Contracts & E-signatures</td><td><strong>✅ Built-in</strong></td><td>Send, track, and sign agreements from your dashboard</td></tr>
+    <tr><td>Project Management</td><td><strong>✅ Built-in</strong></td><td>Task boards, timelines, and milestone tracking</td></tr>
+    <tr><td>Client Communication</td><td><strong>✅ Built-in</strong></td><td>Branded client portal with messaging and updates</td></tr>
+    <tr><td>File Sharing</td><td><strong>✅ Built-in</strong></td><td>Organized file uploads and deliverable sharing</td></tr>
+    <tr><td>Invoicing & Payments</td><td><strong>✅ Built-in</strong></td><td>Automated billing and secure payment processing</td></tr>
+    <tr><td>Scheduling</td><td><strong>✅ Built-in</strong></td><td>Integrated task scheduling and calendar management</td></tr>
+    <tr><td>Progress Reports</td><td><strong>✅ Built-in</strong></td><td>Auto-generated weekly updates from your task boards</td></tr>
   </tbody>
 </table>
 
