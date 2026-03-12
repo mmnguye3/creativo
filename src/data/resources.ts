@@ -850,7 +850,7 @@ export const resources: Record<string, ResourceData> = {
     <tr><td>0–5 min</td><td><strong>Introductions</strong></td><td>Team intros, roles, and responsibilities</td></tr>
     <tr><td>5–10 min</td><td><strong>Project Overview</strong></td><td>Review questionnaire answers, confirm goals and scope</td></tr>
     <tr><td>10–15 min</td><td><strong>Timeline Review</strong></td><td>Walk through the project roadmap and key milestones</td></tr>
-    <tr><td>15–20 min</td><td><strong>Communication Setup</strong></td><td>Agree on tools (Slack, email, portal), response times, and feedback format</td></tr>
+    <tr><td>15–20 min</td><td><strong>Communication Setup</strong></td><td>Walk through your Cretivo client portal, response times, and feedback format</td></tr>
     <tr><td>20–25 min</td><td><strong>Q&A</strong></td><td>Address any client questions or concerns</td></tr>
     <tr><td>25–30 min</td><td><strong>Next Steps</strong></td><td>Confirm first milestone, assign action items, set next check-in</td></tr>
   </tbody>
