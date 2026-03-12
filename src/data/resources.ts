@@ -264,14 +264,165 @@ export const resources: Record<string, ResourceData> = {
   },
   "10-design-trends-2025": {
     title: "10 Design Trends That Will Dominate 2025",
-    metaDescription: "Discover the top 10 design trends shaping 2025, from AI-assisted design to neo-brutalism and beyond.",
+    metaDescription: "Discover the top 10 design trends shaping 2025 — from AI-assisted tools and bold maximalism to glassmorphism, micro-animations, and sustainable design. Stay ahead of the curve.",
     category: "Design Tips",
     type: "Article",
     readTime: "8 min read",
     author: "Sarah Rodriguez",
     date: "Dec 12, 2024",
     tags: ["Trends", "Design", "2025"],
-    content: "Content coming soon..."
+    heroImage: "/src/assets/resources/design-trends-2025-hero.jpg",
+    content: `
+<p>Design moves fast. What felt cutting-edge twelve months ago can look dated today. For agencies and freelancers, staying ahead of visual trends isn't just about aesthetics — it's about <strong>winning clients, commanding higher rates, and positioning yourself as a forward-thinking partner</strong>.</p>
+
+<p>In 2025, we're seeing a fascinating collision of technology and artistry. AI is reshaping workflows, bold visual choices are replacing safe corporate minimalism, and users expect richer, more immersive digital experiences than ever before.</p>
+
+<div class="article-stat-grid">
+  <div class="article-stat-card">
+    <span class="article-stat-value">78%</span>
+    <span class="article-stat-label">Designers Using AI Tools</span>
+  </div>
+  <div class="article-stat-card">
+    <span class="article-stat-value">2.5x</span>
+    <span class="article-stat-label">Faster Trend Cycles vs. 2020</span>
+  </div>
+  <div class="article-stat-card">
+    <span class="article-stat-value">$250B+</span>
+    <span class="article-stat-label">Global Digital Design Market</span>
+  </div>
+</div>
+
+<p>Here are the <strong>10 design trends</strong> that will define 2025 — and how your agency can leverage each one.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>1. AI-Assisted Design Tools</h2>
+
+<p>AI has graduated from novelty to necessity. In 2025, tools like Midjourney, Adobe Firefly, and Figma's AI features are embedded into everyday design workflows. Designers use AI for <strong>rapid concept generation, background removal, layout suggestions, and copywriting</strong> — not to replace creativity, but to accelerate it.</p>
+
+<p>The agencies winning right now aren't the ones ignoring AI. They're the ones using it to deliver first drafts in hours instead of days, then layering human craft and strategic thinking on top.</p>
+
+<div class="article-callout">
+  <div class="article-callout-title">💡 How to Implement</div>
+  <p>Integrate AI into your ideation phase. Use it for mood boards, color palette exploration, and initial mockups. Always refine outputs with human judgment — clients can tell the difference.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>2. Bold Typography & Maximalism</h2>
+
+<p>The era of whisper-thin sans-serifs and muted palettes is fading. In 2025, brands are embracing <strong>oversized type, expressive serifs, clashing colors, and layered compositions</strong>. Think editorial magazine spreads brought to the web.</p>
+
+<p>Maximalism isn't chaos — it's controlled intensity. The best maximalist designs use a clear visual hierarchy to guide the eye through dense, vibrant layouts. Imagine a homepage where a 200px serif headline dominates the viewport, anchored by a single bold accent color and generous whitespace beneath.</p>
+
+<div class="article-pullquote">Maximalism isn't chaos — it's controlled intensity with a clear visual hierarchy.</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>3. Glassmorphism Evolution</h2>
+
+<p>Glassmorphism — frosted glass effects with transparency, blur, and subtle borders — has matured from a fleeting trend into a refined design language. In 2025, we're seeing it combined with <strong>layered depth, gradient backgrounds, and floating card interfaces</strong>.</p>
+
+<p>Picture a dashboard where semi-transparent panels float over a rich gradient mesh background, each card revealing a hint of the layers beneath. It creates a sense of depth and sophistication that flat design simply can't match.</p>
+
+<div class="article-callout">
+  <div class="article-callout-title">🎯 Implementation Tip</div>
+  <p>Use CSS <code>backdrop-filter: blur()</code> with subtle border opacity. Pair with a vibrant background gradient to make the glass effect truly shine. Test performance on lower-end devices — blur effects can be GPU-intensive.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>4. Micro-Animations & Micro-Interactions</h2>
+
+<p>Static interfaces feel lifeless in 2025. Users expect <strong>hover states that respond, buttons that breathe, and page transitions that flow</strong>. Micro-animations — small, purposeful motion design — add polish and communicative clarity to every interaction.</p>
+
+<p>A submit button that morphs into a checkmark. A card that tilts subtly on hover. A navigation menu that slides in with staggered delays. These details separate professional-grade design from templates.</p>
+
+<p>Tools like <strong>Framer Motion, Lottie, and GSAP</strong> make implementation accessible. The key is restraint — every animation should serve a purpose, whether it's providing feedback, guiding attention, or reinforcing brand personality.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>5. 3D Elements & Immersive Web Experiences</h2>
+
+<p>WebGL and Three.js have matured to the point where <strong>3D elements are no longer reserved for tech demos</strong>. Product pages feature rotatable 3D models. Landing pages use parallax depth with layered 3D scenes. Portfolio sites employ immersive scroll-driven experiences.</p>
+
+<p>The barrier to entry has dropped dramatically. Libraries like Spline and React Three Fiber let designers create 3D web experiences without deep graphics programming knowledge. Expect to see more agencies offering immersive web design as a premium service tier.</p>
+
+<div class="article-pullquote">3D web experiences have moved from tech demos to mainstream client deliverables.</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>6. Sustainable & Eco-Friendly Design</h2>
+
+<p>Sustainability has moved from buzzword to business imperative. In design, this manifests as <strong>lighter websites (fewer HTTP requests, optimized assets), earth-toned palettes, organic shapes, and brands that communicate environmental responsibility</strong> through their visual identity.</p>
+
+<p>A sustainable design approach means fewer unnecessary animations, optimized images, efficient code, and thoughtful use of color that reduces screen energy consumption. Dark color schemes, for instance, use less energy on OLED displays.</p>
+
+<div class="article-callout">
+  <div class="article-callout-title">🌱 Eco-Design Checklist</div>
+  <p>Compress all images (WebP format), minimize JavaScript bundles, use system fonts where possible, implement lazy loading, and audit your site's carbon footprint with tools like Website Carbon Calculator.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>7. Dark Mode as Default</h2>
+
+<p>Dark mode is no longer an afterthought toggle — it's increasingly the <strong>primary design context</strong>. Users prefer it for reduced eye strain, battery savings, and sheer visual elegance. In 2025, many brands are designing dark-first and adapting to light mode as the alternate.</p>
+
+<p>Designing for dark mode requires more than inverting colors. Contrast ratios, shadow behavior, image treatment, and text readability all shift. Successful dark interfaces use <strong>subtle elevation cues, muted accent colors, and careful typography weight</strong> to maintain hierarchy.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>8. Voice UI & Conversational Interfaces</h2>
+
+<p>With smart speakers in over 40% of US households and voice search growing steadily, <strong>designing for voice interactions</strong> is no longer optional for forward-thinking agencies. Voice UI (VUI) requires a fundamentally different design approach — no visual layout, no color, just words and timing.</p>
+
+<p>On the web, conversational interfaces manifest as sophisticated chatbots, voice-enabled search, and AI assistants embedded directly into products. The visual design challenge is creating interfaces that seamlessly blend traditional UI with conversational flows.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>9. Personalized Design at Scale</h2>
+
+<p>Generic one-size-fits-all interfaces are losing ground to <strong>dynamically personalized experiences</strong>. Using data and AI, brands now serve different layouts, content hierarchies, and visual treatments based on user behavior, preferences, and context.</p>
+
+<p>Think e-commerce sites that rearrange their homepage based on browsing history, or SaaS dashboards that adapt their layout to usage patterns. For agencies, this means designing <strong>flexible component systems</strong> rather than fixed page layouts — modular pieces that can be rearranged programmatically.</p>
+
+<div class="article-pullquote">Design systems are evolving from static component libraries into dynamic, context-aware frameworks.</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>10. Minimalism with Purpose</h2>
+
+<p>Minimalism isn't dead — it's evolved. The stripped-down, generic minimalism of the 2010s is being replaced by <strong>intentional minimalism</strong>, where every element earns its place. There's no decoration for decoration's sake, but there's also no fear of bold choices.</p>
+
+<p>Purposeful minimalism means a single striking typeface instead of a type system, one accent color used with precision, and generous whitespace that gives content room to breathe. It's the design equivalent of a perfectly tailored suit — simple, but unmistakably crafted.</p>
+
+<div class="article-callout">
+  <div class="article-callout-title">📌 Key Distinction</div>
+  <p>Old minimalism = removing everything. New minimalism = keeping only what's powerful. Every pixel should justify its existence.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Preparing Your Agency for 2025</h2>
+
+<p>Trends are tools, not rules. The agencies that thrive are the ones that <strong>selectively adopt trends</strong> based on their clients' industries, audiences, and business goals — not the ones chasing every new aesthetic.</p>
+
+<div class="article-key-takeaway">
+  <div class="article-key-takeaway-title">🚀 Your 2025 Trend Action Plan</div>
+  <ol>
+    <li>Audit your current portfolio — does it reflect 2025 aesthetics or 2022?</li>
+    <li>Integrate at least one AI tool into your workflow this month</li>
+    <li>Build a dark-mode-first project to develop your skills</li>
+    <li>Experiment with micro-animations using Framer Motion or GSAP</li>
+    <li>Create case studies showcasing trend-forward work to attract new clients</li>
+  </ol>
+</div>
+
+<p>The design landscape in 2025 rewards agencies that balance trend awareness with timeless fundamentals. Master the craft, stay curious, and let trends amplify — not replace — your creative vision.</p>
+
+<p><strong>Want to deliver trend-forward design services under your own brand?</strong> <a href="/pricing">Explore Creativo's white-label plans</a> and start offering world-class design to your clients — today.</p>
+    `
   },
   "how-to-price-design-services": {
     title: "How to Price Your Design Services",
