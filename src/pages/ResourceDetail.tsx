@@ -52,14 +52,6 @@ const ResourceDetail = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-8">
             <div className="container mx-auto max-w-4xl">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate("/resources")}
-                className="mb-4 text-foreground/80 hover:text-foreground bg-background/30 backdrop-blur-sm"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" /> Back to Resources
-              </Button>
             </div>
           </div>
         </div>
