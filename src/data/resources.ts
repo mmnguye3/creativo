@@ -658,15 +658,204 @@ export const resources: Record<string, ResourceData> = {
     content: "Content coming soon..."
   },
   "social-media-marketing-design-agencies": {
-    title: "Social Media Marketing for Design Agencies",
-    metaDescription: "Proven social media strategies to build your design agency's presence and attract new clients.",
+    title: "Social Media Marketing for Design Agencies: How to Attract High-Ticket Clients",
+    metaDescription: "Proven social media strategies for design agencies. Learn which platforms drive leads, content tactics that convert, posting schedules, and a 30-day action plan to attract high-ticket clients.",
     category: "Marketing",
     type: "Guide",
     readTime: "12 min read",
     author: "Lisa Park",
     date: "Dec 5, 2024",
     tags: ["Social Media", "Marketing", "Clients"],
-    content: "Content coming soon..."
+    heroImage: "/src/assets/resources/social-media-marketing-hero.jpg",
+    content: `
+<p>Designers are, by definition, visual communicators. So why do so many agencies struggle to market themselves? The irony is painful: you can build a stunning brand for a client's business, but your own social media presence is an afterthought — sporadic posts, inconsistent branding, and radio silence for weeks at a time.</p>
+
+<p>The problem isn't talent. It's that <strong>marketing yourself requires a fundamentally different mindset</strong> than client work. There's no brief, no deadline, and no one holding you accountable. But agencies that crack the social media code unlock a pipeline of inbound leads that transforms their business.</p>
+
+<div class="article-stat-grid">
+  <div class="article-stat-card">
+    <span class="article-stat-value">74%</span>
+    <span class="article-stat-label">B2B Buyers Use Social to Decide</span>
+  </div>
+  <div class="article-stat-card">
+    <span class="article-stat-value">3.2x</span>
+    <span class="article-stat-label">More Leads from Consistent Posting</span>
+  </div>
+  <div class="article-stat-card">
+    <span class="article-stat-value">$0</span>
+    <span class="article-stat-label">Cost to Start Organic Marketing</span>
+  </div>
+</div>
+
+<p>This guide covers exactly how to build a social media presence that attracts high-ticket clients — not just likes and followers.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Best Social Platforms for Design Agencies</h2>
+
+<p>Not all platforms are created equal for design agencies. Here's where to invest your time based on client type and ROI:</p>
+
+<h3>LinkedIn — The Lead Generation Engine</h3>
+<p>LinkedIn is the <strong>#1 platform for B2B client acquisition</strong>. Decision-makers — marketing directors, founders, and CMOs — scroll LinkedIn daily. It's where budgets are approved and agencies are hired. Post thought leadership, case studies, and industry insights. Agencies that post 3–5 times per week on LinkedIn report <strong>67% more inbound inquiries</strong> than those who post sporadically.</p>
+
+<h3>Instagram — The Visual Portfolio</h3>
+<p>Instagram is your living portfolio. Use it for <strong>polished project showcases, carousel breakdowns, Reels showing your process, and Stories for behind-the-scenes content</strong>. The algorithm rewards consistency and Reels content. Focus on quality over quantity — one stunning carousel beats five mediocre posts.</p>
+
+<h3>Behance & Dribbble — The Design Community</h3>
+<p>These platforms serve a dual purpose: <strong>peer credibility and client discovery</strong>. Art directors and brand managers actively browse Behance and Dribbble when evaluating agencies. Maintain updated, curated portfolios on both. Pro tip: Dribbble Pro members get access to job boards and client leads.</p>
+
+<h3>X (Twitter) — The Conversation Starter</h3>
+<p>Best for building relationships with other creatives, tech founders, and startup communities. Share quick design opinions, engage in industry conversations, and drive traffic to longer-form content on your blog or LinkedIn.</p>
+
+<div class="article-callout">
+  <div class="article-callout-title">🎯 Platform Priority</div>
+  <p>If you can only focus on two platforms, choose <strong>LinkedIn + Instagram</strong>. LinkedIn for leads, Instagram for credibility. Everything else is supplementary.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Building Your Personal Brand vs. Agency Brand</h2>
+
+<p>One of the biggest strategic decisions is whether to build your <strong>personal brand</strong> (you as the face) or your <strong>agency brand</strong> (the company as the entity). The answer: both, but with different emphases depending on your stage.</p>
+
+<p><strong>Early stage (0–3 years):</strong> Lead with your personal brand. People hire people. Your face, your story, your expertise. Personal brands grow faster and build trust more quickly. Share your journey, your opinions, and your work openly.</p>
+
+<p><strong>Growth stage (3+ years):</strong> Transition to an agency brand while maintaining personal presence. Feature team members, highlight collaborative work, and build a brand that isn't dependent on any single person. This makes the agency more sellable and scalable.</p>
+
+<div class="article-pullquote">People hire people first, companies second. Lead with your personal brand, then build the agency brand around it.</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Content Strategy That Works</h2>
+
+<p>The secret to social media that converts isn't posting more — it's posting <strong>strategically</strong>. Here's the content mix that works for design agencies:</p>
+
+<h3>Portfolio Posts (30% of content)</h3>
+<p>Showcase finished work with context. Don't just post the logo — tell the story. What was the brief? What problem did you solve? What results did the client see? Before/after comparisons and carousel breakdowns perform exceptionally well.</p>
+
+<h3>Behind-the-Scenes (25% of content)</h3>
+<p>Show your process: mood boards, sketches, iteration rounds, Figma screenshots, desk setups, team meetings. This content humanizes your brand and demonstrates the depth of thought behind your work. Clients who see your process are willing to pay more because they understand the value.</p>
+
+<h3>Educational Content (25% of content)</h3>
+<p>Share design tips, industry insights, tool tutorials, and trend analysis. This positions you as an expert and creates shareable content that reaches new audiences. Think "5 Logo Design Mistakes to Avoid" or "How to Brief a Designer (From a Designer's Perspective)."</p>
+
+<h3>Social Proof & Case Studies (15% of content)</h3>
+<p>Client testimonials, project results with metrics, awards, press mentions, and milestone celebrations. This is the content that converts followers into leads.</p>
+
+<h3>Personal & Cultural (5% of content)</h3>
+<p>Team outings, workspace tours, design book recommendations, conference experiences. Keep it authentic but curated.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>How to Showcase Work Without Giving It Away</h2>
+
+<p>A common fear: "If I show my best work, people will copy it or use it without hiring me." This fear is misplaced. Here's how to share strategically:</p>
+
+<ul>
+  <li><strong>Show the what, not the how</strong> — Post the final result and the strategic thinking, but not step-by-step tutorials that let someone DIY your service.</li>
+  <li><strong>Use watermarks or low-res versions</strong> for work-in-progress shots. Full-resolution finals are fine — no one can extract your Figma files from an Instagram post.</li>
+  <li><strong>Focus on results over assets</strong> — "This rebrand increased client revenue by 35%" is more compelling (and harder to copy) than a standalone logo mockup.</li>
+  <li><strong>Wait before posting</strong> — Share projects 2–4 weeks after launch. This gives your client the first-mover advantage and makes your content feel timely, not stale.</li>
+</ul>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Posting Frequency & Best Times</h2>
+
+<p>Consistency beats volume. Here's a realistic posting schedule for a busy design agency:</p>
+
+<table>
+  <thead>
+    <tr><th>Platform</th><th>Frequency</th><th>Best Times (2025 Data)</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>LinkedIn</strong></td><td>3–5x/week</td><td>Tue–Thu, 8–10 AM & 12–1 PM</td></tr>
+    <tr><td><strong>Instagram Feed</strong></td><td>3–4x/week</td><td>Mon–Fri, 11 AM–1 PM & 7–9 PM</td></tr>
+    <tr><td><strong>Instagram Stories</strong></td><td>Daily</td><td>Throughout the day</td></tr>
+    <tr><td><strong>Behance/Dribbble</strong></td><td>2–4x/month</td><td>Tuesday & Wednesday mornings</td></tr>
+    <tr><td><strong>X (Twitter)</strong></td><td>1–3x/day</td><td>Mon–Fri, 9 AM–12 PM</td></tr>
+  </tbody>
+</table>
+
+<div class="article-callout">
+  <div class="article-callout-title">📅 Batch Content Creation</div>
+  <p>Dedicate one afternoon per week (or one full day per month) to creating all your social content. Batch production is 3x more efficient than creating posts ad-hoc. Use scheduling tools to automate publishing.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Engagement Tactics That Convert</h2>
+
+<p>Posting is only half the equation. <strong>Engagement</strong> is what turns followers into clients:</p>
+
+<ul>
+  <li><strong>Comment on prospects' posts</strong> — Spend 15 minutes daily engaging with content from potential clients. Add genuine value, not generic "Great post!" comments.</li>
+  <li><strong>Reply to every comment on your posts</strong> — Within the first hour if possible. The algorithm rewards active conversations.</li>
+  <li><strong>DM strategically</strong> — When someone engages with multiple posts, send a personalized message. Not a pitch — a genuine connection. "I noticed you're launching a new product. The branding looks interesting — would love to hear more about your vision."</li>
+  <li><strong>Collaborate with complementary creators</strong> — Co-create content with copywriters, developers, or marketing strategists. Cross-pollination exposes you to each other's audiences.</li>
+  <li><strong>Use polls and questions</strong> — Interactive content gets 2–3x more engagement than static posts. "What's your biggest design pet peeve?" or "Logo A or Logo B?"</li>
+</ul>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Running Ads for Lead Generation</h2>
+
+<p>Once your organic presence is established, paid ads can accelerate growth. The most effective ad strategies for design agencies:</p>
+
+<p><strong>LinkedIn Ads:</strong> Target by job title (Marketing Director, Founder, CMO), company size, and industry. Lead gen forms with a free resource download (brand audit checklist, design trends report) work well. Budget: start at <strong>$500–$1,000/month</strong> and optimize based on cost-per-lead.</p>
+
+<p><strong>Instagram/Facebook Ads:</strong> Retarget website visitors and engagement audiences with portfolio showcases and client testimonials. Carousel ads showing before/after transformations perform exceptionally well. Budget: <strong>$300–$800/month</strong> for retargeting.</p>
+
+<p><strong>Google Ads:</strong> Target high-intent keywords like "design agency for startups" or "brand identity designer." More expensive per click but higher conversion intent. Budget: <strong>$500–$2,000/month</strong>.</p>
+
+<div class="article-pullquote">Organic builds trust. Paid accelerates reach. The best agencies do both.</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Measuring ROI on Social Media</h2>
+
+<p>Track these metrics monthly to understand what's actually working:</p>
+
+<ul>
+  <li><strong>Leads generated</strong> — How many DMs, inquiries, or form fills came from social? This is the only metric that truly matters.</li>
+  <li><strong>Engagement rate</strong> — Likes + comments + shares ÷ impressions. Aim for 3–5% on LinkedIn, 2–4% on Instagram.</li>
+  <li><strong>Profile visits</strong> — Are people clicking through to learn more? High impressions but low profile visits means your content is visible but not compelling.</li>
+  <li><strong>Website traffic from social</strong> — Use UTM parameters to track which posts drive traffic. Set up goals in Google Analytics to track conversions.</li>
+  <li><strong>Follower quality over quantity</strong> — 1,000 followers who are decision-makers at companies with design budgets are worth more than 100,000 random followers.</li>
+</ul>
+
+<h3>Tools for Social Media Management</h3>
+<table>
+  <thead>
+    <tr><th>Tool</th><th>Best For</th><th>Price</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Buffer</strong></td><td>Simple scheduling & analytics</td><td>Free – $36/mo</td></tr>
+    <tr><td><strong>Later</strong></td><td>Visual planning & Instagram focus</td><td>Free – $40/mo</td></tr>
+    <tr><td><strong>Hootsuite</strong></td><td>Enterprise multi-platform management</td><td>$99+/mo</td></tr>
+    <tr><td><strong>Canva Pro</strong></td><td>Quick social graphics & templates</td><td>$13/mo</td></tr>
+    <tr><td><strong>Notion</strong></td><td>Content calendar & planning</td><td>Free – $10/mo</td></tr>
+  </tbody>
+</table>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Your 30-Day Social Media Action Plan</h2>
+
+<div class="article-key-takeaway">
+  <div class="article-key-takeaway-title">🚀 30-Day Launch Plan</div>
+  <ol>
+    <li><strong>Week 1:</strong> Audit your existing profiles. Update bios, profile photos, and links. Define your content pillars (3–4 themes you'll consistently cover).</li>
+    <li><strong>Week 2:</strong> Create a content bank — batch-produce 12–15 posts including 3 portfolio showcases, 3 behind-the-scenes, 3 educational posts, and 3 engagement posts.</li>
+    <li><strong>Week 3:</strong> Start posting consistently (LinkedIn daily, Instagram 3x/week). Spend 15 min/day engaging with prospects' content. Track everything.</li>
+    <li><strong>Week 4:</strong> Review analytics. Double down on what's working. Schedule the next month's content. Send your first 10 strategic DMs to warm leads.</li>
+  </ol>
+</div>
+
+<p>Social media isn't about going viral. It's about showing up consistently with valuable content that demonstrates your expertise. The agencies that win on social are the ones that treat it as a <strong>long-term investment</strong>, not a quick fix.</p>
+
+<p><strong>Want to attract clients through a professional branded platform?</strong> <a href="/pricing">Explore Creativo's white-label plans</a> and give your agency the digital presence it deserves.</p>
+    `
   },
   "design-agency-success-story": {
     title: "From $0 to $100K: A Design Agency Success Story",
