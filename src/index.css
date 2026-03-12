@@ -362,8 +362,3 @@
 .stripe-article-prose .article-divider::after {
   display: none;
 }
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-}
