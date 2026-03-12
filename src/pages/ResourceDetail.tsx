@@ -51,19 +51,9 @@ const ResourceDetail = () => {
 
       {/* Article Layout */}
       <div className="container mx-auto px-6 md:px-8 max-w-6xl">
-        {/* Title Section */}
-        <div className="pt-12 md:pt-20 pb-8 md:pb-12 max-w-3xl ml-auto">
-          <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.1] tracking-tight text-foreground">
-            {resource.title}
-          </h1>
-          <div className="mt-6 flex items-center gap-1.5 text-sm text-muted-foreground border-l-2 border-primary pl-3">
-            {resource.date}
-          </div>
-        </div>
-
         {/* Hero Image */}
         {resource.heroImage && (
-          <div className="mb-12 rounded-2xl overflow-hidden border border-border">
+          <div className="mt-12 md:mt-20 rounded-2xl overflow-hidden border border-border">
             <img
               src={resource.heroImage}
               alt={resource.title}
@@ -72,6 +62,16 @@ const ResourceDetail = () => {
             />
           </div>
         )}
+
+        {/* Title Section */}
+        <div className="pt-8 md:pt-12 pb-8 md:pb-12 max-w-3xl ml-auto">
+          <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.1] tracking-tight text-foreground">
+            {resource.title}
+          </h1>
+          <div className="mt-6 flex items-center gap-1.5 text-sm text-muted-foreground border-l-2 border-primary pl-3">
+            {resource.date}
+          </div>
+        </div>
 
         {/* Two-column: Author sidebar + Content */}
         <div className="flex flex-col md:flex-row gap-8 md:gap-16 pb-20">
