@@ -237,7 +237,7 @@ const PricingPage = () => {
           
           <div className="text-center mt-12">
             <p className="text-muted-foreground mb-4">Ready to launch your agency?</p>
-            <Button variant="hero" size="lg">
+            <Button variant="hero" size="lg" onClick={() => navigate("/contact")}>
               Start Your Agency
             </Button>
           </div>
