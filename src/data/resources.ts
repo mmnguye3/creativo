@@ -716,7 +716,7 @@ export const resources: Record<string, ResourceData> = {
 
 <div class="article-callout">
   <div class="article-callout-title">💡 Customization Tip</div>
-  <p>Send this email within 1 hour of contract signing. Speed signals professionalism. Automate it with tools like <strong>Zapier + Gmail</strong> or <strong>HubSpot sequences</strong> so it fires automatically when a deal closes.</p>
+  <p>Send this email within 1 hour of contract signing. Speed signals professionalism. With Cretivo's built-in automation, this email fires automatically when a new client signs up — no manual effort required.</p>
 </div>
 
 <div class="article-divider"><div class="article-divider-icon">✦</div></div>
