@@ -858,15 +858,156 @@ export const resources: Record<string, ResourceData> = {
     `
   },
   "design-agency-success-story": {
-    title: "From $0 to $100K: A Design Agency Success Story",
-    metaDescription: "How one agency grew from startup to six figures using a white-label design platform.",
+    title: "From $0 to $100K: How One Designer Built a Six-Figure Design Agency",
+    metaDescription: "An inspiring case study of how a solo designer went from zero revenue to a six-figure agency in 18 months. Real strategies, tools, mistakes, and lessons learned at every stage.",
     category: "Case Studies",
     type: "Case Study",
     readTime: "10 min read",
     author: "Case Study Team",
     date: "Dec 3, 2024",
     tags: ["Success Story", "Growth", "Revenue"],
-    content: "Content coming soon..."
+    heroImage: "/src/assets/resources/agency-success-story-hero.jpg",
+    content: `
+<p>In January 2023, Marcus Rivera was a burned-out in-house designer making $52,000 a year at a mid-size marketing firm. He had no savings, no business plan, and no clients. By June 2024 — just 18 months later — his design agency, <strong>Riviera Studio</strong>, had crossed <strong>$100,000 in annual revenue</strong> with a team of three and a pipeline of retainer clients.</p>
+
+<p>This isn't a story about overnight success or viral luck. It's a story about <strong>strategic decisions, relentless hustle, and learning from painful mistakes</strong>. Here's exactly how Marcus did it — and how you can apply his playbook.</p>
+
+<div class="article-stat-grid">
+  <div class="article-stat-card">
+    <span class="article-stat-value">$0→$100K</span>
+    <span class="article-stat-label">Revenue in 18 Months</span>
+  </div>
+  <div class="article-stat-card">
+    <span class="article-stat-value">3</span>
+    <span class="article-stat-label">Team Members</span>
+  </div>
+  <div class="article-stat-card">
+    <span class="article-stat-value">72%</span>
+    <span class="article-stat-label">Revenue from Retainers</span>
+  </div>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>The Beginning: A Laptop and a LinkedIn Profile</h2>
+
+<p>Marcus quit his job on a Friday and started his agency the following Monday. His total startup investment: <strong>$0</strong>. He already owned a MacBook, had an Adobe CC subscription from his previous job (which he switched to a personal plan at $55/month), and used the free tiers of Figma and Notion.</p>
+
+<p>"I didn't have a website for the first three months," Marcus recalls. "I had a LinkedIn profile, a Behance portfolio with six case studies from personal projects, and a Google Doc that served as my rate sheet. That was it."</p>
+
+<p>His first step wasn't designing — it was <strong>outreach</strong>. He spent the entire first week sending 120 personalized LinkedIn messages to marketing managers and startup founders. Not cold pitches — genuine conversations about their brands and design challenges.</p>
+
+<div class="article-callout">
+  <div class="article-callout-title">💡 Lesson #1</div>
+  <p>You don't need a perfect website, a logo, or business cards to start. You need conversations with potential clients. Everything else can come later.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>First Wins: From Free Work to Paying Clients</h2>
+
+<p>Of those 120 messages, 23 people responded. Eight agreed to a call. Two became clients.</p>
+
+<p><strong>Client #1:</strong> A local fitness studio that needed social media graphics. Marcus charged $400/month for 12 posts — far below market rate, but it was his first recurring revenue. More importantly, the owner referred him to two other local business owners within six weeks.</p>
+
+<p><strong>Client #2:</strong> A SaaS startup that needed a pitch deck. Marcus priced it at $1,200 — his first four-figure project. The founder was so impressed that he hired Marcus for a full brand identity three months later at $4,500.</p>
+
+<p>By month three, Marcus was earning <strong>$2,800/month</strong> from four clients. Not life-changing money, but proof that people would pay him for design work.</p>
+
+<div class="article-pullquote">Of 120 LinkedIn messages, 23 responded, 8 took a call, and 2 became clients. That's all it takes to start.</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>The Turning Point: From $10K to $50K</h2>
+
+<p>The first $10K came slowly — four months of grinding. The next $40K came in just five months. What changed?</p>
+
+<h3>1. He Raised His Prices</h3>
+<p>After completing 15 projects, Marcus realized he was undercharging by at least 40%. He increased his rates across the board: social media packages went from $400 to $800/month, and brand identity projects jumped from $3,000 to $6,000. Not a single client pushed back.</p>
+
+<h3>2. He Niched Down</h3>
+<p>Marcus stopped saying "I do design" and started saying "I build brands for health and wellness companies." This single shift tripled his inbound inquiries. Suddenly, he wasn't competing with every designer on the internet — he was the <strong>go-to expert</strong> for a specific industry.</p>
+
+<h3>3. He Invested in LinkedIn Content</h3>
+<p>Marcus committed to posting on LinkedIn five times a week: two portfolio showcases, two educational posts about branding, and one personal story about his agency journey. Within three months, he had <strong>4,200 followers</strong> and was getting 2–3 inbound leads per week — without spending a dollar on ads.</p>
+
+<div class="article-callout">
+  <div class="article-callout-title">🎯 Lesson #2</div>
+  <p>The fastest path to higher revenue isn't more clients — it's higher prices and a clearer niche. Specificity attracts better clients who pay more and refer more.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Systems That Scaled</h2>
+
+<p>At around $5,000/month, Marcus hit a wall. He was working 60-hour weeks, drowning in admin tasks, and missing deadlines. Something had to change.</p>
+
+<h3>The Tools That Saved Him</h3>
+<ul>
+  <li><strong>Notion</strong> — Built a complete project management system with templates for briefs, timelines, and client portals.</li>
+  <li><strong>Calendly</strong> — Eliminated scheduling back-and-forth. Every discovery call was booked automatically.</li>
+  <li><strong>Loom</strong> — Replaced 80% of revision meetings with 5-minute video walkthroughs.</li>
+  <li><strong>Better Proposals</strong> — Created reusable proposal templates that closed 45% of leads (up from 20% with his old Google Doc approach).</li>
+  <li><strong>Creativo</strong> — Used as a white-label platform to deliver work to clients under his own brand, streamlining the entire client experience.</li>
+</ul>
+
+<h3>His First Hire</h3>
+<p>At month 10, Marcus hired a part-time junior designer from the Philippines at $1,200/month. This was terrifying — it was his single biggest expense. But it freed up 15 hours per week, which he redirected to sales and strategy. Revenue jumped 35% in the following month.</p>
+
+<p>Two months later, he added a virtual assistant for $600/month to handle invoicing, email scheduling, and client onboarding. These two hires transformed Riviera Studio from a freelance operation into an actual agency.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Mistakes He Made (and What to Learn)</h2>
+
+<p>Marcus is candid about his failures. Here are the biggest ones:</p>
+
+<ul>
+  <li><strong>Working without contracts for the first 4 months.</strong> A client ghosted him after a $3,200 brand identity project, refusing to pay the final 50%. Total loss: $1,600 and 40 hours of work. "That was my MBA tuition," Marcus jokes. He never started another project without a signed contract and upfront deposit.</li>
+  <li><strong>Saying yes to every project.</strong> He took on a mobile app UI project despite having zero experience. It took three times longer than estimated, the client was unhappy, and Marcus nearly burned out. Lesson: stay in your lane until you've deliberately expanded your skills.</li>
+  <li><strong>Not tracking finances until month 6.</strong> Marcus had no idea what his actual profit margin was. When he finally set up QuickBooks, he discovered he was spending 30% of revenue on tools and subscriptions he barely used. He cut $400/month in unnecessary expenses overnight.</li>
+  <li><strong>Underinvesting in his own brand.</strong> "I spent months building other people's brands while my own website was a free WordPress template. Clients forgave it early on, but I definitely lost opportunities because my online presence didn't match the quality of my work."</li>
+</ul>
+
+<div class="article-pullquote">Every mistake cost money or time. But every mistake also built the systems that made six figures possible.</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>The $100K Milestone: What Changed</h2>
+
+<p>Marcus crossed $100K in annual revenue in month 18. But the number itself wasn't the biggest change — it was the <strong>composition</strong> of that revenue.</p>
+
+<ul>
+  <li><strong>72% from retainer clients</strong> — Five clients on monthly retainers ranging from $1,500 to $4,000, providing $14,000/month in predictable income.</li>
+  <li><strong>28% from project work</strong> — Brand identity projects at $6,000–$12,000 each, taking on only 1–2 per month.</li>
+  <li><strong>Profit margin: 55%</strong> — After team costs, tools, and overhead, Marcus was netting roughly $55,000/year — more than his previous salary, with complete control over his schedule.</li>
+</ul>
+
+<p>More importantly, Marcus was working <strong>45 hours per week</strong> instead of 60. He took his first real vacation in month 14. The agency could function without him for a week because the systems and team were in place.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Where They Are Now</h2>
+
+<p>As of late 2024, Riviera Studio is on track for <strong>$180,000 in annual revenue</strong>. The team has grown to three full-time members plus Marcus, and they've expanded from health and wellness into the broader DTC (direct-to-consumer) space.</p>
+
+<p>Marcus's next goal: <strong>$250K by the end of 2025</strong>, with a focus on subscription-based design services powered by a white-label platform. "The subscription model is the future," he says. "Clients love the predictability, and I love the recurring revenue."</p>
+
+<div class="article-key-takeaway">
+  <div class="article-key-takeaway-title">🚀 Marcus's Top Advice</div>
+  <ol>
+    <li><strong>Start before you're ready.</strong> You'll never feel ready. Launch with what you have and improve as you go.</li>
+    <li><strong>Niche down aggressively.</strong> Being "the brand designer for wellness companies" is infinitely more powerful than being "a designer."</li>
+    <li><strong>Raise your prices sooner.</strong> If no one has ever said no, you're too cheap.</li>
+    <li><strong>Hire before you can afford it.</strong> The right hire pays for themselves within 60 days by freeing you to focus on growth.</li>
+    <li><strong>Build systems from day one.</strong> Document every process. Future-you (and future employees) will thank you.</li>
+  </ol>
+</div>
+
+<p>Marcus's story isn't unique because of his talent — there are millions of talented designers. It's unique because of his <strong>execution</strong>. He made a plan, he worked the plan, and he adapted when things didn't work.</p>
+
+<p><strong>Ready to build your own agency success story?</strong> <a href="/pricing">Explore Creativo's white-label platform</a> and launch your design agency with the tools and infrastructure to scale from day one.</p>
+    `
   },
   "ux-ui-design-best-practices-2025": {
     title: "UX/UI Design Best Practices for 2025",
