@@ -978,21 +978,21 @@ export const resources: Record<string, ResourceData> = {
   </ol>
 </div>
 
-<h3>Recommended Tool Stack</h3>
+<h3>What's Built Into Cretivo</h3>
 
 <table>
   <thead>
-    <tr><th>Purpose</th><th>Tool</th><th>Why</th></tr>
+    <tr><th>Feature</th><th>Cretivo Handles It</th><th>How</th></tr>
   </thead>
   <tbody>
-    <tr><td>Forms & Questionnaires</td><td><strong>Typeform / Tally</strong></td><td>Beautiful, conditional logic, easy to analyze</td></tr>
-    <tr><td>Contracts & E-signatures</td><td><strong>PandaDoc / HelloSign</strong></td><td>Professional, legally binding, trackable</td></tr>
-    <tr><td>Project Management</td><td><strong>Asana / ClickUp / Notion</strong></td><td>Task tracking, timelines, client portals</td></tr>
-    <tr><td>Communication</td><td><strong>Slack / Email</strong></td><td>Organized threads, searchable history</td></tr>
-    <tr><td>File Sharing</td><td><strong>Google Drive / Dropbox</strong></td><td>Organized folders, easy client access</td></tr>
-    <tr><td>Video Updates</td><td><strong>Loom</strong></td><td>Quick walkthroughs, async communication</td></tr>
-    <tr><td>Invoicing</td><td><strong>Stripe / FreshBooks</strong></td><td>Automated billing, professional invoices</td></tr>
-    <tr><td>Scheduling</td><td><strong>Calendly / Cal.com</strong></td><td>Eliminates scheduling back-and-forth</td></tr>
+    <tr><td>Forms & Questionnaires</td><td><strong>✅ Built-in</strong></td><td>Customizable intake forms in your branded portal</td></tr>
+    <tr><td>Contracts & E-signatures</td><td><strong>✅ Built-in</strong></td><td>Send, track, and sign agreements from your dashboard</td></tr>
+    <tr><td>Project Management</td><td><strong>✅ Built-in</strong></td><td>Task boards, timelines, and milestone tracking</td></tr>
+    <tr><td>Client Communication</td><td><strong>✅ Built-in</strong></td><td>Branded client portal with messaging and updates</td></tr>
+    <tr><td>File Sharing</td><td><strong>✅ Built-in</strong></td><td>Organized file uploads and deliverable sharing</td></tr>
+    <tr><td>Invoicing & Payments</td><td><strong>✅ Built-in</strong></td><td>Automated billing and secure payment processing</td></tr>
+    <tr><td>Scheduling</td><td><strong>✅ Built-in</strong></td><td>Integrated task scheduling and calendar management</td></tr>
+    <tr><td>Progress Reports</td><td><strong>✅ Built-in</strong></td><td>Auto-generated weekly updates from your task boards</td></tr>
   </tbody>
 </table>
 
