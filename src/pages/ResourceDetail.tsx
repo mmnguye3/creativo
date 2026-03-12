@@ -57,7 +57,7 @@ const ResourceDetail = () => {
             <img
               src={resource.heroImage}
               alt={resource.title}
-              className="w-full h-auto object-cover max-h-[480px]"
+              className="w-full h-auto object-cover object-bottom max-h-[480px]"
               loading="eager"
             />
           </div>
