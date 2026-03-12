@@ -673,7 +673,7 @@ export const resources: Record<string, ResourceData> = {
     author: "Lisa Park",
     date: "Dec 5, 2024",
     tags: ["Social Media", "Marketing", "Clients"],
-    heroImage: "/src/assets/resources/social-media-marketing-hero.jpg",
+    heroImage: socialMediaMarketingHero,
     content: `
 <p>Designers are, by definition, visual communicators. So why do so many agencies struggle to market themselves? The irony is painful: you can build a stunning brand for a client's business, but your own social media presence is an afterthought — sporadic posts, inconsistent branding, and radio silence for weeks at a time.</p>
 
