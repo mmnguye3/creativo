@@ -972,8 +972,8 @@ export const resources: Record<string, ResourceData> = {
   <ol>
     <li><strong>Customize the placeholders.</strong> Replace all {{PLACEHOLDER}} values with your agency's information, branding, and policies.</li>
     <li><strong>Brand the documents.</strong> Add your logo, colors, and fonts to each template for a cohesive, professional look.</li>
-    <li><strong>Build automations.</strong> Set up Zapier or Make workflows to auto-send the welcome email and questionnaire when a contract is signed.</li>
-    <li><strong>Create a shared workspace.</strong> Store all templates in a central location (Notion, Google Drive) so your team can access and use them consistently.</li>
+    <li><strong>Set up your Cretivo portal.</strong> Most of these templates are already built into your Cretivo dashboard — customize them from your agency settings to match your brand.</li>
+    <li><strong>Let the platform work for you.</strong> Cretivo handles onboarding flows, task scheduling, payments, and client communication automatically — so you can focus on design.</li>
     <li><strong>Iterate and improve.</strong> After every project, review what worked and what didn't. Update your templates quarterly based on client feedback.</li>
   </ol>
 </div>
