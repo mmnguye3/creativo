@@ -832,8 +832,8 @@ export const resources: Record<string, ResourceData> = {
 </ul>
 
 <div class="article-callout">
-  <div class="article-callout-title">⚖️ Legal Tip</div>
-  <p>Use <strong>HelloSign</strong>, <strong>DocuSign</strong>, or <strong>PandaDoc</strong> for e-signatures. They're legally binding, professional, and let you track when documents are viewed and signed. Never start work without a signed agreement.</p>
+  <div class="article-callout-title">⚖️ Built Into Cretivo</div>
+  <p>Cretivo's platform includes <strong>built-in contract management and e-signatures</strong>. Clients can review and sign agreements directly from your branded portal — no third-party tools needed. You'll be notified instantly when documents are signed.</p>
 </div>
 
 <div class="article-divider"><div class="article-divider-icon">✦</div></div>
