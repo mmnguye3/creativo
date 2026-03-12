@@ -1,3 +1,10 @@
+import designAgencyHero from "@/assets/resources/design-agency-hero.jpg";
+import designTrends2025Hero from "@/assets/resources/design-trends-2025-hero.jpg";
+import pricingDesignServicesHero from "@/assets/resources/pricing-design-services-hero.jpg";
+import socialMediaMarketingHero from "@/assets/resources/social-media-marketing-hero.jpg";
+import agencySuccessStoryHero from "@/assets/resources/agency-success-story-hero.jpg";
+import uxUiBestPracticesHero from "@/assets/resources/ux-ui-best-practices-hero.jpg";
+
 export interface ResourceData {
   title: string;
   metaDescription: string;
