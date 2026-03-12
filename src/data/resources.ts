@@ -1,3 +1,10 @@
+import designAgencyHero from "@/assets/resources/design-agency-hero.jpg";
+import designTrends2025Hero from "@/assets/resources/design-trends-2025-hero.jpg";
+import pricingDesignServicesHero from "@/assets/resources/pricing-design-services-hero.jpg";
+import socialMediaMarketingHero from "@/assets/resources/social-media-marketing-hero.jpg";
+import agencySuccessStoryHero from "@/assets/resources/agency-success-story-hero.jpg";
+import uxUiBestPracticesHero from "@/assets/resources/ux-ui-best-practices-hero.jpg";
+
 export interface ResourceData {
   title: string;
   metaDescription: string;
@@ -21,7 +28,7 @@ export const resources: Record<string, ResourceData> = {
     author: "Alex Chen",
     date: "Dec 15, 2024",
     tags: ["Agency", "Business", "Startup"],
-    heroImage: "/src/assets/resources/design-agency-hero.jpg",
+    heroImage: designAgencyHero,
     content: `
 <p>The design industry is experiencing unprecedented growth. In 2025, the global graphic design market is valued at over <strong>$57 billion</strong>, with digital design services growing at a compound annual rate of 7.5%. Remote work has shattered geographic barriers, and businesses of every size are investing heavily in branding, UX, and digital presence. If you've ever dreamed of running your own design agency, there has never been a better time to start.</p>
 
@@ -271,7 +278,7 @@ export const resources: Record<string, ResourceData> = {
     author: "Sarah Rodriguez",
     date: "Dec 12, 2024",
     tags: ["Trends", "Design", "2025"],
-    heroImage: "/src/assets/resources/design-trends-2025-hero.jpg",
+    heroImage: designTrends2025Hero,
     content: `
 <p>Design moves fast. What felt cutting-edge twelve months ago can look dated today. For agencies and freelancers, staying ahead of visual trends isn't just about aesthetics — it's about <strong>winning clients, commanding higher rates, and positioning yourself as a forward-thinking partner</strong>.</p>
 
@@ -433,7 +440,7 @@ export const resources: Record<string, ResourceData> = {
     author: "Mike Johnson",
     date: "Dec 10, 2024",
     tags: ["Pricing", "Revenue", "Strategy"],
-    heroImage: "/src/assets/resources/pricing-design-services-hero.jpg",
+    heroImage: pricingDesignServicesHero,
     content: `
 <p>Ask any designer what keeps them up at night, and the answer is almost never "kerning." It's <strong>pricing</strong>. How much should I charge? Am I leaving money on the table? Will this client balk at my rate? Pricing is the single most impactful business decision you'll make — and yet most designers wing it.</p>
 
@@ -666,7 +673,7 @@ export const resources: Record<string, ResourceData> = {
     author: "Lisa Park",
     date: "Dec 5, 2024",
     tags: ["Social Media", "Marketing", "Clients"],
-    heroImage: "/src/assets/resources/social-media-marketing-hero.jpg",
+    heroImage: socialMediaMarketingHero,
     content: `
 <p>Designers are, by definition, visual communicators. So why do so many agencies struggle to market themselves? The irony is painful: you can build a stunning brand for a client's business, but your own social media presence is an afterthought — sporadic posts, inconsistent branding, and radio silence for weeks at a time.</p>
 
@@ -866,7 +873,7 @@ export const resources: Record<string, ResourceData> = {
     author: "Case Study Team",
     date: "Dec 3, 2024",
     tags: ["Success Story", "Growth", "Revenue"],
-    heroImage: "/src/assets/resources/agency-success-story-hero.jpg",
+    heroImage: agencySuccessStoryHero,
     content: `
 <p>In January 2023, Marcus Rivera was a burned-out in-house designer making $52,000 a year at a mid-size marketing firm. He had no savings, no business plan, and no clients. By June 2024 — just 18 months later — his design agency, <strong>Riviera Studio</strong>, had crossed <strong>$100,000 in annual revenue</strong> with a team of three and a pipeline of retainer clients.</p>
 
@@ -1018,7 +1025,7 @@ export const resources: Record<string, ResourceData> = {
     author: "David Kim",
     date: "Nov 30, 2024",
     tags: ["UX", "UI", "Best Practices"],
-    heroImage: "/src/assets/resources/ux-ui-best-practices-hero.jpg",
+    heroImage: uxUiBestPracticesHero,
     content: `
 <p>In 2025, <strong>user experience isn't a nice-to-have — it's the product</strong>. Users abandon apps within 3 seconds if the interface is confusing. They delete apps after one bad experience. And they'll pay premium prices for products that feel effortless to use.</p>
 
