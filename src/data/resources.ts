@@ -425,15 +425,226 @@ export const resources: Record<string, ResourceData> = {
     `
   },
   "how-to-price-design-services": {
-    title: "How to Price Your Design Services",
-    metaDescription: "A comprehensive guide to pricing strategies for design agencies to maximize revenue and profit.",
+    title: "How to Price Your Design Services: The Ultimate Guide for 2025",
+    metaDescription: "Master design service pricing with proven strategies. Learn hourly rates, value-based pricing, retainer models, and how to handle objections. Includes calculator formulas and real-world examples.",
     category: "Business Growth",
-    type: "Video",
-    readTime: "25 min watch",
+    type: "Guide",
+    readTime: "12 min read",
     author: "Mike Johnson",
     date: "Dec 10, 2024",
     tags: ["Pricing", "Revenue", "Strategy"],
-    content: "Content coming soon..."
+    heroImage: "/src/assets/resources/pricing-design-services-hero.jpg",
+    content: `
+<p>Ask any designer what keeps them up at night, and the answer is almost never "kerning." It's <strong>pricing</strong>. How much should I charge? Am I leaving money on the table? Will this client balk at my rate? Pricing is the single most impactful business decision you'll make — and yet most designers wing it.</p>
+
+<p>Here's the uncomfortable truth: <strong>underpricing doesn't win you more clients</strong>. It wins you worse clients. The ones who don't value your work, who request endless revisions, and who disappear when the invoice is due. Getting your pricing right isn't just about revenue — it's about attracting the right clients and building a sustainable business.</p>
+
+<div class="article-stat-grid">
+  <div class="article-stat-card">
+    <span class="article-stat-value">67%</span>
+    <span class="article-stat-label">Designers Who Undercharge</span>
+  </div>
+  <div class="article-stat-card">
+    <span class="article-stat-value">3x</span>
+    <span class="article-stat-label">Revenue Gap: Value vs. Hourly</span>
+  </div>
+  <div class="article-stat-card">
+    <span class="article-stat-value">$150K+</span>
+    <span class="article-stat-label">Avg. Revenue for Value-Priced Agencies</span>
+  </div>
+</div>
+
+<p>This guide breaks down everything you need to know about pricing your design services in 2025 — from calculating your baseline rate to handling objections with confidence.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Common Pricing Mistakes to Avoid</h2>
+
+<p>Before we build a pricing strategy, let's dismantle the habits that keep designers broke:</p>
+
+<ul>
+  <li><strong>Pricing based on what you'd pay</strong> — Your personal budget is irrelevant. You're pricing for the value delivered to the client's business, not what feels comfortable to you.</li>
+  <li><strong>Copying competitors' rates</strong> — You don't know their costs, experience, or profit margins. Their $50/hour might be a loss leader; your $50/hour might be a death sentence.</li>
+  <li><strong>Discounting to win work</strong> — Every discount trains clients to expect lower prices. Once you're the "affordable option," it's nearly impossible to reposition.</li>
+  <li><strong>Not accounting for non-billable time</strong> — Emails, calls, revisions, admin, sales, bookkeeping. If you only bill for "design time," you're working 50 hours and getting paid for 25.</li>
+  <li><strong>Quoting before scoping</strong> — Never give a price before you fully understand the project. A "simple logo" could mean anything from a wordmark to a full brand identity system.</li>
+</ul>
+
+<div class="article-pullquote">Underpricing doesn't win you more clients. It wins you worse clients.</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Understanding Your Costs</h2>
+
+<p>Pricing starts with knowing your numbers. You need to cover three categories of costs before you earn a single dollar of profit:</p>
+
+<h3>1. Direct Costs (Time)</h3>
+<p>How many hours does a typical project take? Track everything — not just design time, but research, client calls, revisions, file preparation, and delivery. Most designers underestimate project time by <strong>30–50%</strong>.</p>
+
+<h3>2. Tool & Software Costs</h3>
+<p>Add up your annual subscriptions: Adobe Creative Cloud (~$660/yr), Figma (~$144–$900/yr), project management tools, stock assets, fonts, hosting. For most solo designers, tool costs run <strong>$2,000–$5,000/year</strong>. For agencies, multiply accordingly.</p>
+
+<h3>3. Overhead & Living Expenses</h3>
+<p>Rent, insurance, taxes (set aside 25–30% for self-employment tax), health insurance, retirement contributions, professional development, marketing. These are real costs that your pricing must cover.</p>
+
+<div class="article-callout">
+  <div class="article-callout-title">📊 The Cost Formula</div>
+  <p><strong>Annual Costs</strong> = Living Expenses + Tools + Overhead + Taxes + Profit Margin<br/>
+  <strong>Required Annual Revenue</strong> = Annual Costs ÷ 0.70 (assuming 70% utilization)<br/>
+  <strong>Minimum Hourly Rate</strong> = Required Annual Revenue ÷ Billable Hours Per Year<br/><br/>
+  Example: ($60,000 + $4,000 + $12,000 + $20,000 + $15,000) ÷ 0.70 = $158,571 ÷ 1,200 billable hours = <strong>$132/hour minimum</strong></p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Pricing Models Explained</h2>
+
+<p>There are four primary ways to price design services. Each has trade-offs, and the best agencies often use a combination depending on the client and project type.</p>
+
+<h3>Hourly Pricing</h3>
+<p><strong>Best for:</strong> Consulting, discovery sessions, and projects with undefined scope.</p>
+<p>Hourly pricing is transparent and easy to understand. The downside? It penalizes efficiency. The faster and better you get, the less you earn. It also creates an adversarial dynamic — clients watch the clock, and every meeting feels like the meter is running.</p>
+<p><strong>2025 market rates:</strong> Junior $50–$75/hr · Mid-level $85–$150/hr · Senior/Specialist $150–$300+/hr</p>
+
+<h3>Fixed Project Pricing</h3>
+<p><strong>Best for:</strong> Clearly scoped deliverables — logos, websites, pitch decks, brand guidelines.</p>
+<p>You quote a flat fee for the entire project. This rewards efficiency and gives clients budget certainty. The risk is scope creep, which is why airtight contracts and clear deliverable definitions are essential.</p>
+
+<h3>Value-Based Pricing</h3>
+<p><strong>Best for:</strong> Projects where your work directly impacts revenue — e-commerce redesigns, conversion-focused landing pages, rebrand for a funded startup.</p>
+<p>You price based on the <em>outcome</em> your work creates, not the hours spent. A landing page redesign that increases conversions by 40% on a $1M/year business is worth $50,000+ — even if it only took you 30 hours.</p>
+
+<h3>Retainer Pricing</h3>
+<p><strong>Best for:</strong> Ongoing relationships with predictable workloads.</p>
+<p>Clients pay a fixed monthly fee for a set scope of work. Benefits: predictable revenue, deeper client relationships, and less time spent on sales. Typical range: <strong>$2,000–$15,000/month</strong>.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>How to Calculate Your Hourly Rate</h2>
+
+<p>Even if you don't bill hourly, you need to know your hourly rate as a baseline. Here's the step-by-step calculation:</p>
+
+<ol>
+  <li><strong>Target annual income:</strong> What do you need (and want) to earn? Be honest. Include taxes, savings, and lifestyle costs. Let's say <strong>$100,000</strong>.</li>
+  <li><strong>Billable hours per year:</strong> Assume 48 working weeks × 5 days × 8 hours = 1,920 hours. But only ~60% is billable (the rest is admin, sales, learning). That's <strong>1,152 billable hours</strong>.</li>
+  <li><strong>Add business expenses:</strong> Tools, insurance, marketing, subscriptions — let's say <strong>$15,000/year</strong>.</li>
+  <li><strong>Calculate:</strong> ($100,000 + $15,000) ÷ 1,152 = <strong>$99.83/hour</strong>. Round up to <strong>$100/hour</strong>.</li>
+</ol>
+
+<p>That's your <em>floor</em> — the absolute minimum you should charge. Your actual rate should be higher, because this calculation assumes 100% client capacity with zero downtime, which is unrealistic.</p>
+
+<div class="article-callout">
+  <div class="article-callout-title">💡 Reality Check</div>
+  <p>If $100/hour feels "too high," remember: your client isn't just paying for the hour of design work. They're paying for your years of training, your creative eye, your strategic thinking, and the 10 concepts you rejected before landing on the right one.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Value-Based Pricing: Charging for Results, Not Hours</h2>
+
+<p>Value-based pricing is the single biggest lever for increasing your income. Instead of tying your rate to time, you tie it to the <strong>business impact</strong> of your work.</p>
+
+<p>The process:</p>
+<ol>
+  <li><strong>Understand the client's business goals</strong> — What revenue does this project need to generate? What problem does it solve?</li>
+  <li><strong>Quantify the value</strong> — If a website redesign is expected to increase conversions by 25% on $500K annual revenue, the project creates $125K in value.</li>
+  <li><strong>Price as a percentage of value</strong> — Industry standard is 10–20% of the value created. In this example: <strong>$12,500–$25,000</strong>.</li>
+</ol>
+
+<p>This requires confident discovery conversations. You need to ask questions like: "What's a new customer worth to you?" and "What revenue are you losing with your current design?" These questions feel uncomfortable at first, but they're the key to premium pricing.</p>
+
+<div class="article-pullquote">The best designers don't sell pixels. They sell outcomes.</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Package Pricing Strategies</h2>
+
+<p>Packages simplify the buying decision and increase average project value. The classic three-tier model works because of <strong>anchoring psychology</strong> — the premium tier makes the mid-tier feel like a bargain.</p>
+
+<table>
+  <thead>
+    <tr><th>Package</th><th>What's Included</th><th>Price</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Starter</strong></td><td>Logo + color palette + basic guidelines</td><td>$2,500</td></tr>
+    <tr><td><strong>Professional</strong></td><td>Logo + full brand identity + guidelines + stationery</td><td>$5,500</td></tr>
+    <tr><td><strong>Premium</strong></td><td>Everything in Professional + website design + social templates + brand strategy</td><td>$12,000</td></tr>
+  </tbody>
+</table>
+
+<p>Most clients choose the middle tier. By offering three options, you've shifted the conversation from "Should I hire you?" to "Which package should I choose?" — a far more favorable position.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>When to Raise Your Rates</h2>
+
+<p>Raise your rates when any of these are true:</p>
+
+<ul>
+  <li><strong>You're closing more than 80% of proposals</strong> — This means you're too cheap. Aim for a 30–50% close rate.</li>
+  <li><strong>You're consistently booked 4+ weeks out</strong> — Demand exceeds supply. Economics 101.</li>
+  <li><strong>You've gained new skills or certifications</strong> — New capabilities = new value.</li>
+  <li><strong>It's been 12+ months since your last increase</strong> — Inflation alone justifies annual raises of 3–5%.</li>
+  <li><strong>You dread taking on new projects</strong> — If the work doesn't excite you at current rates, higher rates attract better projects.</li>
+</ul>
+
+<p><strong>How much to raise:</strong> 15–25% for existing clients with advance notice (60–90 days). New clients get new rates immediately. Never apologize for raising rates — frame it as a reflection of increased demand and enhanced capabilities.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>How to Handle Price Objections</h2>
+
+<p>Every designer hears "That's more than we expected" at some point. Here's how to respond with confidence:</p>
+
+<ul>
+  <li><strong>"Can you do it for less?"</strong> → "I can adjust the scope to fit a different budget. Which deliverables are most critical to your launch?"</li>
+  <li><strong>"Our last designer charged half that."</strong> → "I understand. My pricing reflects the strategic approach and business results I deliver. Would you like to see case studies showing the ROI my clients have achieved?"</li>
+  <li><strong>"We can get it cheaper on Fiverr."</strong> → "Absolutely. Fiverr is great for certain needs. My clients typically come to me when they need strategic design that drives measurable business outcomes. Let me know if I can help in the future."</li>
+  <li><strong>"We don't have the budget right now."</strong> → "I completely understand. I offer payment plans for projects over $5,000. We could also phase the project to spread costs across quarters."</li>
+</ul>
+
+<div class="article-callout">
+  <div class="article-callout-title">🎯 Golden Rule of Objections</div>
+  <p>Never lower your price without removing scope. Discounting your rate trains clients to negotiate every invoice. Instead, adjust deliverables, timeline, or payment terms.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Pricing for Different Client Types</h2>
+
+<h3>Startups & Early-Stage Companies</h3>
+<p>Budget-conscious but growth-focused. Offer lean packages with room to expand. Consider equity or revenue-share arrangements for high-potential startups. Typical brand identity budget: <strong>$2,000–$8,000</strong>.</p>
+
+<h3>Small & Medium Businesses</h3>
+<p>The bread and butter of most agencies. They value reliability and clear communication. Fixed project pricing works best. Typical website budget: <strong>$5,000–$25,000</strong>. Retainer relationships are highly viable here.</p>
+
+<h3>Enterprise & Corporate</h3>
+<p>Longer sales cycles, more stakeholders, more revisions — but significantly higher budgets. Enterprise clients expect polished proposals, case studies, and references. They buy confidence and process, not just design. Typical project budgets: <strong>$25,000–$250,000+</strong>.</p>
+
+<p>Tailor your pricing presentation to the client tier. A startup founder wants a quick, no-nonsense proposal. An enterprise procurement team wants a detailed SOW with milestones, deliverables, and risk mitigation.</p>
+
+<div class="article-pullquote">The best pricing strategy is one that filters for clients who value what you do.</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Your Pricing Action Plan</h2>
+
+<div class="article-key-takeaway">
+  <div class="article-key-takeaway-title">🚀 Start Today</div>
+  <ol>
+    <li>Calculate your true hourly rate using the formula above — know your floor</li>
+    <li>Track your time on the next 3 projects to understand your actual hours per deliverable</li>
+    <li>Create three pricing tiers for your most requested service</li>
+    <li>Practice value-based discovery questions in your next client call</li>
+    <li>Raise your rates for all new clients by at least 15% starting this month</li>
+    <li>Write a "pricing objection" cheat sheet and review it before every proposal</li>
+  </ol>
+</div>
+
+<p>Pricing is a skill, not a talent. The more intentionally you approach it, the more confident you'll become — and confidence is the ultimate pricing superpower. Your clients aren't paying for hours or pixels. They're paying for the transformation your work creates.</p>
+
+<p><strong>Ready to scale your pricing with a professional white-label platform?</strong> <a href="/pricing">See Creativo's agency plans</a> and start delivering premium design services under your own brand — at the rates you deserve.</p>
+    `
   },
   "client-onboarding-template-pack": {
     title: "Client Onboarding Template Pack",
