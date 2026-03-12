@@ -897,8 +897,8 @@ export const resources: Record<string, ResourceData> = {
 </ul>
 
 <div class="article-callout">
-  <div class="article-callout-title">📁 Pro Tip</div>
-  <p>Create a shared <strong>Google Drive</strong> or <strong>Dropbox folder</strong> with pre-labeled subfolders: "Logo Files," "Brand Guidelines," "Content," "Photography." Send the link with this checklist — clients are 3× more likely to provide assets when they have a clear place to upload them.</p>
+  <div class="article-callout-title">📁 Built Into Cretivo</div>
+  <p>Your Cretivo client portal includes a <strong>branded file upload area</strong> with pre-labeled categories for logos, brand guidelines, content, and photography. Clients upload directly to their project — everything stays organized and accessible to your design team automatically.</p>
 </div>
 
 <div class="article-divider"><div class="article-divider-icon">✦</div></div>
