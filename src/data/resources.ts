@@ -893,7 +893,7 @@ export const resources: Record<string, ResourceData> = {
 <ul>
   <li>☐ Confirm primary decision-maker for approvals</li>
   <li>☐ Confirm feedback turnaround time (we recommend 48 hours)</li>
-  <li>☐ Agree on feedback format (annotated screenshots, Loom videos, or written comments)</li>
+  <li>☐ Agree on feedback format (annotated screenshots, video walkthroughs, or written comments)</li>
 </ul>
 
 <div class="article-callout">
