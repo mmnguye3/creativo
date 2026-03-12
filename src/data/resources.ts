@@ -760,8 +760,8 @@ export const resources: Record<string, ResourceData> = {
 </ul>
 
 <div class="article-callout">
-  <div class="article-callout-title">🛠 Recommended Tool</div>
-  <p>Build this as a <strong>Typeform</strong> or <strong>Tally form</strong> with conditional logic. If they say "No brand guidelines," automatically show a section asking about preferred colors and fonts. It keeps the form short and relevant.</p>
+  <div class="article-callout-title">🛠 Built Into Cretivo</div>
+  <p>Your Cretivo dashboard includes a <strong>customizable onboarding questionnaire</strong> with conditional logic built right in. Clients fill it out from your branded portal — no third-party forms needed. Responses are automatically linked to their project.</p>
 </div>
 
 <div class="article-divider"><div class="article-divider-icon">✦</div></div>
