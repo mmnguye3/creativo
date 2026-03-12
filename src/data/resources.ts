@@ -656,15 +656,350 @@ export const resources: Record<string, ResourceData> = {
     `
   },
   "client-onboarding-template-pack": {
-    title: "Client Onboarding Template Pack",
-    metaDescription: "Download ready-to-use templates for streamlining your design agency's client onboarding process.",
+    title: "Client Onboarding Template Pack: 8 Ready-to-Use Templates for Design Agencies",
+    metaDescription: "Download 8 professional client onboarding templates for your design agency. Includes welcome emails, questionnaires, contracts, kickoff agendas, and more — all customizable.",
     category: "Getting Started",
     type: "Template",
-    readTime: "Download",
+    readTime: "18 min read",
     author: "Emma Thompson",
     date: "Dec 8, 2024",
-    tags: ["Templates", "Clients", "Process"],
-    content: "Content coming soon..."
+    tags: ["Templates", "Clients", "Process", "Onboarding"],
+    heroImage: clientOnboardingHero,
+    content: `
+<p>First impressions aren't just important — they're <strong>everything</strong>. The way you onboard a new client sets the tone for the entire relationship. A smooth, professional onboarding process signals competence, builds trust, and dramatically reduces the miscommunications that derail projects and erode margins.</p>
+
+<p>Yet most design agencies wing it. They send a quick email, hop on an unstructured call, and dive straight into design — only to discover three weeks later that they misunderstood the brief, the client expected different deliverables, and nobody agreed on a revision policy.</p>
+
+<div class="article-stat-grid">
+  <div class="article-stat-card">
+    <span class="article-stat-value">68%</span>
+    <span class="article-stat-label">Of Clients Leave Due to Poor Communication</span>
+  </div>
+  <div class="article-stat-card">
+    <span class="article-stat-value">3×</span>
+    <span class="article-stat-label">Faster Project Kickoff with Templates</span>
+  </div>
+  <div class="article-stat-card">
+    <span class="article-stat-value">40%</span>
+    <span class="article-stat-label">Fewer Revision Rounds</span>
+  </div>
+</div>
+
+<p>This template pack gives you <strong>8 professional, ready-to-use documents</strong> that cover every stage of the client journey — from the first welcome email to project completion and offboarding. Each template includes customizable placeholders and tips for adapting them to your agency's brand.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>1. Welcome Email Template</h2>
+
+<p>The welcome email is your client's first interaction after signing. It should be warm, organized, and set clear expectations for what happens next.</p>
+
+<h3>Subject Line Options</h3>
+<ul>
+  <li><strong>Option A:</strong> "Welcome to {{AGENCY_NAME}} — Let's Create Something Amazing 🎨"</li>
+  <li><strong>Option B:</strong> "You're In! Here's What Happens Next with {{PROJECT_NAME}}"</li>
+  <li><strong>Option C:</strong> "Your Design Journey Starts Now — Welcome, {{CLIENT_NAME}}!"</li>
+</ul>
+
+<h3>Email Body</h3>
+
+<blockquote>
+<p>Hi {{CLIENT_NAME}},</p>
+<p>Welcome aboard! We're thrilled to be working with you on <strong>{{PROJECT_NAME}}</strong>. Our team is excited to bring your vision to life.</p>
+<p>Here's what to expect over the next few days:</p>
+<p><strong>1. Onboarding Questionnaire</strong> — You'll receive a brief questionnaire to help us understand your brand, goals, and preferences. Please complete it within 48 hours so we can hit the ground running.</p>
+<p><strong>2. Kickoff Call</strong> — We'll schedule a 30-minute call to review your answers, align on the timeline, and answer any questions. Our scheduler link: {{SCHEDULER_LINK}}</p>
+<p><strong>3. Project Portal Access</strong> — You'll get access to our project management tool where you can track progress, submit requests, and review deliverables.</p>
+<p>Your dedicated point of contact is <strong>{{DESIGNER_NAME}}</strong> ({{DESIGNER_EMAIL}}). Don't hesitate to reach out with any questions.</p>
+<p>Let's make something great together.</p>
+<p>Cheers,<br/>{{YOUR_NAME}}<br/>{{AGENCY_NAME}}</p>
+</blockquote>
+
+<div class="article-callout">
+  <div class="article-callout-title">💡 Customization Tip</div>
+  <p>Send this email within 1 hour of contract signing. Speed signals professionalism. Automate it with tools like <strong>Zapier + Gmail</strong> or <strong>HubSpot sequences</strong> so it fires automatically when a deal closes.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>2. Onboarding Questionnaire</h2>
+
+<p>This questionnaire replaces the back-and-forth of "what do you need?" emails. Send it as a <strong>Typeform, Google Form, or Notion doc</strong> — anything the client can fill out asynchronously.</p>
+
+<h3>Project Overview</h3>
+<ul>
+  <li>What is the name of your company/brand?</li>
+  <li>Describe your business in 1–2 sentences.</li>
+  <li>What is the primary goal of this project? (e.g., rebrand, launch campaign, redesign website)</li>
+  <li>What does success look like for this project?</li>
+  <li>Are there any hard deadlines we should be aware of?</li>
+</ul>
+
+<h3>Brand & Design Preferences</h3>
+<ul>
+  <li>Do you have existing brand guidelines? (Please share if yes)</li>
+  <li>What are your brand colors, fonts, and logo files?</li>
+  <li>Share 3–5 examples of designs, websites, or brands you admire and explain what you like about them.</li>
+  <li>Are there any styles or trends you want to <strong>avoid</strong>?</li>
+  <li>What emotions should your brand evoke? (e.g., trustworthy, playful, premium, bold)</li>
+</ul>
+
+<h3>Target Audience</h3>
+<ul>
+  <li>Who is your ideal customer? (Age, gender, location, interests, profession)</li>
+  <li>What problem does your product/service solve for them?</li>
+  <li>Who are your top 3 competitors?</li>
+  <li>What differentiates you from competitors?</li>
+</ul>
+
+<h3>Scope & Budget</h3>
+<ul>
+  <li>What specific deliverables do you expect from this project?</li>
+  <li>What is your approved budget range for this project?</li>
+  <li>Who is the primary decision-maker for approvals?</li>
+  <li>How many rounds of revisions do you anticipate needing?</li>
+</ul>
+
+<div class="article-callout">
+  <div class="article-callout-title">🛠 Recommended Tool</div>
+  <p>Build this as a <strong>Typeform</strong> or <strong>Tally form</strong> with conditional logic. If they say "No brand guidelines," automatically show a section asking about preferred colors and fonts. It keeps the form short and relevant.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>3. Project Timeline / Roadmap</h2>
+
+<p>A clear timeline prevents scope creep and keeps everyone accountable. Share this as a visual roadmap (Notion, Asana, or a simple PDF).</p>
+
+<table>
+  <thead>
+    <tr><th>Phase</th><th>Duration</th><th>Deliverables</th><th>Client Action Required</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Phase 1: Discovery</strong></td><td>Week 1</td><td>Questionnaire review, research, moodboard</td><td>Complete questionnaire, provide assets</td></tr>
+    <tr><td><strong>Phase 2: Concept</strong></td><td>Week 2–3</td><td>2–3 initial design concepts</td><td>Review and select preferred direction</td></tr>
+    <tr><td><strong>Phase 3: Refinement</strong></td><td>Week 3–4</td><td>Refined design with revisions</td><td>Provide feedback within 48 hours</td></tr>
+    <tr><td><strong>Phase 4: Finalization</strong></td><td>Week 5</td><td>Final files, source files, brand kit</td><td>Final approval sign-off</td></tr>
+    <tr><td><strong>Phase 5: Handoff</strong></td><td>Week 5–6</td><td>File transfer, documentation, training</td><td>Confirm receipt of all deliverables</td></tr>
+  </tbody>
+</table>
+
+<p><strong>Important notes to include:</strong></p>
+<ul>
+  <li>Timeline begins after the onboarding questionnaire is completed</li>
+  <li>Delays in client feedback will shift the timeline proportionally</li>
+  <li>Additional rounds of revisions beyond the agreed scope may extend the timeline</li>
+</ul>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>4. Service Agreement Template</h2>
+
+<p>Your contract doesn't need to be written by a lawyer (though legal review is recommended). It does need to be clear, fair, and comprehensive. Here are the essential sections:</p>
+
+<h3>Services Overview</h3>
+<blockquote>
+<p>{{AGENCY_NAME}} ("Designer") agrees to provide the following design services to {{CLIENT_NAME}} ("Client") for the project titled <strong>{{PROJECT_NAME}}</strong>:</p>
+<p>• {{DELIVERABLE_1}}<br/>• {{DELIVERABLE_2}}<br/>• {{DELIVERABLE_3}}</p>
+</blockquote>
+
+<h3>Payment Terms</h3>
+<ul>
+  <li>Total project fee: <strong>{{TOTAL_FEE}}</strong></li>
+  <li>50% deposit due upon signing ({{DEPOSIT_AMOUNT}})</li>
+  <li>50% balance due upon final delivery</li>
+  <li>Payment method: Bank transfer / Stripe / PayPal</li>
+  <li>Late payments incur a 5% monthly fee after 14 days overdue</li>
+</ul>
+
+<h3>Revisions Policy</h3>
+<ul>
+  <li>{{REVISION_COUNT}} rounds of revisions are included in the project fee</li>
+  <li>A "revision" is defined as adjustments to the approved design direction</li>
+  <li>A "new direction" (changing the concept entirely) is billed as additional scope at {{HOURLY_RATE}}/hour</li>
+  <li>Revision requests must be consolidated into a single round — no piecemeal feedback</li>
+</ul>
+
+<h3>Intellectual Property</h3>
+<blockquote>
+<p>Upon receipt of full payment, all rights to the final approved deliverables transfer to the Client. The Designer retains the right to display the work in their portfolio unless otherwise agreed in writing.</p>
+</blockquote>
+
+<h3>Cancellation</h3>
+<ul>
+  <li>Either party may terminate with 14 days written notice</li>
+  <li>Client pays for all work completed up to the termination date</li>
+  <li>The deposit is non-refundable after work has commenced</li>
+</ul>
+
+<div class="article-callout">
+  <div class="article-callout-title">⚖️ Legal Tip</div>
+  <p>Use <strong>HelloSign</strong>, <strong>DocuSign</strong>, or <strong>PandaDoc</strong> for e-signatures. They're legally binding, professional, and let you track when documents are viewed and signed. Never start work without a signed agreement.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>5. Kickoff Meeting Agenda</h2>
+
+<p>The kickoff call aligns everyone before any design work begins. Keep it to <strong>30 minutes max</strong> — respect your client's time.</p>
+
+<table>
+  <thead>
+    <tr><th>Time</th><th>Topic</th><th>Details</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>0–5 min</td><td><strong>Introductions</strong></td><td>Team intros, roles, and responsibilities</td></tr>
+    <tr><td>5–10 min</td><td><strong>Project Overview</strong></td><td>Review questionnaire answers, confirm goals and scope</td></tr>
+    <tr><td>10–15 min</td><td><strong>Timeline Review</strong></td><td>Walk through the project roadmap and key milestones</td></tr>
+    <tr><td>15–20 min</td><td><strong>Communication Setup</strong></td><td>Agree on tools (Slack, email, portal), response times, and feedback format</td></tr>
+    <tr><td>20–25 min</td><td><strong>Q&A</strong></td><td>Address any client questions or concerns</td></tr>
+    <tr><td>25–30 min</td><td><strong>Next Steps</strong></td><td>Confirm first milestone, assign action items, set next check-in</td></tr>
+  </tbody>
+</table>
+
+<div class="article-pullquote">A 30-minute kickoff call saves 30 hours of miscommunication over the life of a project.</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>6. Client Asset Checklist</h2>
+
+<p>Send this checklist immediately after the welcome email. Missing assets are the #1 cause of project delays.</p>
+
+<h3>Brand Assets</h3>
+<ul>
+  <li>☐ Logo files (SVG, PNG, AI/EPS — all variations)</li>
+  <li>☐ Brand colors (hex codes, RGB, or Pantone)</li>
+  <li>☐ Brand fonts (files or names)</li>
+  <li>☐ Brand guidelines document (if available)</li>
+  <li>☐ Photography / image library</li>
+</ul>
+
+<h3>Content & Copy</h3>
+<ul>
+  <li>☐ Headlines and body copy for all deliverables</li>
+  <li>☐ Product descriptions or service details</li>
+  <li>☐ CTAs (calls to action) for each piece</li>
+  <li>☐ Approved messaging or taglines</li>
+</ul>
+
+<h3>Technical Access</h3>
+<ul>
+  <li>☐ Website CMS login (WordPress, Shopify, etc.)</li>
+  <li>☐ Social media account access (if managing social content)</li>
+  <li>☐ Google Analytics / ad platform access (if relevant)</li>
+  <li>☐ Domain registrar login (for DNS changes)</li>
+</ul>
+
+<h3>Approvals</h3>
+<ul>
+  <li>☐ Confirm primary decision-maker for approvals</li>
+  <li>☐ Confirm feedback turnaround time (we recommend 48 hours)</li>
+  <li>☐ Agree on feedback format (annotated screenshots, Loom videos, or written comments)</li>
+</ul>
+
+<div class="article-callout">
+  <div class="article-callout-title">📁 Pro Tip</div>
+  <p>Create a shared <strong>Google Drive</strong> or <strong>Dropbox folder</strong> with pre-labeled subfolders: "Logo Files," "Brand Guidelines," "Content," "Photography." Send the link with this checklist — clients are 3× more likely to provide assets when they have a clear place to upload them.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>7. Weekly Progress Update Template</h2>
+
+<p>Consistent communication is what separates professional agencies from "that designer who ghosted me." Send this every Friday — even if there's nothing major to report.</p>
+
+<blockquote>
+<p><strong>Weekly Update — {{PROJECT_NAME}}</strong><br/>Week of {{DATE}}</p>
+<p><strong>✅ Completed This Week:</strong></p>
+<p>• {{COMPLETED_ITEM_1}}<br/>• {{COMPLETED_ITEM_2}}<br/>• {{COMPLETED_ITEM_3}}</p>
+<p><strong>🔄 In Progress:</strong></p>
+<p>• {{IN_PROGRESS_ITEM}} — Expected completion: {{DATE}}</p>
+<p><strong>📅 Coming Next Week:</strong></p>
+<p>• {{NEXT_WEEK_ITEM_1}}<br/>• {{NEXT_WEEK_ITEM_2}}</p>
+<p><strong>⚠️ Blockers / Action Items for Client:</strong></p>
+<p>• {{BLOCKER_OR_ACTION}} — Needed by: {{DEADLINE}}</p>
+<p><strong>📊 Project Health:</strong> 🟢 On Track / 🟡 Minor Delay / 🔴 At Risk</p>
+<p>Next milestone: <strong>{{NEXT_MILESTONE}}</strong> — {{MILESTONE_DATE}}</p>
+</blockquote>
+
+<div class="article-callout">
+  <div class="article-callout-title">⚡ Automation Tip</div>
+  <p>Use <strong>Notion</strong> or <strong>ClickUp</strong> to auto-generate weekly reports from your task boards. If tasks are tracked properly, the report practically writes itself. Pair with <strong>Loom</strong> for a 2-minute video walkthrough — clients love seeing work in motion.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>8. Project Completion & Offboarding</h2>
+
+<p>How you end a project matters as much as how you start it. A structured offboarding turns one-time clients into long-term partners and referral sources.</p>
+
+<h3>Final Deliverables Checklist</h3>
+<ul>
+  <li>☐ All approved final design files (PDF, PNG, JPG)</li>
+  <li>☐ Source files (AI, PSD, Figma links, etc.)</li>
+  <li>☐ Web-optimized assets (if applicable)</li>
+  <li>☐ Brand guidelines document (updated if modified)</li>
+  <li>☐ Font licenses and image credits documentation</li>
+  <li>☐ Project documentation with specifications</li>
+</ul>
+
+<h3>Feedback Request</h3>
+<blockquote>
+<p>Hi {{CLIENT_NAME}},</p>
+<p>It's been a pleasure working with you on <strong>{{PROJECT_NAME}}</strong>! We'd love to hear about your experience.</p>
+<p>Could you take 2 minutes to answer these questions?</p>
+<p>1. How would you rate the quality of the deliverables? (1–10)<br/>2. How was communication throughout the project? (1–10)<br/>3. Would you recommend {{AGENCY_NAME}} to a colleague? Why?<br/>4. Is there anything we could improve for next time?</p>
+<p>If you're happy with our work, we'd be incredibly grateful for a <strong>Google review</strong> or LinkedIn recommendation: {{REVIEW_LINK}}</p>
+</blockquote>
+
+<h3>Referral Request</h3>
+<blockquote>
+<p>One more thing — if you know anyone who could benefit from professional design services, we'd love an introduction. We offer a <strong>{{REFERRAL_BONUS}}</strong> credit for every referred client who signs with us.</p>
+</blockquote>
+
+<h3>Ongoing Support Options</h3>
+<ul>
+  <li><strong>Maintenance retainer:</strong> {{RETAINER_HOURS}} hours/month for ongoing updates — {{RETAINER_PRICE}}/month</li>
+  <li><strong>Design subscription:</strong> Unlimited design requests starting at {{SUBSCRIPTION_PRICE}}/month</li>
+  <li><strong>Ad-hoc support:</strong> Available at {{HOURLY_RATE}}/hour for one-off requests</li>
+</ul>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>How to Use This Template Pack</h2>
+
+<div class="article-key-takeaway">
+  <div class="article-key-takeaway-title">🚀 Implementation Checklist</div>
+  <ol>
+    <li><strong>Customize the placeholders.</strong> Replace all {{PLACEHOLDER}} values with your agency's information, branding, and policies.</li>
+    <li><strong>Brand the documents.</strong> Add your logo, colors, and fonts to each template for a cohesive, professional look.</li>
+    <li><strong>Build automations.</strong> Set up Zapier or Make workflows to auto-send the welcome email and questionnaire when a contract is signed.</li>
+    <li><strong>Create a shared workspace.</strong> Store all templates in a central location (Notion, Google Drive) so your team can access and use them consistently.</li>
+    <li><strong>Iterate and improve.</strong> After every project, review what worked and what didn't. Update your templates quarterly based on client feedback.</li>
+  </ol>
+</div>
+
+<h3>Recommended Tool Stack</h3>
+
+<table>
+  <thead>
+    <tr><th>Purpose</th><th>Tool</th><th>Why</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Forms & Questionnaires</td><td><strong>Typeform / Tally</strong></td><td>Beautiful, conditional logic, easy to analyze</td></tr>
+    <tr><td>Contracts & E-signatures</td><td><strong>PandaDoc / HelloSign</strong></td><td>Professional, legally binding, trackable</td></tr>
+    <tr><td>Project Management</td><td><strong>Asana / ClickUp / Notion</strong></td><td>Task tracking, timelines, client portals</td></tr>
+    <tr><td>Communication</td><td><strong>Slack / Email</strong></td><td>Organized threads, searchable history</td></tr>
+    <tr><td>File Sharing</td><td><strong>Google Drive / Dropbox</strong></td><td>Organized folders, easy client access</td></tr>
+    <tr><td>Video Updates</td><td><strong>Loom</strong></td><td>Quick walkthroughs, async communication</td></tr>
+    <tr><td>Invoicing</td><td><strong>Stripe / FreshBooks</strong></td><td>Automated billing, professional invoices</td></tr>
+    <tr><td>Scheduling</td><td><strong>Calendly / Cal.com</strong></td><td>Eliminates scheduling back-and-forth</td></tr>
+  </tbody>
+</table>
+
+<p>A professional onboarding process isn't a luxury — it's a <strong>competitive advantage</strong>. Agencies that systematize their client experience deliver better work, retain clients longer, and command higher prices. These templates give you the foundation; now make them your own.</p>
+
+<p><strong>Ready to build your design agency with world-class infrastructure?</strong> <a href="/pricing">Explore Creativo's white-label platform</a> — we handle the design production so you can focus on growing your client base.</p>
+    `
   },
   "social-media-marketing-design-agencies": {
     title: "Social Media Marketing for Design Agencies: How to Attract High-Ticket Clients",
