@@ -807,7 +807,7 @@ export const resources: Record<string, ResourceData> = {
   <li>Total project fee: <strong>{{TOTAL_FEE}}</strong></li>
   <li>50% deposit due upon signing ({{DEPOSIT_AMOUNT}})</li>
   <li>50% balance due upon final delivery</li>
-  <li>Payment method: Bank transfer / Stripe / PayPal</li>
+  <li>Payment is processed securely through your Cretivo dashboard</li>
   <li>Late payments incur a 5% monthly fee after 14 days overdue</li>
 </ul>
 
