@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -16,6 +17,7 @@ import {
 } from "lucide-react";
 
 const PricingPage = () => {
+  const navigate = useNavigate();
   const services = [
     {
       name: "Design Services",
@@ -237,7 +239,7 @@ const PricingPage = () => {
           
           <div className="text-center mt-12">
             <p className="text-muted-foreground mb-4">Ready to launch your agency?</p>
-            <Button variant="hero" size="lg">
+            <Button variant="hero" size="lg" onClick={() => navigate("/contact")}>
               Start Your Agency
             </Button>
           </div>
