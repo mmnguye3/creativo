@@ -281,34 +281,38 @@ const Resources = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredResources.map((resource) => (
-              <Card key={resource.id} className="hover-lift bg-gradient-card border-white/10">
-                <CardHeader>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                      <resource.icon className="w-4 h-4 text-white" />
+            {filteredResources.map((resource) => {
+              const heroImage = resourceData[resource.slug]?.heroImage;
+              return (
+              <Card key={resource.id} className="hover-lift bg-gradient-card border-white/10 overflow-hidden group cursor-pointer" onClick={() => navigate(`/resources/${resource.slug}`)}>
+                {heroImage && (
+                  <div className="relative h-44 overflow-hidden">
+                    <img
+                      src={heroImage}
+                      alt={resource.title}
+                      className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm text-xs">{resource.type}</Badge>
                     </div>
-                    <Badge variant="secondary">{resource.type}</Badge>
                   </div>
-                  <CardTitle className="text-lg">{resource.title}</CardTitle>
+                )}
+                <CardHeader className={heroImage ? "pt-4 pb-3" : ""}>
+                  {!heroImage && (
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                        <resource.icon className="w-4 h-4 text-white" />
+                      </div>
+                      <Badge variant="secondary">{resource.type}</Badge>
+                    </div>
+                  )}
+                  <CardTitle className="text-lg leading-snug">{resource.title}</CardTitle>
                   <CardDescription className="text-sm">
                     {resource.description}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {resource.tags.slice(0, 2).map((tag, index) => (
-                      <Badge key={index} variant="outline" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
-                    {resource.tags.length > 2 && (
-                      <Badge variant="outline" className="text-xs">
-                        +{resource.tags.length - 2}
-                      </Badge>
-                    )}
-                  </div>
-                  
                   <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
                     <div className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
@@ -317,13 +321,14 @@ const Resources = () => {
                     <span>{resource.date}</span>
                   </div>
                   
-                  <Button variant="outline" size="sm" className="w-full group" onClick={() => navigate(`/resources/${resource.slug}`)}>
+                  <Button variant="outline" size="sm" className="w-full group/btn">
                     {resource.type === "Template" ? "Download" : "Read More"}
-                    <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
                   </Button>
                 </CardContent>
               </Card>
-            ))}
+              );
+            })}
           </div>
           
           {filteredResources.length === 0 && (
