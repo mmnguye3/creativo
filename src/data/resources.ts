@@ -768,7 +768,7 @@ export const resources: Record<string, ResourceData> = {
 
 <h2>3. Project Timeline / Roadmap</h2>
 
-<p>A clear timeline prevents scope creep and keeps everyone accountable. Share this as a visual roadmap (Notion, Asana, or a simple PDF).</p>
+<p>A clear timeline prevents scope creep and keeps everyone accountable. Cretivo's project dashboard displays your roadmap visually so both you and your client can track progress in real time.</p>
 
 <table>
   <thead>
