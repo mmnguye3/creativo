@@ -1,104 +1,23 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Clock, User, Calendar } from "lucide-react";
-
-const resources: Record<string, {
-  title: string;
-  category: string;
-  type: string;
-  readTime: string;
-  author: string;
-  date: string;
-  tags: string[];
-  content: string;
-}> = {
-  "complete-guide-starting-design-agency": {
-    title: "Complete Guide to Starting a Design Agency",
-    category: "Getting Started",
-    type: "Guide",
-    readTime: "15 min read",
-    author: "Alex Chen",
-    date: "Dec 15, 2024",
-    tags: ["Agency", "Business", "Startup"],
-    content: "Content coming soon..."
-  },
-  "10-design-trends-2025": {
-    title: "10 Design Trends That Will Dominate 2025",
-    category: "Design Tips",
-    type: "Article",
-    readTime: "8 min read",
-    author: "Sarah Rodriguez",
-    date: "Dec 12, 2024",
-    tags: ["Trends", "Design", "2025"],
-    content: "Content coming soon..."
-  },
-  "how-to-price-design-services": {
-    title: "How to Price Your Design Services",
-    category: "Business Growth",
-    type: "Video",
-    readTime: "25 min watch",
-    author: "Mike Johnson",
-    date: "Dec 10, 2024",
-    tags: ["Pricing", "Revenue", "Strategy"],
-    content: "Content coming soon..."
-  },
-  "client-onboarding-template-pack": {
-    title: "Client Onboarding Template Pack",
-    category: "Getting Started",
-    type: "Template",
-    readTime: "Download",
-    author: "Emma Thompson",
-    date: "Dec 8, 2024",
-    tags: ["Templates", "Clients", "Process"],
-    content: "Content coming soon..."
-  },
-  "social-media-marketing-design-agencies": {
-    title: "Social Media Marketing for Design Agencies",
-    category: "Marketing",
-    type: "Guide",
-    readTime: "12 min read",
-    author: "Lisa Park",
-    date: "Dec 5, 2024",
-    tags: ["Social Media", "Marketing", "Clients"],
-    content: "Content coming soon..."
-  },
-  "design-agency-success-story": {
-    title: "From $0 to $100K: A Design Agency Success Story",
-    category: "Case Studies",
-    type: "Case Study",
-    readTime: "10 min read",
-    author: "Case Study Team",
-    date: "Dec 3, 2024",
-    tags: ["Success Story", "Growth", "Revenue"],
-    content: "Content coming soon..."
-  },
-  "ux-ui-design-best-practices-2025": {
-    title: "UX/UI Design Best Practices for 2025",
-    category: "Design Tips",
-    type: "Article",
-    readTime: "14 min read",
-    author: "David Kim",
-    date: "Nov 30, 2024",
-    tags: ["UX", "UI", "Best Practices"],
-    content: "Content coming soon..."
-  },
-  "building-profitable-design-subscription-model": {
-    title: "Building a Profitable Design Subscription Model",
-    category: "Business Growth",
-    type: "Video",
-    readTime: "30 min watch",
-    author: "Rachel Green",
-    date: "Nov 28, 2024",
-    tags: ["Subscription", "Revenue", "Business Model"],
-    content: "Content coming soon..."
-  }
-};
+import { resources } from "@/data/resources";
 
 const ResourceDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const resource = slug ? resources[slug] : null;
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (resource) {
+      document.title = `${resource.title} | Creativo`;
+      const meta = document.querySelector('meta[name="description"]');
+      if (meta) meta.setAttribute("content", resource.metaDescription);
+    }
+  }, [resource]);
 
   if (!resource) {
     return (
@@ -140,9 +59,17 @@ const ResourceDetail = () => {
           </div>
         </div>
 
-        <div className="prose prose-lg dark:prose-invert max-w-none">
-          <div dangerouslySetInnerHTML={{ __html: resource.content }} />
-        </div>
+        <div
+          className="prose prose-lg dark:prose-invert max-w-none
+            prose-headings:text-foreground prose-p:text-muted-foreground
+            prose-strong:text-foreground prose-a:text-primary
+            prose-li:text-muted-foreground prose-th:text-foreground
+            prose-td:text-muted-foreground
+            prose-table:border prose-th:border prose-th:px-4 prose-th:py-2
+            prose-td:border prose-td:px-4 prose-td:py-2
+            prose-h2:mt-10 prose-h2:mb-4 prose-h3:mt-6 prose-h3:mb-3"
+          dangerouslySetInnerHTML={{ __html: resource.content }}
+        />
 
         <div className="flex flex-wrap gap-2 mt-12 pt-6 border-t border-border">
           {resource.tags.map((tag, i) => (
