@@ -4,6 +4,7 @@ import pricingDesignServicesHero from "@/assets/resources/pricing-design-service
 import socialMediaMarketingHero from "@/assets/resources/social-media-marketing-hero.jpg";
 import agencySuccessStoryHero from "@/assets/resources/agency-success-story-hero.jpg";
 import uxUiBestPracticesHero from "@/assets/resources/ux-ui-best-practices-hero.jpg";
+import subscriptionModelHero from "@/assets/resources/subscription-model-hero.jpg";
 
 export interface ResourceData {
   title: string;
@@ -1241,14 +1242,272 @@ export const resources: Record<string, ResourceData> = {
     `
   },
   "building-profitable-design-subscription-model": {
-    title: "Building a Profitable Design Subscription Model",
-    metaDescription: "Learn how to create recurring revenue with design subscription services for your agency.",
+    title: "Building a Profitable Design Subscription Model: Recurring Revenue for Your Agency",
+    metaDescription: "Learn how to build a profitable design subscription model with tiered pricing, clear scope boundaries, and scalable delivery. Create predictable recurring revenue for your agency.",
     category: "Business Growth",
-    type: "Video",
-    readTime: "30 min watch",
+    type: "Guide",
+    readTime: "16 min read",
     author: "Rachel Green",
     date: "Nov 28, 2024",
-    tags: ["Subscription", "Revenue", "Business Model"],
-    content: "Content coming soon..."
+    tags: ["Subscription", "Revenue", "Business Model", "Pricing", "Agency"],
+    heroImage: subscriptionModelHero,
+    content: `
+<p>The traditional agency model is broken. You pitch, you win a project, you deliver, you invoice, you wait. Then you start over — hustling for the next deal while cash flow swings wildly from feast to famine. It's exhausting, unpredictable, and fundamentally unscalable.</p>
+
+<p>Design subscription models flip this script entirely. Instead of selling projects, you sell <strong>ongoing access to your design team</strong> for a fixed monthly fee. Clients get unlimited requests (within defined boundaries), and you get predictable, compounding revenue. It's the model behind companies like Design Pickle, Penji, and Manypixels — and it's now accessible to independent agencies of every size.</p>
+
+<div class="article-stat-grid">
+  <div class="article-stat-card">
+    <span class="article-stat-value">3–5×</span>
+    <span class="article-stat-label">Higher Client Lifetime Value</span>
+  </div>
+  <div class="article-stat-card">
+    <span class="article-stat-value">85%</span>
+    <span class="article-stat-label">Revenue Predictability</span>
+  </div>
+  <div class="article-stat-card">
+    <span class="article-stat-value">40%</span>
+    <span class="article-stat-label">Lower Client Acquisition Cost</span>
+  </div>
+</div>
+
+<p>This guide walks you through everything — from structuring your tiers and pricing to managing delivery, avoiding burnout, and scaling beyond yourself.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>What Is a Design Subscription Model?</h2>
+
+<p>A design subscription is a <strong>productized service</strong> where clients pay a recurring monthly fee for ongoing design work. Instead of scoping individual projects with custom proposals, you offer standardized packages with clear deliverables, turnaround times, and revision policies.</p>
+
+<p>Think of it like a retainer — but better structured, easier to sell, and simpler to deliver. The key differences from traditional retainers:</p>
+
+<ul>
+  <li><strong>Standardized packages</strong> — no custom scoping for every client</li>
+  <li><strong>Defined turnaround times</strong> — typically 24–72 hours per request</li>
+  <li><strong>Queue-based workflow</strong> — one active request at a time (per tier)</li>
+  <li><strong>Flat monthly pricing</strong> — no hourly tracking, no surprise invoices</li>
+  <li><strong>Pause or cancel anytime</strong> — lower commitment = easier to sell</li>
+</ul>
+
+<p>This model works exceptionally well for <strong>ongoing design needs</strong>: social media graphics, marketing collateral, website updates, presentation decks, email templates, and brand asset creation. It's less suited for large, complex projects like full brand identities or product design (though you can offer those as add-ons).</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Benefits of Recurring Revenue</h2>
+
+<p>Why are subscription models so powerful? Because they fundamentally change the economics of running an agency.</p>
+
+<h3>Predictable Income</h3>
+<p>When 80% of your revenue renews automatically each month, you can plan ahead — hire confidently, invest in tools, and stop the anxiety of an empty pipeline. A subscription agency with 20 clients at $2,500/month has <strong>$50,000 in predictable monthly revenue</strong>. Compare that to chasing five $10K projects every month with no guarantee.</p>
+
+<h3>Higher Client Lifetime Value</h3>
+<p>Project clients pay once and leave. Subscription clients stay for months or years. A client paying $2,000/month for 14 months generates $28,000 — far more than a typical one-off project. The average subscription client lifetime across the industry is <strong>8–14 months</strong>.</p>
+
+<h3>Lower Acquisition Costs</h3>
+<p>You don't need to constantly sell. Once a client subscribes, your job shifts from sales to retention — which is dramatically cheaper. It costs <strong>5–7× more to acquire a new client</strong> than to retain an existing one.</p>
+
+<h3>Easier to Scale</h3>
+<p>Standardized delivery means you can build systems, hire designers into defined roles, and grow without reinventing your process for every client.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Pricing Tiers: Basic, Standard, Premium</h2>
+
+<p>The most successful subscription agencies offer <strong>three tiers</strong>. This isn't arbitrary — it leverages the decoy effect and gives clients a natural upgrade path.</p>
+
+<table>
+  <thead>
+    <tr><th>Feature</th><th>Basic — $1,495/mo</th><th>Standard — $2,995/mo</th><th>Premium — $4,995/mo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Active Requests</td><td>1 at a time</td><td>2 at a time</td><td>3 at a time</td></tr>
+    <tr><td>Turnaround Time</td><td>48–72 hours</td><td>24–48 hours</td><td>24 hours</td></tr>
+    <tr><td>Design Categories</td><td>Social, Print, Presentations</td><td>All Basic + Web, Email, Ads</td><td>All Standard + Motion, Branding</td></tr>
+    <tr><td>Revisions</td><td>2 per request</td><td>Unlimited</td><td>Unlimited</td></tr>
+    <tr><td>Dedicated Designer</td><td>No (pool)</td><td>Yes</td><td>Yes + Art Director</td></tr>
+    <tr><td>Source Files</td><td>On request</td><td>Included</td><td>Included</td></tr>
+    <tr><td>Strategy Calls</td><td>—</td><td>Monthly</td><td>Bi-weekly</td></tr>
+    <tr><td>Pause Option</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+  </tbody>
+</table>
+
+<div class="article-callout">
+  <div class="article-callout-title">💡 Pricing Psychology</div>
+  <p>The Standard tier should be your target — it's where 60–70% of clients land. Price your Basic high enough that it feels limited, and your Premium low enough that it feels like exceptional value. The Basic tier exists to make Standard look like the obvious choice.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>What to Include in Each Tier</h2>
+
+<p>Be explicit about what's included — and what's not. Ambiguity kills subscription models because clients will always push boundaries if they're undefined.</p>
+
+<h3>Basic Tier Deliverables</h3>
+<ul>
+  <li>Social media graphics (static posts, stories, covers)</li>
+  <li>Print materials (flyers, brochures, business cards)</li>
+  <li>Presentation decks (PowerPoint/Google Slides)</li>
+  <li>Simple infographics</li>
+  <li>Photo editing and retouching</li>
+</ul>
+
+<h3>Standard Tier Additions</h3>
+<ul>
+  <li>Landing page and website design (UI mockups)</li>
+  <li>Email template design</li>
+  <li>Digital ad creatives (Google, Meta, LinkedIn)</li>
+  <li>Report and eBook layout design</li>
+  <li>Custom illustrations (simple)</li>
+</ul>
+
+<h3>Premium Tier Additions</h3>
+<ul>
+  <li>Motion graphics and animated social content</li>
+  <li>Brand guideline development</li>
+  <li>Packaging design concepts</li>
+  <li>Complex custom illustrations</li>
+  <li>Creative strategy and art direction</li>
+</ul>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Setting Clear Boundaries & Scope</h2>
+
+<p>This is where most subscription models fail. Without crystal-clear boundaries, "unlimited design" becomes a recipe for burnout and client conflict.</p>
+
+<p><strong>Define these explicitly in your service agreement:</strong></p>
+
+<ul>
+  <li><strong>Request complexity.</strong> One request = one deliverable. A social media post is one request. A 20-page pitch deck is one request. A complete website redesign is NOT one request — it's a separate project with its own scope.</li>
+  <li><strong>Revision limits.</strong> Even "unlimited revisions" should have guardrails. Define what constitutes a revision vs. a new request. Changing the headline = revision. Changing the entire concept = new request.</li>
+  <li><strong>Turnaround expectations.</strong> Be specific: "48 hours" means 48 business hours from when the request enters your active queue — not from when it's submitted.</li>
+  <li><strong>Communication channels.</strong> Standardize on one tool (Trello, Asana, or a custom portal). Don't let clients Slack, email, AND text you requests.</li>
+  <li><strong>What's excluded.</strong> Explicitly list what your subscription does NOT cover: development/coding, copywriting, photography, 3D rendering, video production, etc.</li>
+</ul>
+
+<div class="article-pullquote">The clearer your boundaries, the happier your clients. Ambiguity breeds frustration on both sides.</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>How to Deliver Consistent Value</h2>
+
+<p>Subscription clients expect <strong>reliable quality and speed every single month</strong>. Here's how to deliver without burning out your team:</p>
+
+<ul>
+  <li><strong>Build a template library.</strong> Create reusable templates for common request types. A social media template system can cut production time by 60%.</li>
+  <li><strong>Standardize your intake process.</strong> Use a structured request form with required fields: objective, audience, dimensions, brand assets, reference examples, copy. Bad briefs = wasted revisions.</li>
+  <li><strong>Create a design system per client.</strong> After the first month, build a mini brand kit: colors, fonts, logo variations, common layouts. This compounds in value over time.</li>
+  <li><strong>Batch similar work.</strong> If three clients need social media graphics, batch them in one session. Context-switching is the biggest productivity killer.</li>
+  <li><strong>Set internal SLAs.</strong> Even if your client-facing turnaround is 48 hours, aim internally for 36. The buffer protects you on heavy weeks.</li>
+</ul>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Managing Multiple Client Expectations</h2>
+
+<p>With 15–25 active subscription clients, managing expectations becomes a core competency. Here's how to do it without dropping balls:</p>
+
+<ul>
+  <li><strong>Use a queue system.</strong> Every request enters a visible queue. Clients can see their position and estimated delivery time. Transparency eliminates "where's my design?" messages.</li>
+  <li><strong>Weekly status updates.</strong> A 2-minute automated email showing completed requests, in-progress work, and queue position keeps clients informed without manual effort.</li>
+  <li><strong>Proactive communication.</strong> If you're going to miss a deadline, communicate before it's due — not after. "We need 12 more hours on this" is vastly better than silence.</li>
+  <li><strong>Quarterly reviews.</strong> Schedule 30-minute calls to review what's working, what's not, and where you can add more value. This is also your best retention tool.</li>
+  <li><strong>Dedicated account leads.</strong> As you grow past 10 clients, assign account leads who own the client relationship. Designers design; account leads communicate.</li>
+</ul>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Scaling Your Subscription Service</h2>
+
+<p>The beauty of subscriptions is that scaling follows a clear playbook:</p>
+
+<h3>Phase 1: Solo (0–5 clients)</h3>
+<p>You do everything — design, communication, billing. Focus on delivering exceptional work and refining your process. Document every workflow.</p>
+
+<h3>Phase 2: First Hire (5–12 clients)</h3>
+<p>Hire your first designer. You shift to art direction and client management. Standardize your onboarding, brief templates, and quality checklists.</p>
+
+<h3>Phase 3: Team (12–25 clients)</h3>
+<p>Build a small team: 2–3 designers, 1 project manager. Implement a project management tool. Create SOPs for every recurring task. You focus on growth and strategy.</p>
+
+<h3>Phase 4: Agency (25+ clients)</h3>
+<p>Hire team leads, systematize quality control, and invest in sales/marketing. At this stage, your job is building the business — not doing the work.</p>
+
+<div class="article-callout">
+  <div class="article-callout-title">📐 The Capacity Formula</div>
+  <p>A skilled designer can handle <strong>4–6 subscription clients</strong> simultaneously (depending on tier complexity). Use this ratio to plan hiring: 20 clients ÷ 5 per designer = 4 designers needed. Always hire slightly ahead of demand — onboarding takes time.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Common Pitfalls to Avoid</h2>
+
+<ul>
+  <li><strong>Underpricing.</strong> The #1 killer. If your Basic tier is $500/month, you'll attract high-maintenance clients who don't value design. Price reflects positioning — charge what professionals charge.</li>
+  <li><strong>No pause policy.</strong> Clients will want to pause during slow months. If you don't offer it, they cancel entirely. A pause policy (with limits) dramatically reduces churn.</li>
+  <li><strong>"Unlimited" without limits.</strong> "Unlimited requests" is a marketing message, not an operational reality. The queue system (one active at a time) is your natural throttle. Make sure clients understand this.</li>
+  <li><strong>Ignoring utilization.</strong> Some clients will submit 30 requests/month. Others will submit 2. Track utilization rates — if a client consistently under-uses, reach out proactively. If they over-use, consider whether they need a higher tier.</li>
+  <li><strong>No onboarding.</strong> The first week sets the tone. A sloppy onboarding leads to months of miscommunication. Invest in a structured welcome sequence: brand asset collection, kickoff call, first-request walkthrough.</li>
+  <li><strong>Neglecting retention.</strong> Acquiring a new subscription client costs $500–$2,000 in marketing and sales effort. Losing one costs you that same amount PLUS the lost recurring revenue. Retention is your most valuable metric.</li>
+</ul>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Metrics to Track</h2>
+
+<p>What gets measured gets managed. These are the numbers that determine whether your subscription model thrives or stalls:</p>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>What It Measures</th><th>Target</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Monthly Recurring Revenue (MRR)</strong></td><td>Total predictable monthly income</td><td>Growing 10–15% month-over-month</td></tr>
+    <tr><td><strong>Client Lifetime Value (CLV)</strong></td><td>Average total revenue per client</td><td>$15,000+ (8–14 month retention)</td></tr>
+    <tr><td><strong>Monthly Churn Rate</strong></td><td>% of clients who cancel each month</td><td>Under 5%</td></tr>
+    <tr><td><strong>Designer Utilization</strong></td><td>% of available hours spent on billable work</td><td>70–80%</td></tr>
+    <tr><td><strong>Average Turnaround Time</strong></td><td>Hours from request to first delivery</td><td>Under your SLA target</td></tr>
+    <tr><td><strong>Client Satisfaction (NPS)</strong></td><td>Net Promoter Score from quarterly surveys</td><td>50+ (excellent)</td></tr>
+    <tr><td><strong>Request Volume per Client</strong></td><td>Average requests submitted per month</td><td>8–15 (healthy engagement)</td></tr>
+  </tbody>
+</table>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Contract & SLA Essentials</h2>
+
+<p>Your service agreement should protect both you and your clients. Key elements to include:</p>
+
+<div class="article-key-takeaway">
+  <div class="article-key-takeaway-title">📋 Service Agreement Checklist</div>
+  <ol>
+    <li><strong>Scope of services</strong> — Explicit list of included and excluded deliverable types</li>
+    <li><strong>Turnaround SLA</strong> — Defined response and delivery times per tier</li>
+    <li><strong>Revision policy</strong> — Number of revisions, what constitutes a revision vs. new request</li>
+    <li><strong>Intellectual property</strong> — Transfer of ownership upon payment (standard)</li>
+    <li><strong>Pause terms</strong> — Maximum pause duration, how unused days are handled</li>
+    <li><strong>Cancellation policy</strong> — Notice period (typically 30 days), no refunds for partial months</li>
+    <li><strong>Communication expectations</strong> — Designated tools, response times, escalation process</li>
+    <li><strong>Confidentiality / NDA</strong> — Standard mutual confidentiality clause</li>
+  </ol>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
+<h2>Launching Your Subscription Service</h2>
+
+<p>Ready to make the leap? Here's your 30-day launch plan:</p>
+
+<ul>
+  <li><strong>Week 1:</strong> Define your tiers, pricing, and scope. Write your service agreement. Set up billing (Stripe subscriptions work perfectly).</li>
+  <li><strong>Week 2:</strong> Build your request intake system (Trello board, Asana project, or dedicated tool like ManyRequests). Create your onboarding sequence.</li>
+  <li><strong>Week 3:</strong> Launch to existing contacts first. Offer 3–5 founding clients a 20% discount for the first 3 months in exchange for testimonials and feedback.</li>
+  <li><strong>Week 4:</strong> Refine based on early feedback. Adjust turnaround estimates, clarify scope boundaries, and polish your delivery workflow.</li>
+</ul>
+
+<p>The subscription model isn't just a pricing strategy — it's a <strong>business model transformation</strong>. It changes how you sell, how you deliver, and how you grow. The agencies that adopt it early will have a compounding advantage over those still chasing one-off projects.</p>
+
+<p><strong>Ready to launch your subscription design agency?</strong> <a href="/pricing">Explore Creativo's white-label platform</a> — we handle the design production so you can focus on building your brand and growing your client base.</p>
+    `
   }
 };
