@@ -873,7 +873,7 @@ export const resources: Record<string, ResourceData> = {
     author: "Case Study Team",
     date: "Dec 3, 2024",
     tags: ["Success Story", "Growth", "Revenue"],
-    heroImage: "/src/assets/resources/agency-success-story-hero.jpg",
+    heroImage: agencySuccessStoryHero,
     content: `
 <p>In January 2023, Marcus Rivera was a burned-out in-house designer making $52,000 a year at a mid-size marketing firm. He had no savings, no business plan, and no clients. By June 2024 — just 18 months later — his design agency, <strong>Riviera Studio</strong>, had crossed <strong>$100,000 in annual revenue</strong> with a team of three and a pipeline of retainer clients.</p>
 
