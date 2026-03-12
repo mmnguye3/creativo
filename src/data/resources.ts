@@ -24,7 +24,24 @@ export const resources: Record<string, ResourceData> = {
     content: `
 <p>The design industry is experiencing unprecedented growth. In 2025, the global graphic design market is valued at over <strong>$57 billion</strong>, with digital design services growing at a compound annual rate of 7.5%. Remote work has shattered geographic barriers, and businesses of every size are investing heavily in branding, UX, and digital presence. If you've ever dreamed of running your own design agency, there has never been a better time to start.</p>
 
+<div class="article-stat-grid">
+  <div class="article-stat-card">
+    <span class="article-stat-value">$57B+</span>
+    <span class="article-stat-label">Global Design Market</span>
+  </div>
+  <div class="article-stat-card">
+    <span class="article-stat-value">7.5%</span>
+    <span class="article-stat-label">Annual Growth Rate</span>
+  </div>
+  <div class="article-stat-card">
+    <span class="article-stat-value">84%</span>
+    <span class="article-stat-label">B2B Sales from Referrals</span>
+  </div>
+</div>
+
 <p>Whether you're a freelance designer looking to scale, or an entrepreneur entering the creative space, this guide walks you through <em>every step</em> — from choosing your niche to landing your first client and building a team.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
 
 <h2>What You Need Before Starting</h2>
 
@@ -38,7 +55,11 @@ export const resources: Record<string, ResourceData> = {
   <li><strong>Communication</strong> — presenting ideas, writing proposals, managing expectations</li>
   <li><strong>Basic business acumen</strong> — invoicing, contracts, project scoping</li>
 </ul>
-<p>If you're strong in design but weak in business, consider partnering with someone who complements your skills. The most successful agencies are built on balanced founding teams.</p>
+
+<div class="article-callout">
+  <div class="article-callout-title">💡 Pro Tip</div>
+  <p>If you're strong in design but weak in business, consider partnering with someone who complements your skills. The most successful agencies are built on balanced founding teams.</p>
+</div>
 
 <h3>Tools</h3>
 <p>Your starter toolkit should include:</p>
@@ -52,6 +73,10 @@ export const resources: Record<string, ResourceData> = {
 
 <h3>Mindset</h3>
 <p>Agency life isn't for everyone. You'll wear many hats — salesperson, project manager, designer, accountant — especially in the early days. The founders who succeed are those who embrace the grind while keeping their eye on the long game. Expect your first 6–12 months to be about building systems, not profits.</p>
+
+<div class="article-pullquote">The founders who succeed are those who embrace the grind while keeping their eye on the long game.</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
 
 <h2>Choosing Your Niche</h2>
 
@@ -67,7 +92,12 @@ export const resources: Record<string, ResourceData> = {
   <li><strong>Presentation &amp; Pitch Deck Design</strong> — High-margin, fast turnaround. Startups and enterprises both need them</li>
 </ul>
 
-<p><strong>Pro tip:</strong> Pick a niche where you have both skill and genuine interest. You'll be doing this work every day — passion prevents burnout.</p>
+<div class="article-callout">
+  <div class="article-callout-title">🎯 Niche Selection Tip</div>
+  <p>Pick a niche where you have both skill and genuine interest. You'll be doing this work every day — passion prevents burnout.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
 
 <h2>Legal Setup</h2>
 
@@ -93,6 +123,8 @@ export const resources: Record<string, ResourceData> = {
 <h3>Insurance</h3>
 <p>General liability insurance and professional liability (errors &amp; omissions) insurance are worth the investment. Policies start at around $500/year and can save you from devastating lawsuits.</p>
 
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
 <h2>Pricing Models</h2>
 
 <p>How you price your services determines your revenue ceiling. Here are the four most common models:</p>
@@ -115,6 +147,10 @@ export const resources: Record<string, ResourceData> = {
 <p>Best for: Scaling without proportionally scaling headcount. Think "unlimited design" plans.</p>
 <p>This model has exploded since 2020. Companies like Design Pickle and Penji proved it works. With a white-label platform like <strong>Creativo</strong>, you can launch your own subscription design service without building the infrastructure from scratch.</p>
 
+<div class="article-pullquote">If you're closing more than 80% of your proposals, your prices are too low.</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
 <h2>Building Your Portfolio from Scratch</h2>
 
 <p>No portfolio? No problem. Here's how to build one fast:</p>
@@ -127,7 +163,12 @@ export const resources: Record<string, ResourceData> = {
   <li><strong>Use Behance &amp; Dribbble</strong> — Post your best work. These platforms still drive traffic and credibility in 2025.</li>
 </ol>
 
-<p><strong>Portfolio tip:</strong> Quality over quantity. Five exceptional case studies beat fifty mediocre mockups every time.</p>
+<div class="article-callout">
+  <div class="article-callout-title">📌 Portfolio Tip</div>
+  <p>Quality over quantity. Five exceptional case studies beat fifty mediocre mockups every time.</p>
+</div>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
 
 <h2>Finding Your First Clients</h2>
 
@@ -147,6 +188,8 @@ export const resources: Record<string, ResourceData> = {
 
 <h3>Partnerships</h3>
 <p>Partner with complementary businesses — web developers, marketing agencies, copywriters, photographers. They'll refer clients to you, and you'll refer clients to them.</p>
+
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
 
 <h2>Scaling Your Agency</h2>
 
@@ -171,6 +214,8 @@ export const resources: Record<string, ResourceData> = {
 <h3>Raise Your Prices</h3>
 <p>As demand increases, raise your prices. Most agencies undercharge for the first 1–2 years. If you're closing more than 80% of your proposals, your prices are too low.</p>
 
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
 <h2>Tools Every Design Agency Needs</h2>
 
 <p>Here's a curated tech stack for a modern design agency in 2025:</p>
@@ -192,20 +237,24 @@ export const resources: Record<string, ResourceData> = {
   </tbody>
 </table>
 
+<div class="article-divider"><div class="article-divider-icon">✦</div></div>
+
 <h2>Conclusion: Your Agency Starts Today</h2>
 
 <p>Starting a design agency in 2025 is more accessible than ever. The barriers to entry are low, the demand is high, and the tools available make it possible to compete with established agencies from day one.</p>
 
 <p>But accessibility doesn't mean it's easy. Building a successful agency requires persistence, strategic thinking, and a willingness to learn from every project — including the ones that go sideways.</p>
 
-<p>Here's your action plan:</p>
-<ol>
-  <li>Choose your niche today</li>
-  <li>Set up your LLC this week</li>
-  <li>Build 3 portfolio pieces this month</li>
-  <li>Reach out to 50 potential clients in the next 30 days</li>
-  <li>Sign your first client within 60 days</li>
-</ol>
+<div class="article-key-takeaway">
+  <div class="article-key-takeaway-title">🚀 Your Action Plan</div>
+  <ol>
+    <li>Choose your niche today</li>
+    <li>Set up your LLC this week</li>
+    <li>Build 3 portfolio pieces this month</li>
+    <li>Reach out to 50 potential clients in the next 30 days</li>
+    <li>Sign your first client within 60 days</li>
+  </ol>
+</div>
 
 <p>The design industry isn't waiting. Your future clients are out there right now, looking for an agency exactly like the one you're about to build.</p>
 
