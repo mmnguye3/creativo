@@ -922,8 +922,8 @@ export const resources: Record<string, ResourceData> = {
 </blockquote>
 
 <div class="article-callout">
-  <div class="article-callout-title">⚡ Automation Tip</div>
-  <p>Use <strong>Notion</strong> or <strong>ClickUp</strong> to auto-generate weekly reports from your task boards. If tasks are tracked properly, the report practically writes itself. Pair with <strong>Loom</strong> for a 2-minute video walkthrough — clients love seeing work in motion.</p>
+  <div class="article-callout-title">⚡ Built Into Cretivo</div>
+  <p>Cretivo <strong>auto-generates weekly progress reports</strong> from your active task boards. Clients can view updates directly in their portal, and you can add a quick video walkthrough with one click. No manual report writing needed.</p>
 </div>
 
 <div class="article-divider"><div class="article-divider-icon">✦</div></div>
