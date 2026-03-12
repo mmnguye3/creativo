@@ -227,6 +227,23 @@
 }
 
 /* Stripe-style Article Components */
+
+.stripe-article-prose :is(h2) {
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.stripe-article-prose :is(h2)::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 2.5rem;
+  height: 2px;
+  background: hsl(var(--foreground));
+  border-radius: 1px;
+}
+
 .stripe-article-prose .article-pullquote {
   margin: 2.5rem 0;
   padding: 1.5rem 0 1.5rem 1.5rem;
