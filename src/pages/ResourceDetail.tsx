@@ -61,6 +61,18 @@ const ResourceDetail = () => {
           </div>
         </div>
 
+        {/* Hero Image */}
+        {resource.heroImage && (
+          <div className="mb-12 rounded-2xl overflow-hidden border border-border">
+            <img
+              src={resource.heroImage}
+              alt={resource.title}
+              className="w-full h-auto object-cover max-h-[480px]"
+              loading="eager"
+            />
+          </div>
+        )}
+
         {/* Two-column: Author sidebar + Content */}
         <div className="flex flex-col md:flex-row gap-8 md:gap-16 pb-20">
           {/* Author Sidebar */}

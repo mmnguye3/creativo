@@ -21,6 +21,7 @@ export const resources: Record<string, ResourceData> = {
     author: "Alex Chen",
     date: "Dec 15, 2024",
     tags: ["Agency", "Business", "Startup"],
+    heroImage: "/src/assets/resources/design-agency-hero.jpg",
     content: `
 <p>The design industry is experiencing unprecedented growth. In 2025, the global graphic design market is valued at over <strong>$57 billion</strong>, with digital design services growing at a compound annual rate of 7.5%. Remote work has shattered geographic barriers, and businesses of every size are investing heavily in branding, UX, and digital presence. If you've ever dreamed of running your own design agency, there has never been a better time to start.</p>
 
