@@ -5,6 +5,7 @@ import socialMediaMarketingHero from "@/assets/resources/social-media-marketing-
 import agencySuccessStoryHero from "@/assets/resources/agency-success-story-hero.jpg";
 import uxUiBestPracticesHero from "@/assets/resources/ux-ui-best-practices-hero.jpg";
 import subscriptionModelHero from "@/assets/resources/subscription-model-hero.jpg";
+import clientOnboardingHero from "@/assets/resources/client-onboarding-hero.jpg";
 
 export interface ResourceData {
   title: string;
