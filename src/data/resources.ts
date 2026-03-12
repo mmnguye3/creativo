@@ -440,7 +440,7 @@ export const resources: Record<string, ResourceData> = {
     author: "Mike Johnson",
     date: "Dec 10, 2024",
     tags: ["Pricing", "Revenue", "Strategy"],
-    heroImage: "/src/assets/resources/pricing-design-services-hero.jpg",
+    heroImage: pricingDesignServicesHero,
     content: `
 <p>Ask any designer what keeps them up at night, and the answer is almost never "kerning." It's <strong>pricing</strong>. How much should I charge? Am I leaving money on the table? Will this client balk at my rate? Pricing is the single most impactful business decision you'll make — and yet most designers wing it.</p>
 
