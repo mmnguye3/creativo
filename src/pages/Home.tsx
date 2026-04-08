@@ -1,4 +1,5 @@
 import Hero from "@/components/Hero";
+import Marquee from "@/components/Marquee";
 import AIAdAgency from "@/components/AIAdAgency";
 import Services from "@/components/Services";
 import Features from "@/components/Features";
@@ -9,6 +10,7 @@ const Home = () => {
   return (
     <>
       <Hero />
+      <Marquee />
       <AIAdAgency />
       <Services />
       <Features />

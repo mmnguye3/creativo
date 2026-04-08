@@ -1,6 +1,6 @@
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useInView } from "@/hooks/useInView";
 import { Palette, Video, FileImage, Monitor, Package, Mail, ShoppingBag, Printer, Presentation, Brush, Play } from "lucide-react";
 
 import socialMediaImg from "@/assets/services/social-media-graphics.jpg";
@@ -32,6 +32,9 @@ const services = [
 ];
 
 const Services = () => {
+  const { ref: titleRef, inView: titleVisible } = useInView({ threshold: 0.3 });
+  const { ref: gridRef, inView: gridVisible } = useInView({ threshold: 0.05 });
+
   return (
     <section className="py-24 bg-zinc-900/40 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
@@ -40,7 +43,16 @@ const Services = () => {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-14">
+        {/* Heading */}
+        <div
+          ref={titleRef as React.RefObject<HTMLDivElement>}
+          className="text-center max-w-2xl mx-auto mb-14"
+          style={{
+            opacity: titleVisible ? 1 : 0,
+            transform: titleVisible ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.6s ease, transform 0.6s ease",
+          }}
+        >
           <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-full px-4 py-1.5 text-sm text-orange-400 mb-5">
             What We Create
           </div>
@@ -55,17 +67,28 @@ const Services = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+        {/* Grid */}
+        <div
+          ref={gridRef as React.RefObject<HTMLDivElement>}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12"
+        >
           {services.map((service, index) => (
-            <Card
+            <div
               key={index}
-              className={`group bg-white/[0.03] border-white/8 hover:border-orange-500/30 hover:bg-white/[0.05] transition-all duration-300 hover:-translate-y-1 overflow-hidden ${
-                service.popular ? "ring-1 ring-orange-500/30" : ""
+              className={`group rounded-2xl bg-white/[0.03] border overflow-hidden transition-all duration-300 hover:-translate-y-1 ${
+                service.popular
+                  ? "border-orange-500/30 hover:border-orange-500/50"
+                  : "border-white/8 hover:border-orange-500/25 hover:bg-white/[0.05]"
               }`}
+              style={{
+                opacity: gridVisible ? 1 : 0,
+                transform: gridVisible ? "translateY(0)" : "translateY(28px)",
+                transition: `opacity 0.5s ease ${(index % 6) * 0.08}s, transform 0.5s ease ${(index % 6) * 0.08}s, border-color 0.3s`,
+              }}
             >
               {service.popular && (
                 <div className="absolute top-3 left-3 z-10">
-                  <span className="bg-orange-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+                  <span className="bg-orange-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-lg shadow-orange-500/30">
                     Most Popular
                   </span>
                 </div>
@@ -74,40 +97,42 @@ const Services = () => {
                 <img
                   src={service.image}
                   alt={service.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/30 to-transparent" />
               </div>
-              <CardContent className="p-5">
+              <div className="p-5">
                 <div className="flex items-start gap-3 mb-3">
-                  <div className="w-9 h-9 rounded-lg bg-orange-500/15 flex items-center justify-center shrink-0 group-hover:bg-orange-500/25 transition-colors">
-                    <service.icon className="w-4.5 h-4.5 text-orange-400" />
+                  <div className="w-9 h-9 rounded-lg bg-orange-500/15 flex items-center justify-center shrink-0 group-hover:bg-orange-500/30 transition-colors duration-300">
+                    <service.icon className="w-4 h-4 text-orange-400" />
                   </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-white group-hover:text-orange-300 transition-colors leading-tight">
-                      {service.title}
-                    </h3>
-                  </div>
+                  <h3 className="text-sm font-semibold text-white group-hover:text-orange-300 transition-colors leading-tight pt-1">
+                    {service.title}
+                  </h3>
                 </div>
                 <p className="text-xs text-zinc-500 leading-relaxed mb-4">{service.description}</p>
                 <Link
                   to={service.link}
-                  className="text-xs font-medium text-orange-400 hover:text-orange-300 transition-colors inline-flex items-center gap-1"
+                  className="text-xs font-medium text-orange-400 hover:text-orange-300 transition-colors inline-flex items-center gap-1 group/link"
                 >
-                  Learn more →
+                  Learn more
+                  <span className="group-hover/link:translate-x-0.5 transition-transform inline-block">→</span>
                 </Link>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
 
         <div className="text-center">
           <Button
             size="lg"
-            className="bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-lg shadow-orange-500/20 px-10"
+            className="bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-lg shadow-orange-500/20 px-10 relative overflow-hidden group"
             asChild
           >
-            <Link to="/services">View All Services</Link>
+            <Link to="/services">
+              <span className="relative z-10">View All Services</span>
+              <span className="absolute inset-0 bg-white/10 translate-x-[-110%] group-hover:translate-x-[110%] transition-transform duration-500 skew-x-12" />
+            </Link>
           </Button>
         </div>
       </div>

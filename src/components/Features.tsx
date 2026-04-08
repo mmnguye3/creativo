@@ -1,3 +1,4 @@
+import { useInView } from "@/hooks/useInView";
 import { Palette, Users, CreditCard, Settings, Zap, Shield, BarChart3, Layers } from "lucide-react";
 
 const features = [
@@ -12,6 +13,9 @@ const features = [
 ];
 
 const Features = () => {
+  const { ref: titleRef, inView: titleVisible } = useInView({ threshold: 0.3 });
+  const { ref: gridRef, inView: gridVisible } = useInView({ threshold: 0.05 });
+
   return (
     <section className="py-24 bg-zinc-950 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
@@ -20,7 +24,16 @@ const Features = () => {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-14">
+        {/* Heading */}
+        <div
+          ref={titleRef as React.RefObject<HTMLDivElement>}
+          className="text-center max-w-2xl mx-auto mb-14"
+          style={{
+            opacity: titleVisible ? 1 : 0,
+            transform: titleVisible ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.6s ease, transform 0.6s ease",
+          }}
+        >
           <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-full px-4 py-1.5 text-sm text-orange-400 mb-5">
             Platform Features
           </div>
@@ -36,14 +49,22 @@ const Features = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Grid */}
+        <div
+          ref={gridRef as React.RefObject<HTMLDivElement>}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"
+        >
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group p-6 rounded-2xl bg-white/[0.03] border border-white/8 hover:border-orange-500/30 hover:bg-white/[0.05] transition-all duration-300 hover:-translate-y-1"
-              style={{ animationDelay: `${index * 0.06}s` }}
+              className="group p-6 rounded-2xl bg-white/[0.03] border border-white/8 hover:border-orange-500/30 hover:bg-white/[0.05] transition-all duration-300 hover:-translate-y-1 cursor-default"
+              style={{
+                opacity: gridVisible ? 1 : 0,
+                transform: gridVisible ? "translateY(0)" : "translateY(28px)",
+                transition: `opacity 0.55s ease ${index * 0.07}s, transform 0.55s ease ${index * 0.07}s, border-color 0.3s, background 0.3s, box-shadow 0.3s`,
+              }}
             >
-              <div className="w-11 h-11 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4 group-hover:bg-orange-500/20 transition-colors">
+              <div className="w-11 h-11 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4 group-hover:bg-orange-500/25 group-hover:scale-110 transition-all duration-300">
                 <feature.icon className="w-5 h-5 text-orange-400" />
               </div>
               <h3 className="text-sm font-semibold text-white mb-2 group-hover:text-orange-300 transition-colors">

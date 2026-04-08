@@ -1,3 +1,4 @@
+import { useInView } from "@/hooks/useInView";
 import { Star, Quote } from "lucide-react";
 
 const testimonials = [
@@ -10,15 +11,28 @@ const testimonials = [
 ];
 
 const Testimonials = () => {
+  const { ref: titleRef, inView: titleVisible } = useInView({ threshold: 0.3 });
+  const { ref: gridRef, inView: gridVisible } = useInView({ threshold: 0.05 });
+
   return (
     <section className="py-24 bg-zinc-900/40 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(249,115,22,0.03),transparent_70%)]" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-14">
+        {/* Heading */}
+        <div
+          ref={titleRef as React.RefObject<HTMLDivElement>}
+          className="text-center max-w-2xl mx-auto mb-14"
+          style={{
+            opacity: titleVisible ? 1 : 0,
+            transform: titleVisible ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.6s ease, transform 0.6s ease",
+          }}
+        >
           <div className="inline-flex items-center gap-1.5 bg-yellow-500/10 border border-yellow-500/20 rounded-full px-4 py-1.5 text-sm text-yellow-400 mb-5">
             <div className="flex">
               {[...Array(5)].map((_, i) => (
@@ -38,14 +52,23 @@ const Testimonials = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {/* Grid */}
+        <div
+          ref={gridRef as React.RefObject<HTMLDivElement>}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+        >
           {testimonials.map((t, index) => (
             <div
               key={index}
               className="p-6 rounded-2xl bg-white/[0.03] border border-white/8 hover:border-orange-500/20 hover:bg-white/[0.05] transition-all duration-300 flex flex-col"
+              style={{
+                opacity: gridVisible ? 1 : 0,
+                transform: gridVisible ? "translateY(0) scale(1)" : "translateY(20px) scale(0.98)",
+                transition: `opacity 0.5s ease ${index * 0.08}s, transform 0.5s ease ${index * 0.08}s`,
+              }}
             >
               <div className="flex items-center gap-2 mb-4">
-                <Quote className="w-4 h-4 text-orange-400 shrink-0" />
+                <Quote className="w-4 h-4 text-orange-400/60 shrink-0" />
                 <div className="flex">
                   {[...Array(t.rating)].map((_, i) => (
                     <Star key={i} className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
@@ -53,12 +76,10 @@ const Testimonials = () => {
                 </div>
               </div>
 
-              <p className="text-zinc-400 text-sm leading-relaxed flex-1 mb-5">
-                "{t.content}"
-              </p>
+              <p className="text-zinc-400 text-sm leading-relaxed flex-1 mb-5">"{t.content}"</p>
 
               <div className="flex items-center gap-3 pt-4 border-t border-white/5">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shrink-0 shadow-md shadow-orange-500/20">
                   <span className="text-white text-xs font-bold">
                     {t.name.split(" ").map((n) => n[0]).join("")}
                   </span>

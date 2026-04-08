@@ -16,12 +16,17 @@ const navLinks = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const { user } = useAuth();
   const { isAdmin } = useAdmin();
   const location = useLocation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -38,6 +43,12 @@ const Navbar = () => {
           : "bg-transparent"
       }`}
     >
+      {/* Scroll progress line */}
+      <div
+        className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-orange-500 to-amber-400 transition-all duration-75 rounded-r-full"
+        style={{ width: `${scrollProgress}%` }}
+      />
+
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -51,13 +62,16 @@ const Navbar = () => {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-colors group ${
                   location.pathname === link.href
                     ? "text-orange-400"
                     : "text-zinc-400 hover:text-white"
                 }`}
               >
                 {link.label}
+                {location.pathname === link.href && (
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-orange-400 rounded-full" />
+                )}
               </Link>
             ))}
           </div>
@@ -85,12 +99,15 @@ const Navbar = () => {
                 </Button>
                 <Button
                   size="sm"
-                  className="bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-lg shadow-orange-500/25"
+                  className="bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-lg shadow-orange-500/25 relative overflow-hidden group"
                   asChild
                 >
                   <Link to="/contact">
-                    Get Started
-                    <ChevronRight className="w-4 h-4 ml-1" />
+                    <span className="relative z-10 flex items-center gap-1">
+                      Get Started
+                      <ChevronRight className="w-4 h-4" />
+                    </span>
+                    <span className="absolute inset-0 bg-white/10 translate-x-[-110%] group-hover:translate-x-[110%] transition-transform duration-500 skew-x-12" />
                   </Link>
                 </Button>
               </>
@@ -114,7 +131,11 @@ const Navbar = () => {
               <Link
                 key={link.href}
                 to={link.href}
-                className="block px-4 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
+                className={`block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  location.pathname === link.href
+                    ? "text-orange-400 bg-orange-500/10"
+                    : "text-zinc-400 hover:text-white hover:bg-white/5"
+                }`}
               >
                 {link.label}
               </Link>
