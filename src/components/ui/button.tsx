@@ -9,18 +9,18 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-button hover:shadow-glow transform hover:scale-105",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-primary bg-transparent text-foreground hover:bg-primary hover:text-primary-foreground",
+          "border border-zinc-700 bg-transparent text-zinc-300 hover:border-zinc-500 hover:text-white hover:bg-white/5",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        ghost: "hover:bg-white/5 hover:text-white text-zinc-400",
         link: "text-primary underline-offset-4 hover:underline",
-        hero: "bg-gradient-primary text-primary-foreground hover:shadow-glow transform hover:scale-105 border border-primary/20 backdrop-blur-sm",
-        premium: "bg-gradient-hero text-primary-foreground hover:shadow-glow transform hover:scale-105 animate-pulse-glow border border-primary-glow/30",
-        glass: "bg-gradient-glass text-foreground border border-white/20 backdrop-blur-md hover:bg-white/20",
+        hero: "bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-lg shadow-orange-500/25",
+        premium: "bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-xl shadow-orange-500/30",
+        glass: "bg-white/5 text-white border border-white/10 backdrop-blur-md hover:bg-white/10",
       },
       size: {
         default: "h-10 px-4 py-2",

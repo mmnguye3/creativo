@@ -1,105 +1,100 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, Zap, Users, Palette, TrendingUp, Target, Megaphone, Sparkles, BarChart3, PenTool } from "lucide-react";
-// Background image will be loaded from public directory
+import { ArrowRight, Sparkles, Users, Palette, Zap } from "lucide-react";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background image first */}
-      <div 
-        className="absolute inset-0"
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-zinc-950">
+      {/* Subtle radial glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full bg-orange-500/5 blur-3xl" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-amber-500/4 blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-orange-600/4 blur-3xl" />
+      </div>
+
+      {/* Grid overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.025] pointer-events-none"
         style={{
-          backgroundImage: `url(/hero-background.png)`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
         }}
-      ></div>
-      
-      {/* Floating elements with agency icons */}
-      <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-glass rounded-full animate-float opacity-30 flex items-center justify-center">
-        <TrendingUp className="w-12 h-12 text-primary-glow/60" />
-      </div>
-      <div className="absolute bottom-20 right-20 w-24 h-24 bg-gradient-glass rounded-full animate-float opacity-20 flex items-center justify-center" style={{ animationDelay: '-2s' }}>
-        <Target className="w-8 h-8 text-primary-glow/60" />
-      </div>
-      <div className="absolute top-1/2 left-10 w-16 h-16 bg-gradient-glass rounded-full animate-float opacity-25 flex items-center justify-center" style={{ animationDelay: '-4s' }}>
-        <Megaphone className="w-6 h-6 text-primary-glow/60" />
-      </div>
-      
-      {/* Additional floating icons */}
-      <div className="absolute top-1/3 right-32 w-20 h-20 bg-gradient-glass rounded-full animate-float opacity-20 flex items-center justify-center" style={{ animationDelay: '-1s' }}>
-        <BarChart3 className="w-7 h-7 text-primary-glow/60" />
-      </div>
-      <div className="absolute bottom-1/3 left-32 w-14 h-14 bg-gradient-glass rounded-full animate-float opacity-30 flex items-center justify-center" style={{ animationDelay: '-3s' }}>
-        <PenTool className="w-5 h-5 text-primary-glow/60" />
-      </div>
-      <div className="absolute top-3/4 right-1/4 w-18 h-18 bg-gradient-glass rounded-full animate-float opacity-25 flex items-center justify-center" style={{ animationDelay: '-5s' }}>
-        <Sparkles className="w-6 h-6 text-primary-glow/60" />
-      </div>
-      
-      <div className="relative z-10 container mx-auto px-4 text-center">
-        <div className="max-w-4xl mx-auto space-y-8 bg-black/50 backdrop-blur-sm rounded-3xl p-12">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-gradient-glass border border-white/20 rounded-full px-6 py-2 text-sm backdrop-blur-md">
-            <Zap className="w-4 h-4 text-primary-glow" />
-            <span className="text-white">AI-Powered White Label Solution</span>
-          </div>
-          
-          {/* Main headline */}
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight text-white">
-            Launch Your
-            <span className="block bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent leading-relaxed pb-2">
-              Design Agency
-            </span>
-            in Minutes
-          </h1>
-          
-          {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-white font-bold max-w-2xl mx-auto leading-relaxed">
-            Complete white-label platform with unlimited design services, client management, 
-            and subscription billing. Start your design agency today.
-          </p>
-          
-          {/* CTA buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              variant="hero" 
-              size="xl" 
-              className="group"
-              asChild
-            >
-              <Link to="/contact">
-                Start Your Agency
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </Button>
-          </div>
-          
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 pt-8 border-t border-white/10">
-            <div className="space-y-2">
-              <div className="flex items-center justify-center gap-2">
-                <Users className="w-5 h-5 text-primary-glow" />
-                <span className="text-3xl font-bold text-white">500+</span>
+      />
+
+      <div className="relative z-10 container mx-auto px-4 text-center pt-24 pb-16">
+        {/* Pill badge */}
+        <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-full px-4 py-1.5 text-sm text-orange-400 mb-8 animate-fade-up">
+          <Sparkles className="w-3.5 h-3.5" />
+          AI-Powered White Label Platform
+        </div>
+
+        {/* Headline */}
+        <h1
+          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.05] tracking-tight text-white mb-6 animate-fade-up"
+          style={{ animationDelay: "0.1s" }}
+        >
+          Launch Your
+          <br />
+          <span className="bg-gradient-to-r from-orange-400 via-orange-500 to-amber-400 bg-clip-text text-transparent">
+            Design Agency
+          </span>
+          <br />
+          in Minutes
+        </h1>
+
+        {/* Subheadline */}
+        <p
+          className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed mb-10 animate-fade-up"
+          style={{ animationDelay: "0.2s" }}
+        >
+          Complete white-label platform with unlimited design services,
+          client management, and subscription billing — ready to brand as your own.
+        </p>
+
+        {/* CTA */}
+        <div
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-up"
+          style={{ animationDelay: "0.3s" }}
+        >
+          <Button
+            size="lg"
+            className="bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-xl shadow-orange-500/30 px-8 h-12 text-base font-semibold group"
+            asChild
+          >
+            <Link to="/contact">
+              Start Your Agency
+              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-500 hover:bg-white/5 h-12 px-8 text-base"
+            asChild
+          >
+            <Link to="/services">See Our Services</Link>
+          </Button>
+        </div>
+
+        {/* Stats */}
+        <div
+          className="mt-20 grid grid-cols-3 gap-8 max-w-xl mx-auto border-t border-white/5 pt-12 animate-fade-up"
+          style={{ animationDelay: "0.45s" }}
+        >
+          {[
+            { icon: Users, value: "500+", label: "Clients" },
+            { icon: Palette, value: "10K+", label: "Designs Created" },
+            { icon: Zap, value: "99.9%", label: "Uptime" },
+          ].map(({ icon: Icon, value, label }) => (
+            <div key={label} className="text-center">
+              <div className="flex items-center justify-center gap-1.5 mb-1">
+                <Icon className="w-4 h-4 text-orange-400" />
+                <span className="text-2xl font-bold text-white">{value}</span>
               </div>
-              <p className="text-white">Clients</p>
+              <p className="text-sm text-zinc-500">{label}</p>
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-center gap-2">
-                <Palette className="w-5 h-5 text-primary-glow" />
-                <span className="text-3xl font-bold text-white">10K+</span>
-              </div>
-              <p className="text-white">Designs Created</p>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-center gap-2">
-                <Zap className="w-5 h-5 text-primary-glow" />
-                <span className="text-3xl font-bold text-white">99.9%</span>
-              </div>
-              <p className="text-white">Uptime</p>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

@@ -3,6 +3,15 @@
 ## Project Overview
 A white-label agency platform where users can launch their own branded design agency site. Built with React + Vite + Tailwind CSS + shadcn/ui, using Supabase for authentication, database, and Edge Functions.
 
+## Design System (Redesigned)
+- **Theme**: Dark premium aesthetic — zinc-950 base background, dark card surfaces
+- **Accent**: Orange-500 (`hsl(25 95% 53%)`) for CTAs, highlights, and gradient text
+- **Typography**: Bold white headings, zinc-400 body text, generous whitespace
+- **Cards**: Subtle `bg-white/[0.03]` glass surfaces with `border-white/8`, orange border on hover
+- **Buttons**: Orange-500 primary, zinc-700 bordered outline, white/5 ghost
+- **Gradient text**: `from-orange-400 to-amber-400` for all accent headlines
+- **Legacy gradient variables preserved**: `--gradient-primary`, `--gradient-hero`, `--gradient-card`, `--gradient-glass` (for inner pages)
+
 ## Architecture
 - **Frontend**: React 18 + TypeScript, Vite build tool
 - **Styling**: Tailwind CSS + shadcn/ui component library
