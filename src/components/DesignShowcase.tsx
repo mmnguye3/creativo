@@ -1,4 +1,5 @@
 import { useInView } from "@/hooks/useInView";
+import { ImageIcon } from "lucide-react";
 
 const DesignShowcase = () => {
   const { ref: titleRef, inView: titleVisible } = useInView({ threshold: 0.3 });
@@ -6,11 +7,11 @@ const DesignShowcase = () => {
 
   return (
     <section className="py-24 bg-zinc-950 relative overflow-hidden">
-      {/* Subtle top rule */}
+      {/* Subtle top/bottom rules */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
-        {/* Ambient glow behind the image */}
+        {/* Ambient glow */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] bg-orange-500/6 rounded-full blur-3xl" />
       </div>
 
@@ -40,7 +41,17 @@ const DesignShowcase = () => {
           </p>
         </div>
 
-        {/* Collage image */}
+        {/* ── IMAGE PLACEHOLDER ──────────────────────────────────────────────
+            Replace this entire <div> block with:
+              <img
+                src="/designs-collage.png"
+                alt="Collage of sample social media designs created through Cretivo"
+                loading="lazy"
+                decoding="async"
+                className="w-full max-w-5xl mx-auto block rounded-[20px] border border-white/10 shadow-2xl shadow-black/70"
+              />
+            once the orange-background collage PNG has been uploaded to public/designs-collage.png
+        ─────────────────────────────────────────────────────────────────── */}
         <div
           ref={imgRef as React.RefObject<HTMLDivElement>}
           style={{
@@ -50,14 +61,21 @@ const DesignShowcase = () => {
             transitionDelay: "0.1s",
           }}
         >
-          <img
-            src="/designs-collage.png"
-            alt="Collage of sample social media designs created through Cretivo"
-            loading="lazy"
-            decoding="async"
-            className="w-full max-w-5xl mx-auto block rounded-[20px] border border-white/10 shadow-2xl shadow-black/70"
-            style={{ display: "block" }}
-          />
+          <div className="w-full max-w-5xl mx-auto rounded-[20px] border border-white/10 shadow-2xl shadow-black/70 overflow-hidden bg-orange-500/10 border-orange-500/20 aspect-[16/9] flex flex-col items-center justify-center gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center">
+              <ImageIcon className="w-8 h-8 text-orange-400" />
+            </div>
+            <div className="text-center px-6">
+              <p className="text-white font-semibold mb-1">Collage image pending</p>
+              <p className="text-zinc-500 text-sm">
+                Upload the orange-background social-media design collage as{" "}
+                <code className="text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded text-xs font-mono">
+                  public/designs-collage.png
+                </code>{" "}
+                to complete this section.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
