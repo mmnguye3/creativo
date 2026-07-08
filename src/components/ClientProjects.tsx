@@ -43,6 +43,14 @@ export const ClientProjects: React.FC = () => {
         .order('created_at', { ascending: false });
 
       if (error) {
+        // 42703 = undefined column: the client_email / purchase_order_id
+        // migration has not been applied to this database yet. No rows can
+        // have client data, so show the empty state instead of an error.
+        if (error.code === '42703') {
+          setClientProjects([]);
+          setFilteredProjects([]);
+          return;
+        }
         throw error;
       }
 

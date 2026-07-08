@@ -5,3 +5,4 @@
 - [Customer orders table](orders-schema.md) — table is customer_orders (not orders/purchase_orders); agency link via agency_id → agency_settings.id; status values: pending, in_progress, completed, cancelled.
 - [Dashboard tabs](dashboard-tabs.md) — Dashboard.tsx uses controlled Tabs (value/onValueChange) with horizontal-scroll TabsList; AI Ads tab wired via selectedAdGeneration state + onViewAdCampaign callback from GenerationHistory.
 - [Supabase edge function identity](supabase-edge-fn-auth.md) — derive userId from JWT, never body; REVOKE PUBLIC EXECUTE on SECURITY DEFINER RPCs.
+- [Live Supabase schema drift](supabase-schema-drift.md) — live DB follows the Oct 2025 baseline migration; older/newer repo migrations may be unapplied, so verify columns via REST before trusting types.ts.
