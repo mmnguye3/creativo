@@ -198,17 +198,19 @@ export const OrderForm = ({ onBack }: OrderFormProps) => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name *</Label>
+              <Label htmlFor="name" className="text-gray-700">Full Name *</Label>
               <Input
                 id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
                 required
+                className="bg-white text-black border-gray-300 placeholder:text-gray-400 focus-visible:ring-orange-500 focus-visible:ring-offset-white"
+                data-testid="input-order-name"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email *</Label>
+              <Label htmlFor="email" className="text-gray-700">Email *</Label>
               <Input
                 id="email"
                 name="email"
@@ -216,33 +218,39 @@ export const OrderForm = ({ onBack }: OrderFormProps) => {
                 value={formData.email}
                 onChange={handleInputChange}
                 required
+                className="bg-white text-black border-gray-300 placeholder:text-gray-400 focus-visible:ring-orange-500 focus-visible:ring-offset-white"
+                data-testid="input-order-email"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="phone" className="text-gray-700">Phone Number</Label>
               <Input
                 id="phone"
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
+                className="bg-white text-black border-gray-300 placeholder:text-gray-400 focus-visible:ring-orange-500 focus-visible:ring-offset-white"
+                data-testid="input-order-phone"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="company">Company</Label>
+              <Label htmlFor="company" className="text-gray-700">Company</Label>
               <Input
                 id="company"
                 name="company"
                 value={formData.company}
                 onChange={handleInputChange}
+                className="bg-white text-black border-gray-300 placeholder:text-gray-400 focus-visible:ring-orange-500 focus-visible:ring-offset-white"
+                data-testid="input-order-company"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">Project Notes</Label>
+            <Label htmlFor="notes" className="text-gray-700">Project Notes</Label>
             <Textarea
               id="notes"
               name="notes"
@@ -250,6 +258,8 @@ export const OrderForm = ({ onBack }: OrderFormProps) => {
               value={formData.notes}
               onChange={handleInputChange}
               rows={4}
+              className="bg-white text-black border-gray-300 placeholder:text-gray-400 focus-visible:ring-orange-500 focus-visible:ring-offset-white"
+              data-testid="input-order-notes"
             />
           </div>
 
