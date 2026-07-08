@@ -505,7 +505,43 @@ async function generateImageWithOpenAI(
 ): Promise<{ imageUrl: string; modelUsed: string }> {
   if (!openAIApiKey) throw new Error('OpenAI API key not configured');
 
-  const imageResponse = await retryWithBackoff(() =>
+  // Try dall-e-3 first (returns a hosted URL); some API keys/projects don't
+  // have dall-e-3 access, so fall back to gpt-image-1 (returns base64).
+  try {
+    const imageResponse = await retryWithBackoff(() =>
+      fetch('https://api.openai.com/v1/images/generations', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openAIApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'dall-e-3',
+          prompt,
+          n: 1,
+          size: dalleSize,
+          quality: 'standard',
+        }),
+      })
+    );
+
+    const imageData = await imageResponse.json();
+    if (imageData?.data?.[0]?.url) {
+      console.log('[openai] ✓ dall-e-3 image generated');
+      return { imageUrl: imageData.data[0].url, modelUsed: 'dall-e-3' };
+    }
+    console.warn(`[openai] dall-e-3 gave no URL, trying gpt-image-1: ${JSON.stringify(imageData).slice(0, 200)}`);
+  } catch (e) {
+    console.warn(`[openai] dall-e-3 failed, trying gpt-image-1: ${(e as Error).message}`);
+  }
+
+  // gpt-image-1 only supports 1024x1024, 1024x1536, 1536x1024
+  const gptImageSize =
+    dalleSize === '1024x1792' ? '1024x1536'
+    : dalleSize === '1792x1024' ? '1536x1024'
+    : '1024x1024';
+
+  const gptImageResponse = await retryWithBackoff(() =>
     fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
@@ -513,23 +549,23 @@ async function generateImageWithOpenAI(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'dall-e-3',
+        model: 'gpt-image-1',
         prompt,
         n: 1,
-        size: dalleSize,
-        quality: 'standard',
+        size: gptImageSize,
+        quality: 'medium',
       }),
     })
   );
 
-  const imageData = await imageResponse.json();
-
-  if (!imageData?.data?.[0]?.url) {
-    throw new Error(`No image URL in OpenAI response: ${JSON.stringify(imageData).slice(0, 300)}`);
+  const gptImageData = await gptImageResponse.json();
+  const b64 = gptImageData?.data?.[0]?.b64_json;
+  if (!b64) {
+    throw new Error(`No image in gpt-image-1 response: ${JSON.stringify(gptImageData).slice(0, 300)}`);
   }
 
-  console.log('[openai] ✓ dall-e-3 image generated');
-  return { imageUrl: imageData.data[0].url, modelUsed: 'dall-e-3' };
+  console.log('[openai] ✓ gpt-image-1 image generated');
+  return { imageUrl: `data:image/png;base64,${b64}`, modelUsed: 'gpt-image-1' };
 }
 
 async function generateImage(
