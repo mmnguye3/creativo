@@ -55,7 +55,7 @@ interface GamblingEntry {
   id: string;
   user_id: string;
   user_email: string | null;
-  note: string | null;
+  notes: string | null;
   created_at: string;
 }
 
@@ -164,7 +164,7 @@ export default function AdminCompliance() {
   // ── Gambling whitelist ──
   const [whitelist, setWhitelist] = useState<GamblingEntry[]>([]);
   const [newWlUserId, setNewWlUserId] = useState('');
-  const [newWlNote, setNewWlNote] = useState('');
+  const [newWlNotes, setNewWlNotes] = useState('');
   const [wlBusy, setWlBusy] = useState(false);
 
   // ── UI state ──
@@ -410,13 +410,13 @@ export default function AdminCompliance() {
     setWlBusy(true);
     const { error } = await supabase
       .from('gambling_whitelist')
-      .insert({ user_id: newWlUserId.trim(), note: newWlNote.trim() || null });
+      .insert({ user_id: newWlUserId.trim(), notes: newWlNotes.trim() || null });
     if (error) {
       toast({ title: 'Failed to add', description: error.message, variant: 'destructive' });
     } else {
       toast({ title: 'User added to gambling whitelist' });
       setNewWlUserId('');
-      setNewWlNote('');
+      setNewWlNotes('');
       await fetchWhitelist();
     }
     setWlBusy(false);
@@ -821,9 +821,9 @@ export default function AdminCompliance() {
                 data-testid="input-whitelist-userid"
               />
               <Input
-                placeholder="Note (optional — e.g. licensed operator)"
-                value={newWlNote}
-                onChange={e => setNewWlNote(e.target.value)}
+                placeholder="Notes (optional — e.g. licensed operator)"
+                value={newWlNotes}
+                onChange={e => setNewWlNotes(e.target.value)}
                 className="flex-1 h-9 text-sm rounded-xl border-stone-200"
                 data-testid="input-whitelist-note"
               />
@@ -862,7 +862,7 @@ export default function AdminCompliance() {
                       <tr key={entry.id} className="hover:bg-stone-50/60 transition-colors"
                         data-testid={`row-whitelist-${entry.id}`}>
                         <td className="px-4 py-3 text-xs font-mono text-stone-600">{entry.user_id}</td>
-                        <td className="px-4 py-3 text-xs text-stone-500">{entry.note || '—'}</td>
+                        <td className="px-4 py-3 text-xs text-stone-500">{entry.notes || '—'}</td>
                         <td className="px-4 py-3 text-xs text-stone-400 whitespace-nowrap">{fmtDate(entry.created_at)}</td>
                         <td className="px-4 py-3">
                           <button

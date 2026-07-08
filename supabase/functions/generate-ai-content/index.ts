@@ -705,56 +705,69 @@ serve(async (req) => {
     let pendingReviewReason = '';
 
     if (moderationInput) {
-      // ── Layer 2: Deterministic rules (fastest, no network) ─────────────────
-      try {
-        for (const rule of CUSTOM_RULES) {
-          if (rule.isGambling && isGamblingWhitelisted) continue; // bypass for whitelisted
-          if (rule.pattern.test(moderationInput)) {
-            hit = {
-              categories: [rule.category],
-              label: rule.label,
-              tier: rule.tier,
-              layer: 'rules',
-              actionTaken: 'blocked',
-            };
-            break;
+      // ── Layers 1 + 2 run in PARALLEL — OpenAI omni-moderation is ALWAYS called ──
+      // OpenAI omni-moderation-latest must run on every request regardless of custom-rule hits.
+      // Both results are collected; the highest-severity hit wins.
+      const [rulesSettled, openAISettled] = await Promise.allSettled([
+        // Layer 2: Deterministic rules (synchronous, wrapped in a Promise for allSettled)
+        Promise.resolve((() => {
+          for (const rule of CUSTOM_RULES) {
+            if (rule.isGambling && isGamblingWhitelisted) continue;
+            if (rule.pattern.test(moderationInput)) {
+              return {
+                categories: [rule.category],
+                label: rule.label,
+                tier: rule.tier as 1 | 2,
+                layer: 'rules',
+                actionTaken: 'blocked',
+              } satisfies ScreeningHit;
+            }
           }
-        }
-      } catch (e) {
-        // Fail closed
-        console.error('[moderation] Layer 2 (rules) error (fail-closed):', (e as Error).message);
-        hit = {
-          categories: ['moderation-error'],
-          label: 'moderation-error',
-          tier: 2,
-          layer: 'rules',
-          actionTaken: 'error_blocked',
-        };
-      }
-
-      // ── Layer 1: OpenAI omni-moderation ────────────────────────────────────
-      if (!hit) {
-        try {
-          const mod = await moderateWithOpenAI(moderationInput);
+          return null;
+        })()),
+        // Layer 1: OpenAI omni-moderation (always called)
+        moderateWithOpenAI(moderationInput).then(mod => {
           if (mod.flagged && mod.categories.length > 0) {
             const tier = mod.categories.some(c => TIER_1_CATEGORIES.has(c)) ? 1 : 2;
-            hit = {
+            return {
               categories: mod.categories,
               label: mod.categories[0].replace(/[/_-]/g, ' '),
               tier,
               layer: 'openai-moderation',
               actionTaken: 'blocked',
-            };
+            } satisfies ScreeningHit;
           }
-        } catch (e) {
-          console.error('[moderation] Layer 1 (OpenAI moderation) error (fail-closed):', (e as Error).message);
-          hit = {
-            categories: ['moderation-error'],
-            label: 'moderation-error',
-            tier: 2,
-            layer: 'openai-moderation',
-            actionTaken: 'error_blocked',
-          };
+          return null;
+        }),
+      ]);
+
+      // Collect hits from both layers
+      const candidateHits: ScreeningHit[] = [];
+
+      if (rulesSettled.status === 'fulfilled') {
+        if (rulesSettled.value) candidateHits.push(rulesSettled.value);
+      } else {
+        console.error('[moderation] Layer 2 (rules) error (fail-closed):', (rulesSettled.reason as Error)?.message);
+        candidateHits.push({ categories: ['moderation-error'], label: 'moderation-error', tier: 2, layer: 'rules', actionTaken: 'error_blocked' });
+      }
+
+      if (openAISettled.status === 'fulfilled') {
+        if (openAISettled.value) candidateHits.push(openAISettled.value);
+      } else {
+        console.error('[moderation] Layer 1 (OpenAI moderation) error (fail-closed):', (openAISettled.reason as Error)?.message);
+        candidateHits.push({ categories: ['moderation-error'], label: 'moderation-error', tier: 2, layer: 'openai-moderation', actionTaken: 'error_blocked' });
+      }
+
+      // Pick worst hit: Tier 1 > Tier 2; within same tier, prefer 'blocked' over 'error_blocked'
+      if (candidateHits.length > 0) {
+        candidateHits.sort((a, b) => {
+          if (a.tier !== b.tier) return a.tier - b.tier; // lower tier number = more severe
+          if (a.actionTaken === 'blocked' && b.actionTaken !== 'blocked') return -1;
+          return 0;
+        });
+        hit = candidateHits[0];
+        if (candidateHits.length > 1) {
+          console.log(`[moderation] Multiple hits: picked tier=${hit.tier} layer=${hit.layer}; other hit tier=${candidateHits[1].tier} layer=${candidateHits[1].layer}`);
         }
       }
 
