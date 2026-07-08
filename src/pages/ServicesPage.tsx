@@ -54,7 +54,7 @@ const HERO_CLIPS = [
     duration: 4.2,
     delay: 0,
     ratio: '295 / 400',
-    pos: { top: '4%', left: '20%', width: '52%' },
+    pos: { top: '6%', left: '33%', width: '35%' },
   },
   {
     id: 2,
@@ -66,7 +66,7 @@ const HERO_CLIPS = [
     duration: 5.1,
     delay: 0.7,
     ratio: '246 / 300',
-    pos: { top: '2%', left: '0%', width: '41%' },
+    pos: { top: '8%', left: '0%', width: '30%' },
   },
   {
     id: 3,
@@ -78,7 +78,7 @@ const HERO_CLIPS = [
     duration: 4.6,
     delay: 1.4,
     ratio: '289 / 336',
-    pos: { bottom: '4%', left: '13%', width: '44%' },
+    pos: { bottom: '0%', left: '7%', width: '32%' },
   },
   {
     id: 4,
@@ -90,7 +90,7 @@ const HERO_CLIPS = [
     duration: 3.9,
     delay: 0.3,
     ratio: '286 / 343',
-    pos: { top: '30%', right: '0%', width: '44%' },
+    pos: { top: '4%', right: '0%', width: '31%' },
   },
   {
     id: 5,
@@ -102,7 +102,7 @@ const HERO_CLIPS = [
     duration: 5.3,
     delay: 1.1,
     ratio: '276 / 352',
-    pos: { bottom: '2%', right: '6%', width: '41%' },
+    pos: { bottom: '3%', right: '4%', width: '30%' },
   },
 ] as const;
 
