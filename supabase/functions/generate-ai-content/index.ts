@@ -12,13 +12,13 @@ const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { serviceType, description, userId, generationId } = await req.json();
+    const body = await req.json();
+    const { serviceType, description, userId, generationId, platform, objective, tone, targetAudience, promoDetail } = body;
 
     if (!openAIApiKey) {
       throw new Error('OpenAI API key not configured');
@@ -28,9 +28,7 @@ serve(async (req) => {
 
     console.log(`Generating content for service: ${serviceType}, user: ${userId}`);
 
-    // Define service-specific prompts and content types
-    const serviceConfig = {
-      // Design Services
+    const serviceConfig: Record<string, { contentType: string; textPrompt: string | null; imagePrompt: string | null; useJsonMode?: boolean; imageSize?: string }> = {
       'social-media-graphics': {
         contentType: 'combo',
         textPrompt: `Create engaging social media graphics copy for: ${description}. Include platform-specific text, hashtags, and engaging captions.`,
@@ -56,8 +54,6 @@ serve(async (req) => {
         textPrompt: null,
         imagePrompt: `Create professional packaging design for: ${description}. Attractive, market-ready packaging with clear branding and product information.`
       },
-
-      // Video Content
       'short-form-video': {
         contentType: 'text',
         textPrompt: `Create a short-form video editing concept and script for: ${description}. Include shot sequences, timing, transitions, and text overlays for platforms like TikTok and Instagram Reels.`,
@@ -83,8 +79,6 @@ serve(async (req) => {
         textPrompt: `Create an animated explainer video concept for: ${description}. Include script, visual style guide, character descriptions, and scene breakdown.`,
         imagePrompt: null
       },
-
-      // Web Development
       'website-design': {
         contentType: 'combo',
         textPrompt: `Create a comprehensive website design concept for: ${description}. Include site structure, page layouts, content strategy, and user experience guidelines.`,
@@ -110,8 +104,6 @@ serve(async (req) => {
         textPrompt: `Create responsive design guidelines for: ${description}. Include breakpoints, mobile-first approach, and cross-device optimization strategies.`,
         imagePrompt: `Create responsive design mockups for: ${description}. Multi-device layouts optimized for desktop, tablet, and mobile.`
       },
-
-      // Marketing Materials
       'email-templates': {
         contentType: 'text',
         textPrompt: `Create professional email template content for: ${description}. Include subject lines, engaging copy, call-to-actions, and HTML structure guidelines.`,
@@ -137,8 +129,6 @@ serve(async (req) => {
         textPrompt: `Create compelling sales materials for: ${description}. Include value propositions, key benefits, objection handling, and persuasive copy.`,
         imagePrompt: null
       },
-
-      // E-commerce Solutions
       'amazon-a-plus': {
         contentType: 'combo',
         textPrompt: `Create Amazon A+ content copy for: ${description}. Include product features, benefits, brand story, and SEO-optimized descriptions.`,
@@ -164,8 +154,6 @@ serve(async (req) => {
         textPrompt: null,
         imagePrompt: `Create realistic product mockups for: ${description}. Professional presentation in real-world contexts and usage scenarios.`
       },
-
-      // Print & Packaging
       'business-cards': {
         contentType: 'image',
         textPrompt: null,
@@ -188,6 +176,53 @@ serve(async (req) => {
       }
     };
 
+    // Build ad-campaign config dynamically from request params
+    if (serviceType === 'ad-campaign') {
+      const platformLabels: Record<string, string> = {
+        'facebook-instagram': 'Facebook and Instagram',
+        'google-ads': 'Google Ads',
+        'tiktok': 'TikTok',
+      };
+      const toneDescriptions: Record<string, string> = {
+        'professional': 'professional and authoritative',
+        'playful': 'fun, playful, and lighthearted',
+        'urgent-promo': 'urgent, promotional, and action-driving',
+        'luxury': 'luxurious, premium, and aspirational',
+        'bold': 'bold, direct, and high-impact',
+      };
+      const platformLabel = platformLabels[platform] || platform || 'social media';
+      const toneDesc = toneDescriptions[tone] || tone || 'professional';
+      const imageSize = platform === 'tiktok' ? '1024x1792' : '1024x1024';
+
+      serviceConfig['ad-campaign'] = {
+        contentType: 'combo',
+        useJsonMode: true,
+        imageSize,
+        textPrompt: `You are an expert advertising copywriter creating a complete ${platformLabel} ad campaign package.
+
+Campaign Brief:
+- Product/Offer: ${description}
+- Target Audience: ${targetAudience || 'general audience'}
+- Campaign Objective: ${(objective || 'conversions').replace(/-/g, ' ')}
+- Tone: ${toneDesc}
+${promoDetail ? `- Promotional Detail: ${promoDetail}` : ''}
+
+Return ONLY a valid JSON object with exactly these fields. No markdown fences, no explanations, just JSON:
+{
+  "headlines": ["Headline 1 max 40 chars", "Headline 2 max 40 chars", "Headline 3 max 40 chars"],
+  "primaryTextShort": "Feed ad primary text, max 125 characters, engaging and on-brand",
+  "primaryTextLong": "Two to three sentence version with more context about the product and offer, suitable for detailed placements.",
+  "description": "Link description max 30 chars",
+  "ctaButton": "Shop Now",
+  "hashtags": ["#tag1", "#tag2", "#tag3", "#tag4", "#tag5"],
+  "videoHooks": ["Short punchy video opening line 1", "Opening hook variant 2", "Opening hook variant 3"]
+}
+
+Rules: Each headline must be max 40 characters. primaryTextShort max 125 characters. description max 30 characters. ctaButton must be exactly one of: Shop Now, Learn More, Sign Up, Get Offer, Book Now. hashtags must include the # symbol.`,
+        imagePrompt: `Professional ${platformLabel} advertisement creative image for: ${description}. ${toneDesc} visual style. Commercial photography quality, clean composition, bold and attention-grabbing colors, product-forward. No text, no words, no letters overlaid on image. Suitable for paid advertising on ${platformLabel}.${promoDetail ? ` Visually conveys: ${promoDetail}.` : ''}`,
+      };
+    }
+
     const config = serviceConfig[serviceType as keyof typeof serviceConfig];
     if (!config) {
       throw new Error(`Unsupported service type: ${serviceType}`);
@@ -196,22 +231,17 @@ serve(async (req) => {
     let generatedContent = null;
     let imageUrl = null;
 
-    // Helper function for retry with exponential backoff
     const retryWithBackoff = async (fn: () => Promise<Response>, maxRetries = 3) => {
       for (let i = 0; i < maxRetries; i++) {
         try {
           const response = await fn();
           if (response.ok) return response;
-          
-          // Check for rate limit error
           if (response.status === 429) {
-            const waitTime = Math.pow(2, i) * 1000; // 1s, 2s, 4s
+            const waitTime = Math.pow(2, i) * 1000;
             console.log(`Rate limited, waiting ${waitTime}ms before retry ${i + 1}`);
             await new Promise(resolve => setTimeout(resolve, waitTime));
             continue;
           }
-          
-          // For other errors, throw immediately
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         } catch (error) {
           if (i === maxRetries - 1) throw error;
@@ -221,33 +251,55 @@ serve(async (req) => {
       throw new Error('Max retries exceeded');
     };
 
-    // Generate text content if needed
+    // Generate text content
     if (config.textPrompt) {
-      const textResponse = await retryWithBackoff(() => 
+      const requestBody: Record<string, unknown> = {
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: 'You are a professional marketing and design assistant. Create high-quality, engaging content.' },
+          { role: 'user', content: config.textPrompt }
+        ],
+        max_tokens: 1200,
+        temperature: config.useJsonMode ? 0.8 : 0.7,
+      };
+
+      if (config.useJsonMode) {
+        requestBody.response_format = { type: 'json_object' };
+      }
+
+      const textResponse = await retryWithBackoff(() =>
         fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${openAIApiKey}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            model: 'gpt-4o-mini',
-            messages: [
-              { role: 'system', content: 'You are a professional marketing and design assistant. Create high-quality, engaging content.' },
-              { role: 'user', content: config.textPrompt }
-            ],
-            max_tokens: 1000,
-            temperature: 0.7,
-          }),
+          body: JSON.stringify(requestBody),
         })
       );
 
       const textData = await textResponse.json();
       generatedContent = textData.choices[0].message.content;
+
+      // For ad-campaign: strip markdown fences and validate JSON
+      if (serviceType === 'ad-campaign') {
+        let jsonStr = (generatedContent as string)
+          .replace(/^```json?\s*/i, '')
+          .replace(/```\s*$/i, '')
+          .trim();
+        try {
+          const parsed = JSON.parse(jsonStr);
+          generatedContent = JSON.stringify(parsed);
+        } catch (e) {
+          console.warn('Ad campaign JSON parse warning:', e);
+          generatedContent = jsonStr;
+        }
+      }
     }
 
-    // Generate image if needed
+    // Generate image
     if (config.imagePrompt) {
+      const imageSize = config.imageSize || '1024x1024';
       const imageResponse = await retryWithBackoff(() =>
         fetch('https://api.openai.com/v1/images/generations', {
           method: 'POST',
@@ -259,7 +311,7 @@ serve(async (req) => {
             model: 'dall-e-3',
             prompt: config.imagePrompt,
             n: 1,
-            size: '1024x1024',
+            size: imageSize,
             quality: 'standard',
           }),
         })
@@ -269,7 +321,6 @@ serve(async (req) => {
       imageUrl = imageData.data[0].url;
     }
 
-    // Update the generation record with results as draft
     const { error: updateError } = await supabase
       .from('ai_generations')
       .update({
@@ -297,42 +348,33 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in generate-ai-content function:', error);
-    
-    // Update the generation record to failed status
+
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { serviceType, description, userId, generationId } = await req.json().catch(() => ({}));
-    
+    const errorBody = await req.json().catch(() => ({})) as Record<string, unknown>;
+    const generationId = errorBody.generationId;
+
     if (generationId) {
       await supabase
         .from('ai_generations')
-        .update({
-          status: 'failed',
-          updated_at: new Date().toISOString(),
-        })
+        .update({ status: 'failed', updated_at: new Date().toISOString() })
         .eq('id', generationId);
     }
-    
-    // Provide specific error messages for common issues
+
+    const errMsg = (error as Error).message || '';
     let errorMessage = 'Failed to generate content';
-    if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
+    if (errMsg.includes('429') || errMsg.includes('Too Many Requests')) {
       errorMessage = 'OpenAI API rate limit exceeded. Please try again in a few moments.';
-    } else if (error.message.includes('Bad Request')) {
+    } else if (errMsg.includes('Bad Request')) {
       errorMessage = 'Invalid request to OpenAI API. Please check your input and try again.';
-    } else if (error.message.includes('OpenAI API key not configured')) {
+    } else if (errMsg.includes('OpenAI API key not configured')) {
       errorMessage = 'OpenAI API key is not configured. Please contact support.';
     }
-    
+
     return new Response(
-      JSON.stringify({ 
-        error: errorMessage, 
-        details: error.message 
-      }),
-      { 
-        status: 500, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      }
+      JSON.stringify({ error: errorMessage, details: errMsg }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });

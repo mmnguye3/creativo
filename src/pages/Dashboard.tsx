@@ -11,8 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { User, Settings, FileText, MessageSquare, Sparkles, History, Users, Building2, ShoppingCart, Shield } from 'lucide-react';
+import { User, Settings, FileText, MessageSquare, Sparkles, History, Users, Building2, ShoppingCart, Shield, Megaphone } from 'lucide-react';
 import { AIGenerator } from '@/components/AIGenerator';
+import { AIAdsGenerator } from '@/components/AIAdsGenerator';
 import { GenerationHistory } from '@/components/GenerationHistory';
 import { ClientProjects } from '@/components/ClientProjects';
 import { OrderManagement } from '@/components/OrderManagement';
@@ -30,6 +31,14 @@ interface Profile {
   avatar_url: string | null;
 }
 
+interface HistoryGeneration {
+  id: string;
+  generated_content: string | null;
+  image_url: string | null;
+  metadata?: Record<string, string> | null;
+  description?: string;
+}
+
 const Dashboard = () => {
   const { user, loading, signOut } = useAuth();
   const { isAdmin } = useAdmin();
@@ -37,7 +46,9 @@ const Dashboard = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
-  
+  const [activeTab, setActiveTab] = useState('ai-generator');
+  const [selectedAdGeneration, setSelectedAdGeneration] = useState<HistoryGeneration | null>(null);
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [company, setCompany] = useState('');
@@ -101,7 +112,7 @@ const Dashboard = () => {
         title: "Profile updated",
         description: "Your profile has been updated successfully."
       });
-      
+
       fetchProfile();
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -117,6 +128,11 @@ const Dashboard = () => {
 
   const handleSignOut = async () => {
     await signOut();
+  };
+
+  const handleViewAdCampaign = (generation: HistoryGeneration) => {
+    setSelectedAdGeneration(generation);
+    setActiveTab('ai-ads');
   };
 
   if (loading || profileLoading) {
@@ -135,6 +151,7 @@ const Dashboard = () => {
   }
 
   const userInitials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U';
+  const agencyName = company || (firstName && lastName ? `${firstName} ${lastName}` : 'Your Agency');
 
   return (
     <div className="min-h-screen bg-black pt-20">
@@ -147,112 +164,122 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content with Tabs */}
           <div className="lg:col-span-2">
-            <Tabs defaultValue="ai-generator" className="w-full">
-              <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-7' : 'grid-cols-6'} bg-gray-800 border-gray-700`}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <TabsTrigger value="ai-generator" className="flex items-center gap-2">
-                      <Sparkles className="h-4 w-4" />
-                      AI Generator
-                    </TabsTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Create new AI-powered content with intelligent assistance</p>
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <TabsTrigger value="history" className="flex items-center gap-2">
-                      <History className="h-4 w-4" />
-                      History
-                    </TabsTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>View and manage all your previously generated content</p>
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <TabsTrigger value="client-projects" className="flex items-center gap-2">
-                      <Users className="h-4 w-4" />
-                      Client Projects
-                    </TabsTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Track completed projects with client emails and purchase orders</p>
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <TabsTrigger value="orders" className="flex items-center gap-2">
-                      <ShoppingCart className="h-4 w-4" />
-                      Orders
-                    </TabsTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>View and manage customer orders for your agency</p>
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <TabsTrigger value="agency-settings" className="flex items-center gap-2">
-                      <Building2 className="h-4 w-4" />
-                      Agency
-                    </TabsTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Configure your white-label agency website</p>
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <TabsTrigger value="profile" className="flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      Profile
-                    </TabsTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Manage your account information and preferences</p>
-                  </TooltipContent>
-                </Tooltip>
-                {isAdmin && (
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              {/* Horizontally scrollable tab list for mobile */}
+              <div className="overflow-x-auto -mx-1 px-1">
+                <TabsList className={`flex bg-gray-800 border-gray-700 w-max min-w-full`}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <TabsTrigger value="admin" className="flex items-center gap-2">
-                        <Shield className="h-4 w-4" />
-                        Admin
+                      <TabsTrigger value="ai-generator" className="flex items-center gap-1.5 whitespace-nowrap">
+                        <Sparkles className="h-4 w-4" />
+                        <span className="hidden sm:inline">AI Generator</span>
                       </TabsTrigger>
                     </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Admin dashboard for managing users and platform</p>
-                    </TooltipContent>
+                    <TooltipContent><p>Create new AI-powered content</p></TooltipContent>
                   </Tooltip>
-                )}
-              </TabsList>
-              
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="ai-ads" className="flex items-center gap-1.5 whitespace-nowrap">
+                        <Megaphone className="h-4 w-4" />
+                        <span className="hidden sm:inline">AI Ads</span>
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent><p>Generate complete ad campaigns with copy and creative</p></TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="history" className="flex items-center gap-1.5 whitespace-nowrap">
+                        <History className="h-4 w-4" />
+                        <span className="hidden sm:inline">History</span>
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent><p>View all your previously generated content</p></TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="client-projects" className="flex items-center gap-1.5 whitespace-nowrap">
+                        <Users className="h-4 w-4" />
+                        <span className="hidden sm:inline">Projects</span>
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent><p>Track completed client projects</p></TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="orders" className="flex items-center gap-1.5 whitespace-nowrap">
+                        <ShoppingCart className="h-4 w-4" />
+                        <span className="hidden sm:inline">Orders</span>
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent><p>View and manage customer orders</p></TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="agency-settings" className="flex items-center gap-1.5 whitespace-nowrap">
+                        <Building2 className="h-4 w-4" />
+                        <span className="hidden sm:inline">Agency</span>
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent><p>Configure your white-label agency website</p></TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger value="profile" className="flex items-center gap-1.5 whitespace-nowrap">
+                        <User className="h-4 w-4" />
+                        <span className="hidden sm:inline">Profile</span>
+                      </TabsTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent><p>Manage your account information</p></TooltipContent>
+                  </Tooltip>
+
+                  {isAdmin && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <TabsTrigger value="admin" className="flex items-center gap-1.5 whitespace-nowrap">
+                          <Shield className="h-4 w-4" />
+                          <span className="hidden sm:inline">Admin</span>
+                        </TabsTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent><p>Admin dashboard</p></TooltipContent>
+                    </Tooltip>
+                  )}
+                </TabsList>
+              </div>
+
               <TabsContent value="ai-generator" className="mt-6 bg-gray-900 rounded-lg p-4">
-                <AIGenerator onGenerationComplete={() => {
-                  // Refresh history when new generation is complete
-                  window.location.reload();
-                }} />
+                <AIGenerator onGenerationComplete={() => {}} />
               </TabsContent>
-              
+
+              <TabsContent value="ai-ads" className="mt-6 bg-gray-900 rounded-lg p-4">
+                <AIAdsGenerator
+                  agencyName={agencyName}
+                  initialGeneration={selectedAdGeneration}
+                  onClear={() => setSelectedAdGeneration(null)}
+                />
+              </TabsContent>
+
               <TabsContent value="history" className="mt-6 bg-gray-900 rounded-lg p-4">
-                <GenerationHistory />
+                <GenerationHistory onViewAdCampaign={handleViewAdCampaign} />
               </TabsContent>
-              
+
               <TabsContent value="client-projects" className="mt-6 bg-gray-900 rounded-lg p-4">
                 <ClientProjects />
               </TabsContent>
-              
+
               <TabsContent value="orders" className="mt-6 bg-gray-900 rounded-lg p-4">
                 <OrderManagement />
               </TabsContent>
-              
+
               <TabsContent value="agency-settings" className="mt-6 bg-gray-900 rounded-lg p-4">
                 <AgencySettingsForm />
               </TabsContent>
-              
+
               <TabsContent value="profile" className="mt-6 bg-gray-900 rounded-lg p-4">
                 <Card className="bg-black border-orange-200/50">
                   <CardHeader>
@@ -268,14 +295,7 @@ const Dashboard = () => {
                     <form onSubmit={updateProfile} className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Label htmlFor="firstName">First Name</Label>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Keep your information updated for personalized content suggestions</p>
-                            </TooltipContent>
-                          </Tooltip>
+                          <Label htmlFor="firstName">First Name</Label>
                           <Input
                             id="firstName"
                             value={firstName}
@@ -292,14 +312,7 @@ const Dashboard = () => {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Label htmlFor="email">Email</Label>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Email cannot be changed - contact support if needed</p>
-                          </TooltipContent>
-                        </Tooltip>
+                        <Label htmlFor="email">Email</Label>
                         <Input
                           id="email"
                           value={user.email || ''}
@@ -330,7 +343,7 @@ const Dashboard = () => {
                   </CardContent>
                 </Card>
               </TabsContent>
-              
+
               {isAdmin && (
                 <TabsContent value="admin" className="mt-6 space-y-6">
                   <Card className="bg-gray-900 border-gray-700">
@@ -344,22 +357,22 @@ const Dashboard = () => {
                       </CardDescription>
                     </CardHeader>
                   </Card>
-                  
+
                   <Tabs defaultValue="analytics" className="w-full">
                     <TabsList className="grid w-full grid-cols-3 bg-gray-800 border-gray-700">
                       <TabsTrigger value="analytics">Analytics</TabsTrigger>
                       <TabsTrigger value="users">User Management</TabsTrigger>
                       <TabsTrigger value="subdomains">Subdomains</TabsTrigger>
                     </TabsList>
-                    
+
                     <TabsContent value="analytics" className="mt-4">
                       <AdminAnalytics />
                     </TabsContent>
-                    
+
                     <TabsContent value="users" className="mt-4">
                       <UserManagement />
                     </TabsContent>
-                    
+
                     <TabsContent value="subdomains" className="mt-4">
                       <SubdomainManagement />
                     </TabsContent>
@@ -371,27 +384,21 @@ const Dashboard = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* User Info Card */}
             <Card className="bg-black border-orange-200/50">
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center text-center">
                   <Avatar className="h-20 w-20 mb-4">
-                    <AvatarFallback className="text-lg">
-                      {userInitials}
-                    </AvatarFallback>
+                    <AvatarFallback className="text-lg">{userInitials}</AvatarFallback>
                   </Avatar>
                   <h3 className="font-semibold text-lg text-white">
                     {firstName && lastName ? `${firstName} ${lastName}` : 'User'}
                   </h3>
                   <p className="text-sm text-gray-400">{user.email}</p>
-                  {company && (
-                    <p className="text-sm text-gray-400">{company}</p>
-                  )}
+                  {company && <p className="text-sm text-gray-400">{company}</p>}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Quick Actions */}
             <Card className="bg-black border-orange-200/50">
               <CardHeader>
                 <CardTitle className="text-lg text-white">Quick Actions</CardTitle>
@@ -406,9 +413,7 @@ const Dashboard = () => {
                       </a>
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Get help with technical issues or content questions</p>
-                  </TooltipContent>
+                  <TooltipContent><p>Get help with technical issues</p></TooltipContent>
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -419,9 +424,7 @@ const Dashboard = () => {
                       </a>
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Explore all available AI content generation services</p>
-                  </TooltipContent>
+                  <TooltipContent><p>Explore all available services</p></TooltipContent>
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -430,13 +433,11 @@ const Dashboard = () => {
                       Account Settings
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Manage your subscription and preferences</p>
-                  </TooltipContent>
+                  <TooltipContent><p>Manage your subscription and preferences</p></TooltipContent>
                 </Tooltip>
-                <Button 
-                  variant="destructive" 
-                  className="w-full" 
+                <Button
+                  variant="destructive"
+                  className="w-full"
                   onClick={handleSignOut}
                 >
                   Sign Out
