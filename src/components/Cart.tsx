@@ -48,7 +48,7 @@ const Cart = () => {
               <p className="text-sm text-gray-600 line-clamp-2">{item.description}</p>
               <div className="flex items-center gap-2 mt-2">
                 <span className="text-lg font-bold text-orange-600">${item.price}</span>
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-xs text-gray-600 border-gray-300">
                   <Clock className="w-3 h-3 mr-1" />
                   Fast delivery
                 </Badge>
@@ -62,16 +62,16 @@ const Cart = () => {
                   size="sm"
                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
                   disabled={item.quantity <= 1}
-                  className="h-8 w-8 p-0"
+                  className="h-8 w-8 p-0 text-gray-700 hover:text-black hover:bg-gray-100"
                 >
                   <Minus className="w-3 h-3" />
                 </Button>
-                <span className="w-8 text-center font-medium">{item.quantity}</span>
+                <span className="w-8 text-center font-medium text-black">{item.quantity}</span>
                 <Button
                   variant="ghost" 
                   size="sm"
                   onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                  className="h-8 w-8 p-0"
+                  className="h-8 w-8 p-0 text-gray-700 hover:text-black hover:bg-gray-100"
                 >
                   <Plus className="w-3 h-3" />
                 </Button>
