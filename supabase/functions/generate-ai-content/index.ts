@@ -1009,6 +1009,39 @@ serve(async (req) => {
       }
     }
 
+    // ── Gate 1: Hold gray-zone items — do NOT generate, do NOT charge ─────────
+    // When a prompt is flagged for admin review the edge function must not call
+    // any image/text model and must not incur any generation cost. The record is
+    // held with status='pending' + review_status='pending_review' until an admin
+    // acts on it in the Compliance console (Gate 2).
+    if (pendingReview) {
+      const { error: holdErr } = await supabase
+        .from('ai_generations')
+        .update({
+          status:         'pending',
+          review_status:  'pending_review',
+          review_reason:  pendingReviewReason,
+          updated_at:     new Date().toISOString(),
+        })
+        .eq('id', generationId);
+
+      if (holdErr) {
+        console.error('[generate] Failed to hold gray-zone item:', holdErr.message);
+      }
+
+      console.log(`[generate] HELD-FOR-REVIEW generationId=${generationId} reason=${pendingReviewReason}`);
+
+      return new Response(
+        JSON.stringify({
+          pendingReview:      true,
+          submittedForReview: true,
+          pendingReviewReason,
+          message: 'Your request has been submitted for admin review. You will be notified when it is ready.',
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
+
     // ════════════════════════════════════════════════════════════════════════
     // GENERATION
     // ════════════════════════════════════════════════════════════════════════
