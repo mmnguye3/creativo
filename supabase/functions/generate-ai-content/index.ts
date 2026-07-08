@@ -440,7 +440,7 @@ async function generateImageWithFal(
     requestBody = {
       prompt,
       aspect_ratio: toIdeogramAspectRatio(dalleSize),
-      rendering_speed: 'STANDARD',
+      rendering_speed: 'BALANCED',
       magic_prompt_option: 'ON',
     };
   } else if (model === 'fal-ai/recraft-v3') {
