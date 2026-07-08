@@ -218,49 +218,49 @@ export function ContentAckGate({ userId, children }: {
   };
 
   return (
-    <div className="rounded-xl border border-white/8 bg-white/[0.03] p-6 max-w-2xl mx-auto space-y-5" data-testid="card-content-ack">
+    <div className="rounded-xl border border-stone-200 bg-white p-6 max-w-2xl mx-auto space-y-5 shadow-sm" data-testid="card-content-ack">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-lg bg-orange-500/15 flex items-center justify-center">
           <ShieldCheck className="w-5 h-5 text-orange-500" />
         </div>
         <div>
-          <h3 className="text-base font-bold text-white">Content Guidelines</h3>
-          <p className="text-xs text-zinc-400">One-time acknowledgment required before generating content</p>
+          <h3 className="text-base font-bold text-black">Content Guidelines</h3>
+          <p className="text-xs text-black">One-time acknowledgment required before generating content</p>
         </div>
       </div>
 
       <div className="space-y-2.5">
-        <p className="text-xs text-zinc-400 leading-relaxed">
+        <p className="text-xs text-black leading-relaxed">
           Every generation request is automatically screened for compliance. The following content is prohibited:
         </p>
         <ul className="space-y-2">
           {PROHIBITED_CATEGORIES.map(cat => (
             <li key={cat.title} className="flex gap-2 text-xs">
-              <span className="text-red-400/70 mt-px flex-shrink-0">✕</span>
+              <span className="text-red-500 mt-px flex-shrink-0">✕</span>
               <span>
-                <span className="text-zinc-300 font-medium">{cat.title}</span>
-                <span className="text-zinc-500"> — {cat.description}</span>
+                <span className="text-black font-semibold">{cat.title}</span>
+                <span className="text-black"> — {cat.description}</span>
               </span>
             </li>
           ))}
         </ul>
-        <p className="text-xs text-zinc-500 pt-1">
+        <p className="text-xs text-black pt-1">
           Blocked attempts are logged. Accounts with repeated violations are placed under review and may be suspended. Full policy:{' '}
-          <a href="/terms#section-6" target="_blank" rel="noopener noreferrer" className="text-orange-400 hover:text-orange-300 underline underline-offset-2">
+          <a href="/terms#section-6" target="_blank" rel="noopener noreferrer" className="text-orange-600 hover:text-orange-500 underline underline-offset-2">
             Terms of Service § 6
           </a>
         </p>
       </div>
 
-      <div className="flex items-start gap-2.5 rounded-lg border border-white/10 bg-white/[0.02] p-3">
+      <div className="flex items-start gap-2.5 rounded-lg border border-stone-200 bg-stone-50 p-3">
         <Checkbox
           id="content-ack"
           checked={checked}
           onCheckedChange={v => setChecked(v === true)}
-          className="mt-0.5 border-white/30 data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
+          className="mt-0.5 border-stone-400 data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
           data-testid="checkbox-content-ack"
         />
-        <label htmlFor="content-ack" className="text-xs text-zinc-300 leading-relaxed cursor-pointer">
+        <label htmlFor="content-ack" className="text-xs text-black leading-relaxed cursor-pointer">
           I have read and agree to follow the Content Guidelines. I understand that prohibited content will be blocked and repeated violations may result in account suspension.
         </label>
       </div>
