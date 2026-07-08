@@ -3,6 +3,7 @@ import Marquee from "@/components/Marquee";
 import AIAdAgency from "@/components/AIAdAgency";
 import Services from "@/components/Services";
 import DesignShowcase from "@/components/DesignShowcase";
+import MotionShowcase from "@/components/MotionShowcase";
 import Features from "@/components/Features";
 import Testimonials from "@/components/Testimonials";
 import CTA from "@/components/CTA";
@@ -15,6 +16,7 @@ const Home = () => {
       <AIAdAgency />
       <Services />
       <DesignShowcase />
+      <MotionShowcase />
       <Features />
       <Testimonials />
       <CTA />
