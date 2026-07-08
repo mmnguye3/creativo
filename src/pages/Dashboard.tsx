@@ -8,12 +8,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
-  LayoutDashboard, Sparkles, Megaphone, History, ShoppingCart,
+  LayoutDashboard, Sparkles, History, ShoppingCart,
   Building2, User, Plus, Search, Bell, Menu, X, LogOut,
   ChevronRight, Users,
 } from 'lucide-react';
-import { AIGenerator } from '@/components/AIGenerator';
-import { AIAdsGenerator } from '@/components/AIAdsGenerator';
+import { AIStudio } from '@/components/AIStudio';
 import { GenerationHistory } from '@/components/GenerationHistory';
 import { ClientProjects } from '@/components/ClientProjects';
 import { OrderManagement } from '@/components/OrderManagement';
@@ -21,13 +20,12 @@ import AgencySettingsForm from '@/components/AgencySettingsForm';
 import VendorOverview from '@/components/dashboard/VendorOverview';
 
 type Section =
-  | 'overview' | 'ai-generator' | 'ai-ads' | 'history'
+  | 'overview' | 'ai-studio' | 'history'
   | 'orders' | 'projects' | 'agency-settings' | 'profile';
 
 const NAV_ITEMS: { id: Section; label: string; icon: React.ElementType }[] = [
   { id: 'overview',         label: 'Overview',        icon: LayoutDashboard },
-  { id: 'ai-generator',     label: 'AI Generator',    icon: Sparkles },
-  { id: 'ai-ads',           label: 'AI Ads',          icon: Megaphone },
+  { id: 'ai-studio',        label: 'AI Studio',       icon: Sparkles },
   { id: 'history',          label: 'History',         icon: History },
   { id: 'orders',           label: 'Orders',          icon: ShoppingCart },
   { id: 'projects',         label: 'Client Projects', icon: Users },
@@ -37,22 +35,13 @@ const NAV_ITEMS: { id: Section; label: string; icon: React.ElementType }[] = [
 
 const SECTION_TITLES: Record<Section, string> = {
   'overview':        'Dashboard',
-  'ai-generator':    'AI Generator',
-  'ai-ads':          'AI Ads',
+  'ai-studio':       'AI Studio',
   'history':         'Generation History',
   'orders':          'Orders',
   'projects':        'Client Projects',
   'agency-settings': 'Agency Settings',
   'profile':         'Profile',
 };
-
-interface HistoryGeneration {
-  id: string;
-  generated_content: string | null;
-  image_url: string | null;
-  metadata?: Record<string, string> | null;
-  description?: string;
-}
 
 interface Profile {
   first_name: string | null;
@@ -157,7 +146,6 @@ const Dashboard = () => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [selectedAdGeneration, setSelectedAdGeneration] = useState<HistoryGeneration | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -204,11 +192,6 @@ const Dashboard = () => {
     setMobileSidebarOpen(false);
   };
 
-  const handleViewAdCampaign = (gen: HistoryGeneration) => {
-    setSelectedAdGeneration(gen);
-    setActiveSection('ai-ads');
-  };
-
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
@@ -218,18 +201,10 @@ const Dashboard = () => {
     switch (activeSection) {
       case 'overview':
         return <VendorOverview onNavigate={handleNavigate} />;
-      case 'ai-generator':
-        return <AIGenerator onGenerationComplete={() => {}} />;
-      case 'ai-ads':
-        return (
-          <AIAdsGenerator
-            agencyName={agencyName}
-            initialGeneration={selectedAdGeneration}
-            onClear={() => setSelectedAdGeneration(null)}
-          />
-        );
+      case 'ai-studio':
+        return <AIStudio />;
       case 'history':
-        return <GenerationHistory onViewAdCampaign={handleViewAdCampaign} />;
+        return <GenerationHistory onViewAdCampaign={() => handleNavigate('ai-studio')} />;
       case 'orders':
         return <OrderManagement />;
       case 'projects':
@@ -260,7 +235,7 @@ const Dashboard = () => {
       {/* CTA — New Generation */}
       <div className={`px-3 mb-5 ${collapsed ? 'flex justify-center' : ''}`}>
         <button
-          onClick={() => handleNavigate('ai-generator')}
+          onClick={() => handleNavigate('ai-studio')}
           className={`flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-2xl transition-all shadow-lg shadow-orange-500/25 ${
             collapsed ? 'w-10 h-10 justify-center p-0' : 'w-full px-4 py-2.5 text-sm'
           }`}

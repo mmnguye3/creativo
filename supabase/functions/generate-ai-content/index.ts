@@ -39,6 +39,19 @@ const SERVICE_TO_FAL_MODEL: Record<string, string> = {
 
 const DEFAULT_FAL_MODEL = 'fal-ai/flux/schnell';
 
+// ── Permitted service IDs (must match src/lib/serviceCatalog.ts) ───────────────
+// Any serviceType not in this set is rejected before generation begins.
+const VALID_SERVICE_IDS = new Set([
+  'ad-campaign', 'social-media-graphics',
+  'logo-branding', 'illustrations', 'business-cards', 'packaging-design',
+  'product-photography', 'product-mockups', 'amazon-a-plus', 'storefront-design',
+  'listing-optimization', 'labels',
+  'website-design', 'landing-pages', 'ui-ux-design', 'figma-prototypes', 'responsive-design',
+  'print-design', 'brochures', 'flyers', 'banners', 'signage-design',
+  'presentations', 'sales-materials', 'email-templates',
+  'short-form-video', 'long-form-video', 'motion-graphics', 'video-ads', 'animated-explainers',
+]);
+
 function pickFalModel(serviceType: string, modelOverride?: string): string {
   if (modelOverride) return modelOverride;
   return SERVICE_TO_FAL_MODEL[serviceType] ?? DEFAULT_FAL_MODEL;
@@ -575,6 +588,12 @@ serve(async (req) => {
   try {
     if (!openAIApiKey) throw new Error('OpenAI API key not configured');
     if (!serviceType) throw new Error('serviceType is required');
+    if (!VALID_SERVICE_IDS.has(serviceType)) {
+      return new Response(
+        JSON.stringify({ error: `Unsupported service type: ${serviceType}` }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
 
     console.log(`[generate] serviceType=${serviceType} user=${userId} generationId=${generationId}`);
 
