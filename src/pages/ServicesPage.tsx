@@ -48,6 +48,7 @@ import packagingIcon from "@/assets/icons/packaging-branding.png";
 import printDesignIcon from "@/assets/icons/print-design.png";
 import documentsIcon from "@/assets/icons/presentations-documents.png";
 import longFormVideoIcon from "@/assets/icons/long-form-video.png";
+import webDesignIcon from "@/assets/icons/web-design.png";
 
 // ── Hero video / poster cards ─────────────────────────────────────────────────
 // Drop MP4 clips into public/hero-clips/ as clip-1.mp4 … clip-5.mp4.
@@ -355,6 +356,7 @@ const ServicesPage = () => {
     {
       title: "Web Design",
       icon: Monitor,
+      iconImage: webDesignIcon,
       services: [
         "Page Section",
         "Landing Page",
