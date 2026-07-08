@@ -40,6 +40,7 @@ import {
 } from "lucide-react";
 import digitalAdsIcon from "@/assets/icons/digital-ads.png";
 import socialMediaIcon from "@/assets/icons/social-media-content.png";
+import videoContentIcon from "@/assets/icons/video-content.png";
 
 // ── Hero video / poster cards ─────────────────────────────────────────────────
 // Drop MP4 clips into public/hero-clips/ as clip-1.mp4 … clip-5.mp4.
@@ -191,6 +192,7 @@ const ServicesPage = () => {
     {
       title: "Video Content",
       icon: Video,
+      iconImage: videoContentIcon,
       services: [
         "Captions <1 min",
         "Cinemagraphs",
