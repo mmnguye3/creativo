@@ -97,27 +97,32 @@ function ProfileSection({ userId, userEmail }: { userId: string; userEmail: stri
           <div className="space-y-1.5">
             <Label className="text-stone-700 text-xs font-medium">First Name</Label>
             <Input value={firstName} onChange={e => setFirstName(e.target.value)}
-              className="border-stone-200 focus-visible:ring-orange-400" />
+              data-testid="input-first-name"
+              className="bg-white text-stone-800 caret-orange-500 placeholder:text-stone-400 border-stone-200 focus-visible:ring-orange-400 focus-visible:ring-offset-white" />
           </div>
           <div className="space-y-1.5">
             <Label className="text-stone-700 text-xs font-medium">Last Name</Label>
             <Input value={lastName} onChange={e => setLastName(e.target.value)}
-              className="border-stone-200 focus-visible:ring-orange-400" />
+              data-testid="input-last-name"
+              className="bg-white text-stone-800 caret-orange-500 placeholder:text-stone-400 border-stone-200 focus-visible:ring-orange-400 focus-visible:ring-offset-white" />
           </div>
         </div>
         <div className="space-y-1.5">
           <Label className="text-stone-700 text-xs font-medium">Email</Label>
-          <Input value={userEmail} disabled className="opacity-50 border-stone-200" />
+          <Input value={userEmail} disabled data-testid="input-email"
+            className="bg-stone-50 text-stone-500 border-stone-200 disabled:opacity-100" />
         </div>
         <div className="space-y-1.5">
           <Label className="text-stone-700 text-xs font-medium">Company / Agency Name</Label>
           <Input value={company} onChange={e => setCompany(e.target.value)}
-            className="border-stone-200 focus-visible:ring-orange-400" />
+            data-testid="input-company"
+            className="bg-white text-stone-800 caret-orange-500 placeholder:text-stone-400 border-stone-200 focus-visible:ring-orange-400 focus-visible:ring-offset-white" />
         </div>
         <div className="space-y-1.5">
           <Label className="text-stone-700 text-xs font-medium">Phone</Label>
           <Input value={phone} onChange={e => setPhone(e.target.value)}
-            className="border-stone-200 focus-visible:ring-orange-400" />
+            data-testid="input-phone"
+            className="bg-white text-stone-800 caret-orange-500 placeholder:text-stone-400 border-stone-200 focus-visible:ring-orange-400 focus-visible:ring-offset-white" />
         </div>
         <Button type="submit" disabled={updating}
           className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl px-6">
