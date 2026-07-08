@@ -43,7 +43,7 @@ const WhiteLabelFooter = () => {
             © {new Date().getFullYear()} {agencyName}. All rights reserved.
           </p>
           {!hidePoweredBy && <p className="text-xs text-muted-foreground mt-2 md:mt-0">
-              Powered by AI Agency Platform
+              Powered by Cretivo
             </p>}
         </div>
       </div>

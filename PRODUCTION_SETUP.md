@@ -6,20 +6,12 @@ This guide walks you through deploying your white-label multi-tenant platform to
 ## Prerequisites
 - A custom domain (e.g., `youragency.com`)
 - Access to your domain registrar's DNS settings
-- Lovable project with white-label features implemented
-- Admin access to your Lovable project
+- Supabase project configured with white-label features
+- Admin access to the Cretivo dashboard
 
 ## Step-by-Step Setup
 
-### 1. Domain Setup in Lovable
-
-1. Navigate to your Lovable project
-2. Click **Project Settings** → **Domains**
-3. Click **Connect Domain**
-4. Enter your domain name (e.g., `youragency.com`)
-5. Follow the on-screen instructions to add DNS records
-
-### 2. DNS Configuration at Your Domain Registrar
+### 1. DNS Configuration at Your Domain Registrar
 
 Add the following DNS records at your domain registrar (e.g., Namecheap, GoDaddy, Cloudflare):
 
@@ -28,38 +20,38 @@ Add the following DNS records at your domain registrar (e.g., Namecheap, GoDaddy
 ```
 Type: A
 Name: @
-Value: 185.158.133.1
+Value: <your-server-ip>
 TTL: 3600
 ```
 
 ```
 Type: A
 Name: www
-Value: 185.158.133.1
+Value: <your-server-ip>
 TTL: 3600
 ```
 
 ```
 Type: A
 Name: *
-Value: 185.158.133.1
+Value: <your-server-ip>
 TTL: 3600
 ```
 
-**Important:** The wildcard A record (`*`) is critical for subdomain routing. It allows any subdomain (e.g., `client1.youragency.com`, `agency2.youragency.com`) to resolve to your Lovable application.
+**Important:** The wildcard A record (`*`) is critical for subdomain routing. It allows any subdomain (e.g., `client1.youragency.com`, `agency2.youragency.com`) to resolve to your application.
 
-### 3. Verify DNS Propagation
+### 2. Verify DNS Propagation
 
 DNS changes can take 24-48 hours to propagate globally. Check propagation status:
 
 1. Visit [DNSChecker.org](https://dnschecker.org)
 2. Enter your domain name
 3. Select "A" record type
-4. Verify the IP shows as `185.158.133.1` globally
+4. Verify the IP shows correctly globally
 
-### 4. SSL Certificate Provisioning
+### 3. SSL Certificate Provisioning
 
-Lovable automatically provisions SSL certificates for:
+SSL certificates are provisioned automatically for:
 - Your root domain (`youragency.com`)
 - WWW subdomain (`www.youragency.com`)
 - All wildcard subdomains (`*.youragency.com`)
@@ -75,14 +67,13 @@ Lovable automatically provisions SSL certificates for:
 The application automatically detects subdomains in two modes:
 
 **Development Mode:**
-- Uses URL parameters: `https://yourproject.lovableproject.com?subdomain=client1`
+- Uses URL path routing: `https://yourdomain.com/:agencySlug`
 - Perfect for testing before DNS is configured
-- Click "External Link" icon in Subdomain Management to test
 
 **Production Mode:**
 - Uses actual subdomains: `https://client1.youragency.com`
 - Automatically activated once DNS is configured
-- No code changes needed - the system detects the mode automatically
+- No code changes needed — the system detects the mode automatically
 
 ### Data Flow
 
@@ -115,12 +106,6 @@ Subdomains must follow these rules:
 5. Click **Create Subdomain**
 6. The subdomain is immediately active
 
-### Client Access
-
-Share the subdomain URL with your client:
-- **During setup:** `https://yourproject.lovableproject.com?subdomain=client1`
-- **After DNS setup:** `https://client1.youragency.com`
-
 ### Managing Subdomains
 
 From the Subdomain Management table, you can:
@@ -130,9 +115,8 @@ From the Subdomain Management table, you can:
 
 ## Testing Checklist
 
-### Pre-Production (Development Mode)
+### Pre-Production
 - [ ] Create test subdomain in admin dashboard
-- [ ] Access via URL parameter (`?subdomain=test`)
 - [ ] Verify agency settings load correctly
 - [ ] Test contact form submission
 - [ ] Test order/cart functionality
@@ -173,11 +157,6 @@ Monitor these metrics in production:
    - Error rates
    - Response times
 
-3. **Browser Console:**
-   - Subdomain detection logs
-   - Agency settings fetch logs
-   - Any JavaScript errors
-
 ## Troubleshooting
 
 ### Subdomain Not Loading
@@ -208,8 +187,7 @@ Monitor these metrics in production:
 **Solutions:**
 1. Wait 24-48 hours after DNS propagation
 2. Check CAA records allow Let's Encrypt
-3. Verify all A records point to correct IP (185.158.133.1)
-4. Contact Lovable support if issue persists after 48 hours
+3. Verify all A records point to correct IP
 
 ### Database Errors
 
@@ -242,7 +220,7 @@ The following RLS policies are already in place:
 1. **Never expose sensitive data** in agency_settings that should be private
 2. **Validate subdomain format** on both client and server (already implemented)
 3. **Monitor admin actions** in Subdomain Management
-4. **Use HTTPS only** (enforced by Lovable)
+4. **Use HTTPS only**
 5. **Implement rate limiting** for high-traffic scenarios
 
 ## Post-Launch Maintenance
@@ -266,8 +244,6 @@ The following RLS policies are already in place:
 
 ## Support Resources
 
-- **Lovable Documentation:** [docs.lovable.dev](https://docs.lovable.dev)
-- **Custom Domains Guide:** See project documentation
 - **Supabase Documentation:** [supabase.com/docs](https://supabase.com/docs)
 - **DNS Help:** DNSChecker.org for propagation status
 
@@ -286,7 +262,3 @@ Your white-label platform is production-ready with:
 2. Wait for DNS propagation (24-48 hours)
 3. Test subdomains thoroughly
 4. Start onboarding clients!
-
----
-
-*Last Updated: 2025-10-10*

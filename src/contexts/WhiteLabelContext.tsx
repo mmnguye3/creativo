@@ -192,7 +192,7 @@ export const WhiteLabelProvider: React.FC<WhiteLabelProviderProps> = ({ children
     if (agencySettings) {
       const title = agencySettings.meta_title || agencySettings.agency_name || 'Professional Services';
       const description = agencySettings.meta_description || agencySettings.hero_subtitle || 'Professional services tailored to your needs';
-      const imageUrl = agencySettings.logo_url || 'https://62eb24a0-3b9f-47a0-8b49-ae0cf07064b6.lovableproject.com/lovable-uploads/beb43643-f60c-4358-b759-a24b6f4678d5.png';
+      const imageUrl = agencySettings.logo_url || '';
       
       // Update document title
       if (title) {
