@@ -11,4 +11,6 @@ The app's real database is the hosted Supabase project (ID `ukabvhdvfajudrtqnfpm
 
 **Secret propagation quirk:** secrets added mid-session (e.g. `SUPABASE_ACCESS_TOKEN`) may not be present in the agent shell env or the code_execution sandbox even though `viewEnvVars` shows them. Workaround: restart the workflow so its fresh process picks up the secret, then read it from `/proc/<workflow-pid>/environ` into a shell variable (never print it).
 
+**Storage bucket verification quirk:** `GET /storage/v1/bucket/:id` with the anon key returns 404 "Bucket not found" even when the bucket exists (bucket metadata reads need service_role). Verify buckets via a SQL query on `storage.buckets` or a real upload/public-read probe instead.
+
 **Why:** the October 2025 baseline migration recreated tables and dropped columns that later code depended on (`client_email`, `purchase_order_id`, `content_ack_at`), causing 42703 errors in production twice. Always verify live schema (information_schema query or PostgREST probe with the anon key) after applying.

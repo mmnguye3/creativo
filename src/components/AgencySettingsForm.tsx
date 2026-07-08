@@ -236,9 +236,10 @@ const AgencySettingsForm = () => {
       });
     } catch (error) {
       console.error('Upload error:', error);
+      const message = error instanceof Error ? error.message : "Failed to upload file. Please try again.";
       toast({
         title: "Upload failed",
-        description: "Failed to upload file. Please try again.",
+        description: message,
         variant: "destructive"
       });
     } finally {
