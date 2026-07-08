@@ -381,13 +381,26 @@ export default function AdminCompliance() {
     setActionBusy(null);
   };
 
+  // Fire-and-forget email notification; never blocks the admin action.
+  const notifyStatusChange = (userId: string, status: 'suspended' | 'reinstated' | 'review_cleared') => {
+    supabase.functions.invoke('notify-account-status', { body: { userId, status } })
+      .then(({ error }) => {
+        if (error) console.error('Status email failed:', error.message);
+      })
+      .catch((err: Error) => console.error('Status email failed:', err.message));
+  };
+
   const setSuspended = async (userId: string, suspended: boolean) => {
     setActionBusy(userId);
     const { error } = await supabase.from('profiles').update({ suspended }).eq('id', userId);
     if (error) {
       toast({ title: 'Update failed', description: error.message, variant: 'destructive' });
     } else {
-      toast({ title: suspended ? 'Account suspended' : 'Account reinstated' });
+      notifyStatusChange(userId, suspended ? 'suspended' : 'reinstated');
+      toast({
+        title: suspended ? 'Account suspended' : 'Account reinstated',
+        description: 'The user is being notified by email.',
+      });
       await refresh();
     }
     setActionBusy(null);
@@ -399,7 +412,8 @@ export default function AdminCompliance() {
     if (error) {
       toast({ title: 'Update failed', description: error.message, variant: 'destructive' });
     } else {
-      toast({ title: 'Review flag cleared' });
+      notifyStatusChange(userId, 'review_cleared');
+      toast({ title: 'Review flag cleared', description: 'The user is being notified by email.' });
       await refresh();
     }
     setActionBusy(null);

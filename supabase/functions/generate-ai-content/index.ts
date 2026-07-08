@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
+import { sendAccountStatusEmail, type AccountStatus } from '../_shared/accountStatusEmail.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -9,6 +10,7 @@ const corsHeaders = {
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 const falKey = Deno.env.get('FAL_KEY');
+const resendApiKey = Deno.env.get('RESEND_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
@@ -347,22 +349,63 @@ async function logViolation(supabase: any, opts: {
 
     // Tier 2 and above count toward 3-strikes auto-review (not for suspension logs)
     if (opts.source !== 'suspension' && opts.source !== 'rate-limit') {
-      await supabase.rpc('increment_and_review', { uid: opts.userId });
+      const { data: newlyFlagged } = await supabase.rpc('increment_and_review', { uid: opts.userId });
+      // Boolean return requires the 20260708180000 migration; older deployments return void.
+      if (newlyFlagged === true) {
+        await notifyAccountStatus(supabase, opts.userId, 'under_review', opts.categories);
+      }
     }
   } catch (e) {
     console.error('[moderation] Failed to log violation:', (e as Error).message);
   }
 }
 
+// Email the user about a moderation status change. Best-effort: failures are
+// logged but never block or fail the request that triggered them.
+// deno-lint-ignore no-explicit-any
+async function notifyAccountStatus(
+  supabase: any,
+  userId: string,
+  status: AccountStatus,
+  categories?: string[],
+): Promise<void> {
+  try {
+    if (!resendApiKey) {
+      console.warn('[moderation] RESEND_API_KEY not set — skipping status email');
+      return;
+    }
+    const { data: userData } = await supabase.auth.admin.getUserById(userId);
+    const email = userData?.user?.email;
+    if (!email) return;
+    const { data: prof } = await supabase
+      .from('profiles').select('first_name').eq('id', userId).maybeSingle();
+    const result = await sendAccountStatusEmail({
+      resendApiKey,
+      to: email,
+      status,
+      firstName: prof?.first_name ?? null,
+      categories: categories ?? null,
+    });
+    if (!result.ok) {
+      console.error('[moderation] Status email failed:', result.error);
+    } else {
+      console.log(`[moderation] Sent "${status}" email to user=${userId}`);
+    }
+  } catch (e) {
+    console.error('[moderation] Status email error:', (e as Error).message);
+  }
+}
+
 // Auto-suspend (Tier 1 only — called after logViolation so the log exists first)
 // deno-lint-ignore no-explicit-any
-async function autoSuspendUser(supabase: any, userId: string): Promise<void> {
+async function autoSuspendUser(supabase: any, userId: string, categories?: string[]): Promise<void> {
   try {
     await supabase
       .from('profiles')
       .update({ suspended: true, under_review: false })
       .eq('id', userId);
     console.warn(`[moderation] AUTO-SUSPENDED user=${userId} (Tier 1 violation)`);
+    await notifyAccountStatus(supabase, userId, 'suspended', categories);
   } catch (e) {
     console.error('[moderation] Auto-suspend failed:', (e as Error).message);
   }
@@ -848,7 +891,7 @@ serve(async (req) => {
 
         // Tier 1: auto-suspend immediately
         if (hit.tier === 1) {
-          await autoSuspendUser(supabase, userId);
+          await autoSuspendUser(supabase, userId, hit.categories);
         }
 
         const userMessage = hit.actionTaken === 'error_blocked'
@@ -1189,7 +1232,7 @@ Rules: Each headline must be max 40 characters. primaryTextShort max 125 charact
             layerTriggered: imgHit.layer,
             actionTaken: imgHit.actionTaken,
           });
-          if (imgHit.tier === 1) await autoSuspendUser(supabase, userId);
+          if (imgHit.tier === 1) await autoSuspendUser(supabase, userId, imgHit.categories);
           const imgMsg = imgHit.actionTaken === 'error_blocked'
             ? 'Content screening is temporarily unavailable, so this result was withheld. Please try again shortly.'
             : imgHit.tier === 1
