@@ -109,7 +109,7 @@ const PrivacyPolicy = () => {
                 <p>If you have any questions about this privacy policy, please contact us:</p>
                 <ul className="mt-4 space-y-2">
                   <li>Email: support@cretivo.io</li>
-                  <li>Website: www.creativo.io</li>
+                  <li>Website: www.cretivo.io</li>
                 </ul>
               </div>
             </section>

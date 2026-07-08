@@ -155,7 +155,7 @@ export const resources: Record<string, ResourceData> = {
 
 <h3>4. Subscription / Productized Service</h3>
 <p>Best for: Scaling without proportionally scaling headcount. Think "unlimited design" plans.</p>
-<p>This model has exploded since 2020. Companies like Design Pickle and Penji proved it works. With a white-label platform like <strong>Creativo</strong>, you can launch your own subscription design service without building the infrastructure from scratch.</p>
+<p>This model has exploded since 2020. Companies like Design Pickle and Penji proved it works. With a white-label platform like <strong>Cretivo</strong>, you can launch your own subscription design service without building the infrastructure from scratch.</p>
 
 <div class="article-pullquote">If you're closing more than 80% of your proposals, your prices are too low.</div>
 
@@ -218,7 +218,7 @@ export const resources: Record<string, ResourceData> = {
   <li><strong>Zapier</strong> — Connect your tools and automate workflows</li>
   <li><strong>Calendly</strong> — Eliminate back-and-forth scheduling</li>
   <li><strong>Loom</strong> — Record feedback instead of scheduling meetings</li>
-  <li><strong>Creativo</strong> — White-label your design services and automate client-facing operations</li>
+  <li><strong>Cretivo</strong> — White-label your design services and automate client-facing operations</li>
 </ul>
 
 <h3>Raise Your Prices</h3>
@@ -243,7 +243,7 @@ export const resources: Record<string, ResourceData> = {
     <tr><td>Proposals</td><td>Better Proposals</td><td>$19/mo</td></tr>
     <tr><td>Accounting</td><td>QuickBooks</td><td>$30/mo</td></tr>
     <tr><td>Time Tracking</td><td>Toggl</td><td>Free – $18/user/mo</td></tr>
-    <tr><td>White-Label Platform</td><td>Creativo</td><td>Custom pricing</td></tr>
+    <tr><td>White-Label Platform</td><td>Cretivo</td><td>Custom pricing</td></tr>
   </tbody>
 </table>
 
@@ -268,7 +268,7 @@ export const resources: Record<string, ResourceData> = {
 
 <p>The design industry isn't waiting. Your future clients are out there right now, looking for an agency exactly like the one you're about to build.</p>
 
-<p><strong>Ready to launch your design agency with a professional white-label platform?</strong> <a href="/pricing">Explore Creativo's agency plans</a> and start delivering world-class design services under your own brand — today.</p>
+<p><strong>Ready to launch your design agency with a professional white-label platform?</strong> <a href="/pricing">Explore Cretivo's agency plans</a> and start delivering world-class design services under your own brand — today.</p>
     `
   },
   "10-design-trends-2025": {
@@ -430,7 +430,7 @@ export const resources: Record<string, ResourceData> = {
 
 <p>The design landscape in 2025 rewards agencies that balance trend awareness with timeless fundamentals. Master the craft, stay curious, and let trends amplify — not replace — your creative vision.</p>
 
-<p><strong>Want to deliver trend-forward design services under your own brand?</strong> <a href="/pricing">Explore Creativo's white-label plans</a> and start offering world-class design to your clients — today.</p>
+<p><strong>Want to deliver trend-forward design services under your own brand?</strong> <a href="/pricing">Explore Cretivo's white-label plans</a> and start offering world-class design to your clients — today.</p>
     `
   },
   "how-to-price-design-services": {
@@ -652,7 +652,7 @@ export const resources: Record<string, ResourceData> = {
 
 <p>Pricing is a skill, not a talent. The more intentionally you approach it, the more confident you'll become — and confidence is the ultimate pricing superpower. Your clients aren't paying for hours or pixels. They're paying for the transformation your work creates.</p>
 
-<p><strong>Ready to scale your pricing with a professional white-label platform?</strong> <a href="/pricing">See Creativo's agency plans</a> and start delivering premium design services under your own brand — at the rates you deserve.</p>
+<p><strong>Ready to scale your pricing with a professional white-label platform?</strong> <a href="/pricing">See Cretivo's agency plans</a> and start delivering premium design services under your own brand — at the rates you deserve.</p>
     `
   },
   "client-onboarding-template-pack": {
@@ -998,7 +998,7 @@ export const resources: Record<string, ResourceData> = {
 
 <p>A professional onboarding process isn't a luxury — it's a <strong>competitive advantage</strong>. Agencies that systematize their client experience deliver better work, retain clients longer, and command higher prices. These templates give you the foundation; now make them your own.</p>
 
-<p><strong>Ready to build your design agency with world-class infrastructure?</strong> <a href="/pricing">Explore Creativo's white-label platform</a> — we handle the design production so you can focus on growing your client base.</p>
+<p><strong>Ready to build your design agency with world-class infrastructure?</strong> <a href="/pricing">Explore Cretivo's white-label platform</a> — we handle the design production so you can focus on growing your client base.</p>
     `
   },
   "social-media-marketing-design-agencies": {
@@ -1198,7 +1198,7 @@ export const resources: Record<string, ResourceData> = {
 
 <p>Social media isn't about going viral. It's about showing up consistently with valuable content that demonstrates your expertise. The agencies that win on social are the ones that treat it as a <strong>long-term investment</strong>, not a quick fix.</p>
 
-<p><strong>Want to attract clients through a professional branded platform?</strong> <a href="/pricing">Explore Creativo's white-label plans</a> and give your agency the digital presence it deserves.</p>
+<p><strong>Want to attract clients through a professional branded platform?</strong> <a href="/pricing">Explore Cretivo's white-label plans</a> and give your agency the digital presence it deserves.</p>
     `
   },
   "design-agency-success-story": {
@@ -1292,7 +1292,7 @@ export const resources: Record<string, ResourceData> = {
   <li><strong>Calendly</strong> — Eliminated scheduling back-and-forth. Every discovery call was booked automatically.</li>
   <li><strong>Loom</strong> — Replaced 80% of revision meetings with 5-minute video walkthroughs.</li>
   <li><strong>Better Proposals</strong> — Created reusable proposal templates that closed 45% of leads (up from 20% with his old Google Doc approach).</li>
-  <li><strong>Creativo</strong> — Used as a white-label platform to deliver work to clients under his own brand, streamlining the entire client experience.</li>
+  <li><strong>Cretivo</strong> — Used as a white-label platform to deliver work to clients under his own brand, streamlining the entire client experience.</li>
 </ul>
 
 <h3>His First Hire</h3>
@@ -1350,7 +1350,7 @@ export const resources: Record<string, ResourceData> = {
 
 <p>Marcus's story isn't unique because of his talent — there are millions of talented designers. It's unique because of his <strong>execution</strong>. He made a plan, he worked the plan, and he adapted when things didn't work.</p>
 
-<p><strong>Ready to build your own agency success story?</strong> <a href="/pricing">Explore Creativo's white-label platform</a> and launch your design agency with the tools and infrastructure to scale from day one.</p>
+<p><strong>Ready to build your own agency success story?</strong> <a href="/pricing">Explore Cretivo's white-label platform</a> and launch your design agency with the tools and infrastructure to scale from day one.</p>
     `
   },
   "ux-ui-design-best-practices-2025": {
@@ -1574,7 +1574,7 @@ export const resources: Record<string, ResourceData> = {
 
 <p>UX/UI design is a craft that improves with deliberate practice. The designers who thrive in 2025 are the ones who combine <strong>empathy for users, mastery of tools, and the discipline to test their assumptions</strong>. Every project is an opportunity to get better.</p>
 
-<p><strong>Want to deliver exceptional UX/UI design services under your own brand?</strong> <a href="/pricing">Explore Creativo's white-label platform</a> and offer world-class design to your clients — with the infrastructure to scale.</p>
+<p><strong>Want to deliver exceptional UX/UI design services under your own brand?</strong> <a href="/pricing">Explore Cretivo's white-label platform</a> and offer world-class design to your clients — with the infrastructure to scale.</p>
     `
   },
   "building-profitable-design-subscription-model": {
@@ -1843,7 +1843,7 @@ export const resources: Record<string, ResourceData> = {
 
 <p>The subscription model isn't just a pricing strategy — it's a <strong>business model transformation</strong>. It changes how you sell, how you deliver, and how you grow. The agencies that adopt it early will have a compounding advantage over those still chasing one-off projects.</p>
 
-<p><strong>Ready to launch your subscription design agency?</strong> <a href="/pricing">Explore Creativo's white-label platform</a> — we handle the design production so you can focus on building your brand and growing your client base.</p>
+<p><strong>Ready to launch your subscription design agency?</strong> <a href="/pricing">Explore Cretivo's white-label platform</a> — we handle the design production so you can focus on building your brand and growing your client base.</p>
     `
   }
 };

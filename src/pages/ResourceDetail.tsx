@@ -11,7 +11,7 @@ const ResourceDetail = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     if (resource) {
-      document.title = `${resource.title} | Creativo`;
+      document.title = `${resource.title} | Cretivo`;
       const meta = document.querySelector('meta[name="description"]');
       if (meta) meta.setAttribute("content", resource.metaDescription);
     }
@@ -85,7 +85,7 @@ const ResourceDetail = () => {
                   </div>
                   <div>
                     <div className="font-semibold text-sm text-foreground">{resource.author}</div>
-                    <div className="text-xs text-muted-foreground">Creativo Team</div>
+                    <div className="text-xs text-muted-foreground">Cretivo Team</div>
                   </div>
                 </div>
                 <div className="hidden md:flex items-center gap-1.5 text-xs text-muted-foreground mt-2">
@@ -141,7 +141,7 @@ const ResourceDetail = () => {
             <div className="mt-12 p-8 md:p-10 rounded-2xl bg-muted/50 border border-border">
               <h3 className="text-xl font-bold text-foreground mb-2">Ready to Start Your Agency?</h3>
               <p className="text-muted-foreground text-sm mb-6 max-w-md">
-                Launch your white-label design agency with Creativo and start delivering world-class design under your own brand.
+                Launch your white-label design agency with Cretivo and start delivering world-class design under your own brand.
               </p>
               <button
                 onClick={() => navigate("/pricing")}

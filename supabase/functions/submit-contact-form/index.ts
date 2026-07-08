@@ -65,7 +65,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send confirmation email to user
     const userEmailResponse = await resend.emails.send({
-      from: "Creativo <onboarding@resend.dev>",
+      from: "Cretivo <onboarding@resend.dev>",
       to: [formData.email],
       subject: "Thank you for contacting us!",
       html: `
@@ -75,7 +75,7 @@ const handler = async (req: Request): Promise<Response> => {
           <p style="color: #666; line-height: 1.6;">Dear ${formData.name},</p>
           
           <p style="color: #666; line-height: 1.6;">
-            Thank you for contacting Creativo. We have received your message and will get back to you within 24 hours.
+            Thank you for contacting Cretivo. We have received your message and will get back to you within 24 hours.
           </p>
           
           <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -92,7 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
           
           <p style="color: #666; line-height: 1.6;">
             Best regards,<br>
-            The Creativo Team
+            The Cretivo Team
           </p>
           
           <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;" />
@@ -107,7 +107,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Send notification email to support team
     const supportEmailResponse = await resend.emails.send({
       from: "Website Contact Form <onboarding@resend.dev>",
-      to: ["support@creativo.io"],
+      to: ["support@cretivo.io"],
       subject: `New Contact Form Submission: ${formData.subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

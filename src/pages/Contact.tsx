@@ -88,7 +88,7 @@ const Contact = () => {
       icon: Mail,
       title: "Email Us",
       description: "Send us an email and we'll respond within 24 hours",
-      contact: "support@creativo.io",
+      contact: "support@cretivo.io",
       action: "Send Email"
     },
     {
