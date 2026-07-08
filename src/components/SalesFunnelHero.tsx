@@ -40,11 +40,11 @@ const SalesFunnelHero = () => {
           </div>
           <div className="flex items-center gap-2 bg-white/80 px-4 py-2 rounded-full shadow-md">
             <CheckCircle className="w-5 h-5 text-green-500" />
-            <span className="text-sm font-medium text-black">Unlimited Revisions</span>
+            <span className="text-sm font-medium text-black">Fast Revisions</span>
           </div>
           <div className="flex items-center gap-2 bg-white/80 px-4 py-2 rounded-full shadow-md">
             <CheckCircle className="w-5 h-5 text-green-500" />
-            <span className="text-sm font-medium text-black">Money-Back Guarantee</span>
+            <span className="text-sm font-medium text-black">Great Customer Service</span>
           </div>
         </div>
 
