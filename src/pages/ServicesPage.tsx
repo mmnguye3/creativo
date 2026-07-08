@@ -166,7 +166,6 @@ const ServicesPage = () => {
     iconImage?: string;
     description: string;
     count: string;
-    cta: string;
     groups: ServiceGroup[];
   }
 
@@ -177,7 +176,6 @@ const ServicesPage = () => {
       iconImage: digitalAdsIcon,
       description: "Paid social & display creatives for every platform",
       count: "15 formats",
-      cta: "Order Digital Ads",
       groups: [
         {
           label: "Graphic Ads",
@@ -196,7 +194,6 @@ const ServicesPage = () => {
       iconImage: socialMediaIcon,
       description: "Engaging visuals for every social channel",
       count: "15 types",
-      cta: "Order Social Content",
       groups: [
         {
           label: "Static & Graphics",
@@ -219,7 +216,6 @@ const ServicesPage = () => {
       iconImage: videoContentIcon,
       description: "Short-form, animated & AI-powered video production",
       count: "13 formats",
-      cta: "Order Video Content",
       groups: [
         {
           label: "Quick Turnaround",
@@ -238,7 +234,6 @@ const ServicesPage = () => {
       iconImage: ecommerceIcon,
       description: "Product imagery & Amazon listing content that converts",
       count: "13 types",
-      cta: "Order Ecom Content",
       groups: [
         {
           label: "Amazon / Marketplace",
@@ -261,7 +256,6 @@ const ServicesPage = () => {
       iconImage: emailDesignIcon,
       description: "On-brand email templates and marketing assets",
       count: "6 types",
-      cta: "Order Email Design",
       groups: [
         {
           items: ["Email Template", "Email Graphics", "Email Signatures", "Email Banners", "Email Header", "Email Footer"],
@@ -274,7 +268,6 @@ const ServicesPage = () => {
       iconImage: illustrationsIcon,
       description: "Custom artwork from icons to animated logos",
       count: "7 types",
-      cta: "Order Illustrations",
       groups: [
         {
           label: "Artwork",
@@ -292,7 +285,6 @@ const ServicesPage = () => {
       iconImage: packagingIcon,
       description: "Identity and packaging for physical and digital brands",
       count: "8 types",
-      cta: "Order Branding",
       groups: [
         {
           label: "Packaging",
@@ -310,7 +302,6 @@ const ServicesPage = () => {
       iconImage: printDesignIcon,
       description: "Print-ready designs for every marketing channel",
       count: "18 types",
-      cta: "Order Print Design",
       groups: [
         {
           label: "Marketing Collateral",
@@ -332,7 +323,6 @@ const ServicesPage = () => {
       iconImage: documentsIcon,
       description: "Polished slide decks, PDFs & business documents",
       count: "11 types",
-      cta: "Order Presentations",
       groups: [
         {
           label: "Slide Decks",
@@ -350,7 +340,6 @@ const ServicesPage = () => {
       iconImage: longFormVideoIcon,
       description: "Multi-platform video editing & production at scale",
       count: "24 formats",
-      cta: "Order Long Form Video",
       groups: [
         {
           label: "Platform Ads",
@@ -373,7 +362,6 @@ const ServicesPage = () => {
       iconImage: webDesignIcon,
       description: "Web design, UI/UX & digital experiences",
       count: "9 types",
-      cta: "Order Web Design",
       groups: [
         {
           label: "Design",
@@ -617,7 +605,7 @@ const ServicesPage = () => {
                 </div>
 
                 {/* Groups */}
-                <div className="px-6 pb-4 flex-1 space-y-4">
+                <div className="px-6 pb-6 flex-1 space-y-4">
                   {category.groups.map((group, gi) => (
                     <div key={gi}>
                       {(group.label || group.badge) && (
@@ -652,18 +640,6 @@ const ServicesPage = () => {
                   ))}
                 </div>
 
-                {/* Footer CTA */}
-                <div className="px-6 pb-6 pt-2">
-                  <div className="border-t border-white/6 pt-4">
-                    <Link
-                      to="/contact"
-                      className="inline-flex items-center gap-1.5 text-sm font-medium text-orange-400 hover:text-orange-300 transition-colors group"
-                    >
-                      {category.cta}
-                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                    </Link>
-                  </div>
-                </div>
               </div>
             ))}
           </div>
