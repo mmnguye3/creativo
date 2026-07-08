@@ -19,6 +19,7 @@ const footerLinks = [
       { label: "Contact", href: "/contact", isRoute: true },
       { label: "Privacy Policy", href: "/privacy-policy", isRoute: true },
       { label: "Terms of Service", href: "/terms-of-service", isRoute: true },
+      { label: "KYC & AML Policy", href: "/kyc-aml-policy", isRoute: true },
     ],
   },
   {

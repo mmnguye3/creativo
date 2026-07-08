@@ -14,6 +14,7 @@ import Resources from "@/pages/Resources";
 import ResourceDetail from "@/pages/ResourceDetail";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
+import KycAmlPolicy from "@/pages/KycAmlPolicy";
 import Auth from "@/pages/Auth";
 import ResetPassword from "@/pages/ResetPassword";
 import Dashboard from "@/pages/Dashboard";
@@ -51,6 +52,7 @@ const AppContent = () => {
         <Route path="resources/:slug" element={<ResourceDetail />} />
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
         <Route path="terms-of-service" element={<TermsOfService />} />
+        <Route path="kyc-aml-policy" element={<KycAmlPolicy />} />
       </Route>
 
       {/* White-Label Agency Routes (Path-Based) */}

@@ -29,6 +29,7 @@ const RESERVED_PATHS = [
   'reset-password',
   'sign-in',
   'sign-up',
+  'kyc-aml-policy',
 ];
 
 export const useAgencySlug = (): AgencySlugInfo => {
