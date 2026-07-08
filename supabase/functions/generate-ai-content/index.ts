@@ -2,6 +2,13 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
 import { sendAccountStatusEmail, type AccountStatus } from '../_shared/accountStatusEmail.ts';
+import {
+  parseAndSizeCheck,
+  checkUnknownParams,
+  checkFieldLengths,
+  checkChoiceParams,
+  buildModerationInput,
+} from '../_shared/inputValidation.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -596,13 +603,31 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  let body: Record<string, unknown>;
+  // ── (A) Body size cap — reject oversized payloads before any processing ──────
+  let rawBody: string;
   try {
-    body = await req.json();
+    rawBody = await req.text();
   } catch {
     return new Response(
-      JSON.stringify({ error: 'Invalid JSON body' }),
-      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: 'Failed to read request body' }),
+      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+    );
+  }
+  const sizeResult = parseAndSizeCheck(rawBody);
+  if (!sizeResult.ok) {
+    return new Response(
+      JSON.stringify(sizeResult.err),
+      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+    );
+  }
+  const body = sizeResult.body;
+
+  // ── (B) Unknown-parameter check — reject anything not in the known param set ─
+  const unknownErr = checkUnknownParams(body);
+  if (unknownErr) {
+    return new Response(
+      JSON.stringify(unknownErr),
+      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   }
 
@@ -670,6 +695,24 @@ serve(async (req) => {
     if (!VALID_SERVICE_IDS.has(serviceType)) {
       return new Response(
         JSON.stringify({ error: `Unsupported service type: ${serviceType}` }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
+
+    // ── (C) Free-text field length caps — hard reject, no silent truncation ────
+    const lengthErr = checkFieldLengths({ description, targetAudience, promoDetail });
+    if (lengthErr) {
+      return new Response(
+        JSON.stringify(lengthErr),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
+
+    // ── (D) Choice-parameter validation against service-specific allowlists ────
+    const choiceErr = checkChoiceParams(serviceType, { platform, objective, tone });
+    if (choiceErr) {
+      return new Response(
+        JSON.stringify(choiceErr),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
@@ -780,11 +823,13 @@ serve(async (req) => {
       isGamblingWhitelisted = false;
     }
 
-    // Build the combined prompt text for screening
-    const moderationInput = [description, targetAudience, promoDetail]
-      .filter(Boolean)
-      .join('\n')
-      .trim();
+    // ── (E) Build complete moderation input — ALL free-text fields, labelled ───
+    // Fields are already capped (step C), so no tail can escape screening.
+    // Choice params (platform/objective/tone) are validated allowlist values but
+    // are still included as context for the LLM classifier.
+    const moderationInput = buildModerationInput({
+      description, targetAudience, promoDetail, platform, objective, tone,
+    });
 
     if (!moderationInput) {
       // No content to screen — proceed (empty prompts handled by service config later)
