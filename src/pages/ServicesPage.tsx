@@ -50,6 +50,7 @@ import documentsIcon from "@/assets/icons/presentations-documents.png";
 import longFormVideoIcon from "@/assets/icons/long-form-video.png";
 import webDesignIcon from "@/assets/icons/web-design.png";
 import marketingIcon from "@/assets/icons/marketing.png";
+import fullStackIcon from "@/assets/icons/full-stack.png";
 
 // ── Hero video / poster cards ─────────────────────────────────────────────────
 // Drop MP4 clips into public/hero-clips/ as clip-1.mp4 … clip-5.mp4.
@@ -392,6 +393,7 @@ const ServicesPage = () => {
     },
     {
       icon: Globe,
+      iconImage: fullStackIcon,
       title: "Full Stack",
       description: "Build and launch websites or take advantage of all the other design types we have to offer with unlimited revisions included."
     }
