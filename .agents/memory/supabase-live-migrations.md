@@ -14,3 +14,5 @@ The app's real database is the hosted Supabase project (ID `ukabvhdvfajudrtqnfpm
 **Storage bucket verification quirk:** `GET /storage/v1/bucket/:id` with the anon key returns 404 "Bucket not found" even when the bucket exists (bucket metadata reads need service_role). Verify buckets via a SQL query on `storage.buckets` or a real upload/public-read probe instead.
 
 **Why:** the October 2025 baseline migration recreated tables and dropped columns that later code depended on (`client_email`, `purchase_order_id`, `content_ack_at`), causing 42703 errors in production twice. Always verify live schema (information_schema query or PostgREST probe with the anon key) after applying.
+
+**Deploying edge functions:** `supabase functions deploy <fn> --project-ref ukabvhdvfajudrtqnfpm --no-verify-jwt --use-api`. The `--use-api` flag is required in this workspace — the default local Docker bundler fails with DNS resolution errors fetching deno.land imports.

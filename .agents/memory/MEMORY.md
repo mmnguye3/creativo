@@ -5,6 +5,6 @@
 - [Customer orders table](orders-schema.md) — table is customer_orders (not orders/purchase_orders); agency link via agency_id → agency_settings.id; status values: pending, in_progress, completed, cancelled.
 - [Supabase edge function identity](supabase-edge-fn-auth.md) — derive userId from JWT, never body; REVOKE PUBLIC EXECUTE on SECURITY DEFINER RPCs.
 - [Live Supabase schema drift](supabase-schema-drift.md) — live DB follows the Oct 2025 baseline migration; older/newer repo migrations may be unapplied, so verify columns via REST before trusting types.ts.
-- [Applying migrations to the live Supabase project](supabase-live-migrations.md) — repo migrations don't auto-apply; use Management API + SUPABASE_ACCESS_TOKEN; mid-session secrets need workflow restart to propagate.
+- [Applying migrations to the live Supabase project](supabase-live-migrations.md) — repo migrations don't auto-apply; use Management API + SUPABASE_ACCESS_TOKEN; edge fn deploys need `--use-api` (Docker bundler DNS fails).
 - [OpenAI image fallback](openai-image-fallback.md) — user's OpenAI key lacks dall-e-3; gpt-image-1 (b64-only) is the working fallback when fal.ai balance is exhausted.
 - [fal.ai API quirks](fal-api-quirks.md) — 401=invalid key vs 403=exhausted balance; ideogram v3 rendering_speed values changed (STANDARD→BALANCED); check [fal] logs when fallback masks errors.

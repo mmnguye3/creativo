@@ -9,6 +9,7 @@ import {
   checkChoiceParams,
   buildModerationInput,
 } from '../_shared/inputValidation.ts';
+import { trackImageFallback } from '../_shared/fallbackAlertEmail.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -1355,6 +1356,17 @@ Rules: Each headline must be max 40 characters. primaryTextShort max 125 charact
     }
 
     console.log(`[generate] ✓ generationId=${generationId} imageModel=${imageModel ?? 'none'} pendingReview=${pendingReview}`);
+
+    // ── Image fallback alerting ────────────────────────────────────────────────
+    // Track consecutive fal.ai → OpenAI fallbacks; after N in a row, email the
+    // admin(s) once per incident window. Never blocks or fails the generation.
+    if (config.imagePrompt && imageUrl) {
+      await trackImageFallback({
+        supabase,
+        resendApiKey,
+        fallbackError: imageFallbackError,
+      });
+    }
 
     return new Response(
       JSON.stringify({
