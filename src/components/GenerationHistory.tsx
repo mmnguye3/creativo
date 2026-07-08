@@ -23,23 +23,6 @@ interface Generation {
   metadata?: Record<string, string> | null;
 }
 
-const MODEL_BADGE: Record<string, { label: string; cls: string }> = {
-  'fal-ai/ideogram/v3':  { label: 'Ideogram v3',  cls: 'bg-purple-500/15 text-purple-400 border-purple-500/25' },
-  'fal-ai/recraft-v3':   { label: 'Recraft V3',   cls: 'bg-blue-500/15 text-blue-400 border-blue-500/25' },
-  'fal-ai/flux/schnell': { label: 'FLUX Schnell',  cls: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/25' },
-  'fal-ai/flux-pro/v1.1':{ label: 'FLUX Pro',     cls: 'bg-violet-500/15 text-violet-400 border-violet-500/25' },
-  'dall-e-3':            { label: 'DALL·E 3',      cls: 'bg-zinc-500/15 text-zinc-400 border-zinc-500/25' },
-};
-
-function ModelBadge({ model }: { model: string | null }) {
-  if (!model) return null;
-  const info = MODEL_BADGE[model] ?? { label: model.split('/').pop() ?? model, cls: 'bg-zinc-500/15 text-zinc-400 border-zinc-500/25' };
-  return (
-    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium ${info.cls}`}>
-      {info.label}
-    </span>
-  );
-}
 
 interface GenerationHistoryProps {
   onViewAdCampaign?: (generation: Generation) => void;
@@ -186,7 +169,6 @@ export const GenerationHistory: React.FC<GenerationHistoryProps> = ({ onViewAdCa
                         {isAdCampaign && objectiveLabel && (
                           <Badge variant="secondary" className="text-[10px]">{objectiveLabel}</Badge>
                         )}
-                        <ModelBadge model={generation.image_model} />
                       </div>
                       <span className="text-xs text-muted-foreground shrink-0">
                         {new Date(generation.created_at).toLocaleDateString()}

@@ -216,9 +216,9 @@ function LiveBriefCard({ brief }: { brief: string }) {
   );
 }
 
-// ─── ModelBadge ───────────────────────────────────────────────────────────────
+// ─── OutputTypeBadge ──────────────────────────────────────────────────────────
 
-function ModelBadge({ service }: { service: ServiceDef }) {
+function OutputTypeBadge({ service }: { service: ServiceDef }) {
   const isText = service.falModel === 'text-only';
   return (
     <div className="flex items-start gap-2.5 p-3 rounded-xl bg-stone-50 border border-stone-100">
@@ -227,7 +227,6 @@ function ModelBadge({ service }: { service: ServiceDef }) {
       </div>
       <div className="min-w-0">
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-xs font-bold text-stone-800">{service.modelLabel}</span>
           <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-stone-200 text-stone-500 font-normal capitalize">
             {service.contentType}
           </Badge>
@@ -641,11 +640,6 @@ function RecentWorkCarousel({
               </div>
               <div className="p-2">
                 <p className="text-[11px] font-semibold text-stone-800 truncate">{svc?.label || g.service_type}</p>
-                {g.image_model && (
-                  <span className="text-[9px] bg-purple-50 text-purple-600 rounded-full px-1.5 py-0.5 font-medium">
-                    {g.image_model.split('/').pop()?.slice(0, 12)}
-                  </span>
-                )}
                 <p className="text-[10px] text-stone-400 mt-0.5">{fmtDate(g.created_at)}</p>
               </div>
             </button>
@@ -928,7 +922,7 @@ export function AIStudio() {
   // ── Sub-panel: generate row ───────────────────────────────────────────────
   const GeneratePanel = service && (
     <div className="space-y-3">
-      <ModelBadge service={service} />
+      <OutputTypeBadge service={service} />
       <Button
         onClick={handleGenerate}
         disabled={isGenerating}
@@ -1095,8 +1089,7 @@ export function AIStudio() {
             <div className="fixed bottom-16 left-0 right-0 z-30 px-4 py-3 bg-white border-t border-stone-100 shadow-lg">
               <div className="flex items-center gap-2">
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] text-stone-500 font-medium truncate">{service.modelLabel}</p>
-                  <p className="text-[10px] text-stone-400 truncate">{service.modelReason}</p>
+                  <p className="text-[10px] text-stone-500 truncate">{service.modelReason}</p>
                 </div>
                 <Button
                   onClick={handleGenerate}

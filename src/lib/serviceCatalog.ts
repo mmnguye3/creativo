@@ -27,7 +27,6 @@ export interface ServiceDef {
   family:      ServiceFamily;
   contentType: ContentType;
   falModel:    string;
-  modelLabel:  string;
   modelReason: string;
   fields:      ServiceField[];
   buildBrief:  (v: Record<string, string>) => string;
@@ -136,7 +135,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'ad-campaign', label: 'Ad Campaign', emoji: '📢',
     family: 'social-ads', contentType: 'combo',
-    falModel: 'fal-ai/ideogram/v3', modelLabel: 'Ideogram V3',
+    falModel: 'fal-ai/ideogram/v3',
     modelReason: 'best-in-class text rendering for ad headlines',
     fields: [
       { id: 'brandName',     label: 'Brand / business name',     type: 'text',     placeholder: 'e.g. Bloom Skincare',                         maxChars: 60,  required: true  },
@@ -171,7 +170,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'social-media-graphics', label: 'Social Graphics', emoji: '📱',
     family: 'social-ads', contentType: 'image',
-    falModel: 'fal-ai/ideogram/v3', modelLabel: 'Ideogram V3',
+    falModel: 'fal-ai/ideogram/v3',
     modelReason: 'sharp text and vibrant layouts for social content',
     fields: [
       ...commonFields('Describe the post — theme, message, or visual concept…'),
@@ -198,7 +197,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'logo-branding', label: 'Logo & Branding', emoji: '✨',
     family: 'brand', contentType: 'image',
-    falModel: 'fal-ai/recraft-v3', modelLabel: 'Recraft V3',
+    falModel: 'fal-ai/recraft-v3',
     modelReason: 'vector-quality output with precise shape and colour control',
     fields: [
       ...commonFields('Describe the brand — industry, values, personality…'),
@@ -216,7 +215,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'illustrations', label: 'Illustrations', emoji: '🎨',
     family: 'brand', contentType: 'image',
-    falModel: 'fal-ai/flux-pro/v1.1', modelLabel: 'FLUX Pro',
+    falModel: 'fal-ai/flux-pro/v1.1',
     modelReason: 'photorealistic detail and rich imaginative compositions',
     fields: commonFields('Describe the illustration — subject, mood, setting, style references…'),
     buildBrief: stdBrief('Illustration'),
@@ -226,7 +225,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'business-cards', label: 'Business Cards', emoji: '💳',
     family: 'brand', contentType: 'image',
-    falModel: 'fal-ai/recraft-v3', modelLabel: 'Recraft V3',
+    falModel: 'fal-ai/recraft-v3',
     modelReason: 'clean print-ready layouts with precise typography',
     fields: [
       ...commonFields('Describe the card — information hierarchy, finish, and feel…'),
@@ -241,7 +240,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'packaging-design', label: 'Packaging Design', emoji: '📦',
     family: 'brand', contentType: 'image',
-    falModel: 'fal-ai/recraft-v3', modelLabel: 'Recraft V3',
+    falModel: 'fal-ai/recraft-v3',
     modelReason: 'product-ready packaging with accurate brand colours',
     fields: [
       ...commonFields('Describe the product and packaging — type, shape, key info…'),
@@ -259,7 +258,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'product-photography', label: 'Product Photos', emoji: '📸',
     family: 'ecommerce', contentType: 'image',
-    falModel: 'fal-ai/flux/schnell', modelLabel: 'FLUX Schnell',
+    falModel: 'fal-ai/flux/schnell',
     modelReason: 'studio-quality product shots delivered fast',
     fields: [
       { id: 'brandName',   label: 'Product / brand name', type: 'text',     placeholder: 'e.g. Glow Serum by Bloom', maxChars: 60, required: true },
@@ -278,7 +277,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'product-mockups', label: 'Product Mockups', emoji: '🖼️',
     family: 'ecommerce', contentType: 'image',
-    falModel: 'fal-ai/flux/schnell', modelLabel: 'FLUX Schnell',
+    falModel: 'fal-ai/flux/schnell',
     modelReason: 'lifestyle mockups for any product, fast',
     fields: commonFields('Describe the product and how you want it shown — surface, hands, context…'),
     buildBrief: stdBrief('Product mockup'),
@@ -288,7 +287,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'amazon-a-plus', label: 'Amazon A+', emoji: '🛍️',
     family: 'ecommerce', contentType: 'image',
-    falModel: 'fal-ai/flux/schnell', modelLabel: 'FLUX Schnell',
+    falModel: 'fal-ai/flux/schnell',
     modelReason: 'conversion-focused imagery for marketplace listings',
     fields: commonFields('Describe the product and key selling points to highlight…'),
     buildBrief: stdBrief('Amazon A+ banner'),
@@ -298,7 +297,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'storefront-design', label: 'Storefront Design', emoji: '🏪',
     family: 'ecommerce', contentType: 'image',
-    falModel: 'fal-ai/flux/schnell', modelLabel: 'FLUX Schnell',
+    falModel: 'fal-ai/flux/schnell',
     modelReason: 'eye-catching digital storefronts at speed',
     fields: commonFields('Describe the store — category, vibe, hero visual ideas…'),
     buildBrief: stdBrief('Storefront'),
@@ -308,7 +307,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'listing-optimization', label: 'Listing Copy', emoji: '📝',
     family: 'ecommerce', contentType: 'text',
-    falModel: 'text-only', modelLabel: 'GPT-4o',
+    falModel: 'text-only',
     modelReason: 'persuasive SEO copy tuned to convert on marketplaces',
     fields: [
       { id: 'brandName',   label: 'Product / brand',  type: 'text',     placeholder: 'e.g. Bloom Serum', maxChars: 60, required: true },
@@ -325,7 +324,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'labels', label: 'Labels', emoji: '🏷️',
     family: 'ecommerce', contentType: 'image',
-    falModel: 'fal-ai/recraft-v3', modelLabel: 'Recraft V3',
+    falModel: 'fal-ai/recraft-v3',
     modelReason: 'print-ready label layouts with exact colour rendering',
     fields: [
       ...commonFields('Describe the label — product, key text, finish…'),
@@ -342,7 +341,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'website-design', label: 'Website Design', emoji: '🌐',
     family: 'web-ui', contentType: 'image',
-    falModel: 'fal-ai/flux-pro/v1.1', modelLabel: 'FLUX Pro',
+    falModel: 'fal-ai/flux-pro/v1.1',
     modelReason: 'detailed page layouts with strong visual hierarchy',
     fields: [
       ...commonFields('Describe the site — purpose, sections, key messages…'),
@@ -359,7 +358,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'landing-pages', label: 'Landing Pages', emoji: '🚀',
     family: 'web-ui', contentType: 'image',
-    falModel: 'fal-ai/flux-pro/v1.1', modelLabel: 'FLUX Pro',
+    falModel: 'fal-ai/flux-pro/v1.1',
     modelReason: 'high-conversion landing page concepts',
     fields: [
       ...commonFields('Describe the goal — what action should visitors take?'),
@@ -372,7 +371,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'ui-ux-design', label: 'UI/UX Design', emoji: '🎛️',
     family: 'web-ui', contentType: 'image',
-    falModel: 'fal-ai/flux-pro/v1.1', modelLabel: 'FLUX Pro',
+    falModel: 'fal-ai/flux-pro/v1.1',
     modelReason: 'crisp interface components and interaction flows',
     fields: [
       ...commonFields('Describe the interface — screens, flows, components…'),
@@ -389,7 +388,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'figma-prototypes', label: 'Figma Prototypes', emoji: '🔲',
     family: 'web-ui', contentType: 'image',
-    falModel: 'fal-ai/flux-pro/v1.1', modelLabel: 'FLUX Pro',
+    falModel: 'fal-ai/flux-pro/v1.1',
     modelReason: 'wireframe-quality prototype visuals',
     fields: commonFields('Describe the prototype — screens, interactions, user journey…'),
     buildBrief: stdBrief('Figma prototype'),
@@ -399,7 +398,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'responsive-design', label: 'Responsive Design', emoji: '📐',
     family: 'web-ui', contentType: 'image',
-    falModel: 'fal-ai/flux-pro/v1.1', modelLabel: 'FLUX Pro',
+    falModel: 'fal-ai/flux-pro/v1.1',
     modelReason: 'multi-breakpoint layout concepts side-by-side',
     fields: commonFields('Describe the layout — content priority, elements, device targets…'),
     buildBrief: stdBrief('Responsive layout'),
@@ -410,7 +409,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'print-design', label: 'Print Design', emoji: '🖨️',
     family: 'print', contentType: 'image',
-    falModel: 'fal-ai/ideogram/v3', modelLabel: 'Ideogram V3',
+    falModel: 'fal-ai/ideogram/v3',
     modelReason: 'crisp typographic layouts ready for print',
     fields: [
       ...commonFields('Describe the piece — purpose, key text, visual theme…'),
@@ -426,7 +425,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'brochures', label: 'Brochures', emoji: '📄',
     family: 'print', contentType: 'image',
-    falModel: 'fal-ai/ideogram/v3', modelLabel: 'Ideogram V3',
+    falModel: 'fal-ai/ideogram/v3',
     modelReason: 'publication-quality layout and typography',
     fields: [
       ...commonFields('Describe the brochure — sections, key messages, audience…'),
@@ -442,7 +441,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'flyers', label: 'Flyers', emoji: '📋',
     family: 'print', contentType: 'image',
-    falModel: 'fal-ai/ideogram/v3', modelLabel: 'Ideogram V3',
+    falModel: 'fal-ai/ideogram/v3',
     modelReason: 'eye-catching event flyers with bold headlines',
     fields: commonFields('Describe the flyer — event, key info, call to action…'),
     buildBrief: stdBrief('Flyer'),
@@ -452,7 +451,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'banners', label: 'Banners', emoji: '🎌',
     family: 'print', contentType: 'image',
-    falModel: 'fal-ai/ideogram/v3', modelLabel: 'Ideogram V3',
+    falModel: 'fal-ai/ideogram/v3',
     modelReason: 'high-impact banners with precise text rendering',
     fields: [
       ...commonFields('Describe the banner — headline, setting, event…'),
@@ -467,7 +466,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'signage-design', label: 'Signage', emoji: '🪧',
     family: 'print', contentType: 'image',
-    falModel: 'fal-ai/recraft-v3', modelLabel: 'Recraft V3',
+    falModel: 'fal-ai/recraft-v3',
     modelReason: 'large-format signage with clean vector quality',
     fields: commonFields('Describe the sign — location, purpose, key message…'),
     buildBrief: stdBrief('Signage'),
@@ -477,7 +476,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'presentations', label: 'Presentations', emoji: '📊',
     family: 'print', contentType: 'text',
-    falModel: 'text-only', modelLabel: 'GPT-4o',
+    falModel: 'text-only',
     modelReason: 'structured slide content, speaker notes, and key messages',
     fields: [
       { id: 'brandName',   label: 'Company / brand',       type: 'text',     placeholder: 'e.g. Bloom Skincare', maxChars: 60,  required: true },
@@ -491,7 +490,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'sales-materials', label: 'Sales Materials', emoji: '💼',
     family: 'print', contentType: 'text',
-    falModel: 'text-only', modelLabel: 'GPT-4o',
+    falModel: 'text-only',
     modelReason: 'persuasive sales copy and structured pitch content',
     fields: [
       { id: 'brandName',   label: 'Company / brand',  type: 'text',     placeholder: 'e.g. Bloom Skincare', maxChars: 60,  required: true },
@@ -505,7 +504,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'email-templates', label: 'Email Templates', emoji: '✉️',
     family: 'print', contentType: 'text',
-    falModel: 'text-only', modelLabel: 'GPT-4o',
+    falModel: 'text-only',
     modelReason: 'high open-rate subject lines, body copy, and CTAs',
     fields: [
       { id: 'brandName',   label: 'Brand / sender name', type: 'text',     placeholder: 'e.g. Bloom Skincare', maxChars: 60,  required: true },
@@ -521,7 +520,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'short-form-video', label: 'Short-Form Video', emoji: '🎬',
     family: 'video', contentType: 'text',
-    falModel: 'text-only', modelLabel: 'GPT-4o',
+    falModel: 'text-only',
     modelReason: 'punchy hooks and scripts for TikTok, Reels, and Shorts',
     fields: [
       { id: 'brandName',   label: 'Brand / channel',  type: 'text',     placeholder: 'e.g. Bloom Skincare', maxChars: 60,  required: true },
@@ -538,7 +537,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'long-form-video', label: 'Long-Form Video', emoji: '🎥',
     family: 'video', contentType: 'text',
-    falModel: 'text-only', modelLabel: 'GPT-4o',
+    falModel: 'text-only',
     modelReason: 'structured scripts and shot lists for YouTube and explainers',
     fields: [
       { id: 'brandName',   label: 'Brand / channel', type: 'text',     placeholder: 'e.g. Bloom Skincare', maxChars: 60,  required: true },
@@ -552,7 +551,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'motion-graphics', label: 'Motion Graphics', emoji: '🎭',
     family: 'video', contentType: 'text',
-    falModel: 'text-only', modelLabel: 'GPT-4o',
+    falModel: 'text-only',
     modelReason: 'scene-by-scene storyboards with animation direction',
     fields: [
       { id: 'brandName',   label: 'Brand / project',  type: 'text',     placeholder: 'e.g. Bloom Skincare', maxChars: 60,  required: true },
@@ -569,7 +568,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'video-ads', label: 'Video Ads', emoji: '📹',
     family: 'video', contentType: 'text',
-    falModel: 'text-only', modelLabel: 'GPT-4o',
+    falModel: 'text-only',
     modelReason: 'conversion-focused ad scripts with hooks and CTAs',
     fields: [
       { id: 'brandName',   label: 'Brand',       type: 'text',     placeholder: 'e.g. Bloom Skincare', maxChars: 60,  required: true },
@@ -584,7 +583,7 @@ export const SERVICES: ServiceDef[] = [
   {
     id: 'animated-explainers', label: 'Animated Explainers', emoji: '🎞️',
     family: 'video', contentType: 'text',
-    falModel: 'text-only', modelLabel: 'GPT-4o',
+    falModel: 'text-only',
     modelReason: 'character-driven explainer scripts with scene breakdowns',
     fields: [
       { id: 'brandName',   label: 'Brand / product',   type: 'text',     placeholder: 'e.g. Bloom Skincare', maxChars: 60,  required: true },

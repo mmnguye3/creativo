@@ -584,21 +584,6 @@ export const AIAdsGenerator: React.FC<AIAdsGeneratorProps> = ({ agencyName = 'Yo
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[11px]">{platformLabel}</Badge>
                 <Badge variant="outline" className="border-white/15 text-zinc-400 text-[11px]">{objectiveLabel}</Badge>
-                {imageModel && (() => {
-                  const MODEL_BADGE: Record<string, { label: string; cls: string }> = {
-                    'fal-ai/ideogram/v3':   { label: 'Ideogram v3',  cls: 'bg-purple-500/20 text-purple-400 border-purple-500/30' },
-                    'fal-ai/recraft-v3':    { label: 'Recraft V3',   cls: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
-                    'fal-ai/flux/schnell':  { label: 'FLUX Schnell', cls: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30' },
-                    'fal-ai/flux-pro/v1.1': { label: 'FLUX Pro',     cls: 'bg-violet-500/20 text-violet-400 border-violet-500/30' },
-                    'dall-e-3':             { label: 'DALL·E 3',     cls: 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30' },
-                  };
-                  const info = MODEL_BADGE[imageModel] ?? { label: imageModel.split('/').pop() ?? imageModel, cls: 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30' };
-                  return (
-                    <Badge className={`text-[10px] border ${info.cls}`}>
-                      {info.label}
-                    </Badge>
-                  );
-                })()}
                 {savedToHistory && (
                   <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-[11px]">
                     <Check className="w-3 h-3 mr-1" /> Saved
