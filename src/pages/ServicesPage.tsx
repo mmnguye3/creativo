@@ -47,6 +47,7 @@ import illustrationsIcon from "@/assets/icons/illustrations-graphics.png";
 import packagingIcon from "@/assets/icons/packaging-branding.png";
 import printDesignIcon from "@/assets/icons/print-design.png";
 import documentsIcon from "@/assets/icons/presentations-documents.png";
+import longFormVideoIcon from "@/assets/icons/long-form-video.png";
 
 // ── Hero video / poster cards ─────────────────────────────────────────────────
 // Drop MP4 clips into public/hero-clips/ as clip-1.mp4 … clip-5.mp4.
@@ -323,6 +324,7 @@ const ServicesPage = () => {
     {
       title: "Long Form Video",
       icon: Camera,
+      iconImage: longFormVideoIcon,
       services: [
         "Meta Ads <3 mins",
         "Tiktok Ads <3 mins",
