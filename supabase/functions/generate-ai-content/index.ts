@@ -581,20 +581,24 @@ async function generateImage(
   dalleSize: string,
   modelOverride: string | undefined,
   brief: string,
-): Promise<{ imageUrl: string; modelUsed: string }> {
+): Promise<{ imageUrl: string; modelUsed: string; fallbackError: string | null }> {
   const falModel = pickFalModel(serviceType, modelOverride);
 
   if (falKey) {
     try {
-      return await generateImageWithFal(prompt, falModel, dalleSize, brief);
+      const result = await generateImageWithFal(prompt, falModel, dalleSize, brief);
+      return { ...result, fallbackError: null };
     } catch (err) {
-      console.error(`[fal] Generation failed model=${falModel}, falling back to dall-e-3:`, (err as Error).message);
-      return await generateImageWithOpenAI(prompt, dalleSize);
+      const falErrMsg = (err as Error).message;
+      console.error(`[fal] Generation failed model=${falModel}, falling back to dall-e-3:`, falErrMsg);
+      const fallback = await generateImageWithOpenAI(prompt, dalleSize);
+      return { ...fallback, fallbackError: `model=${falModel}: ${falErrMsg}`.slice(0, 500) };
     }
   }
 
   console.log('[fal] FAL_KEY not set — using dall-e-3 fallback');
-  return await generateImageWithOpenAI(prompt, dalleSize);
+  const fallback = await generateImageWithOpenAI(prompt, dalleSize);
+  return { ...fallback, fallbackError: 'FAL_KEY not configured' };
 }
 
 // ── Edge Function entry point ──────────────────────────────────────────────────
@@ -1215,6 +1219,7 @@ Rules: Each headline must be max 40 characters. primaryTextShort max 125 charact
     let generatedContent: string | null = null;
     let imageUrl: string | null = null;
     let imageModel: string | null = null;
+    let imageFallbackError: string | null = null;
 
     // ── Text generation ────────────────────────────────────────────────────────
     if (config.textPrompt) {
@@ -1272,6 +1277,7 @@ Rules: Each headline must be max 40 characters. primaryTextShort max 125 charact
       );
       imageUrl = result.imageUrl;
       imageModel = result.modelUsed;
+      imageFallbackError = result.fallbackError;
 
       // ── Screen generated image (fail-closed) ────────────────────────────────
       if (imageUrl) {
@@ -1332,6 +1338,7 @@ Rules: Each headline must be max 40 characters. primaryTextShort max 125 charact
       updated_at: new Date().toISOString(),
     };
     if (imageModel) updatePayload.image_model = imageModel;
+    if (imageFallbackError) updatePayload.image_fallback_error = imageFallbackError;
     if (pendingReview) {
       updatePayload.review_status = 'pending_review';
       updatePayload.review_reason = pendingReviewReason;

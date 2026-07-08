@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { DollarSign, ShoppingCart, Zap, Building2, TrendingUp, TrendingDown, CheckCircle, Clock, AlertCircle, Circle, ChevronRight } from 'lucide-react';
+import ImageFallbackAlert from './ImageFallbackAlert';
 
 interface Order {
   id: string;
@@ -290,6 +291,9 @@ export default function AdminOverview({ onNavigate }: AdminOverviewProps) {
 
   return (
     <div className="space-y-5">
+      {/* Image pipeline fallback alert */}
+      <ImageFallbackAlert />
+
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard

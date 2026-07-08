@@ -121,6 +121,7 @@ export type Database = {
           description: string | null
           generated_content: string | null
           id: string
+          image_fallback_error: string | null
           image_model: string | null
           image_url: string | null
           metadata: Json | null
@@ -142,6 +143,7 @@ export type Database = {
           description?: string | null
           generated_content?: string | null
           id?: string
+          image_fallback_error?: string | null
           image_model?: string | null
           image_url?: string | null
           metadata?: Json | null
@@ -163,6 +165,7 @@ export type Database = {
           description?: string | null
           generated_content?: string | null
           id?: string
+          image_fallback_error?: string | null
           image_model?: string | null
           image_url?: string | null
           metadata?: Json | null
