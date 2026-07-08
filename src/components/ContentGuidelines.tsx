@@ -45,44 +45,43 @@ export function ViolationErrorCard({ violation, onDismiss }: {
   const suspended = violation.error === 'ACCOUNT_SUSPENDED';
   return (
     <div
-      className="rounded-xl border border-red-500/30 bg-red-500/[0.06] p-5 space-y-3"
+      className="rounded-xl border-2 border-red-600 bg-red-50 p-5 space-y-3"
       data-testid="card-content-violation"
     >
       <div className="flex items-start gap-3">
-        <div className="w-9 h-9 rounded-lg bg-red-500/15 flex items-center justify-center flex-shrink-0">
-          <ShieldAlert className="w-5 h-5 text-red-400" />
+        <div className="w-11 h-11 rounded-lg bg-red-600 flex items-center justify-center flex-shrink-0">
+          <ShieldAlert className="w-6 h-6 text-white" />
         </div>
         <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-semibold text-white">
-            {suspended ? 'Account suspended' : 'Content Standards violation'}
+          <h4 className="text-lg font-black text-red-700 uppercase tracking-wide">
+            {suspended ? '⛔ Account Suspended' : '⛔ Content Standards Violation'}
           </h4>
           {!suspended && (
-            <p className="text-xs text-red-300/90 mt-0.5 capitalize" data-testid="text-violation-category">
+            <p className="text-sm font-bold text-red-700 mt-1 capitalize" data-testid="text-violation-category">
               Category: {violation.category}
             </p>
           )}
-          <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">{violation.message}</p>
-          <p className="text-xs text-zinc-500 mt-2">
+          <p className="text-sm font-semibold text-black mt-2 leading-relaxed">{violation.message}</p>
+          <p className="text-sm font-bold text-black mt-3">
             See{' '}
             <a
               href="/terms#section-6"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-orange-400 hover:text-orange-300 underline underline-offset-2"
+              className="text-red-700 hover:text-red-800 underline underline-offset-2 font-black"
               data-testid="link-tos-section-6"
             >
               Terms of Service § 6 — Acceptable Use
             </a>{' '}
-            for details. Repeated violations may lead to account review or suspension.
+            for details. <span className="text-red-700 font-black">Repeated violations WILL lead to account review or suspension.</span>
           </p>
         </div>
       </div>
       <div className="flex justify-end">
         <Button
-          variant="ghost"
           size="sm"
           onClick={onDismiss}
-          className="text-zinc-400 hover:text-white hover:bg-white/5 h-7 text-xs"
+          className="bg-red-600 hover:bg-red-700 text-white font-bold h-8 text-xs px-4"
           data-testid="button-dismiss-violation"
         >
           Dismiss

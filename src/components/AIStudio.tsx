@@ -282,11 +282,11 @@ function PipelineStrip({ phase }: { phase: Phase }) {
                   <Clock className="w-3 h-3 text-stone-300" />
                 )}
               </div>
-              <span className={`text-[11px] font-medium whitespace-nowrap ${
-                blocked && i === 0 ? 'text-red-600' :
+              <span className={`text-[11px] font-bold whitespace-nowrap ${
+                blocked && i === 0 ? 'text-red-700' :
                 done               ? 'text-green-700' :
                 active             ? 'text-orange-600' :
-                                     'text-stone-400'
+                                     'text-black'
               }`}>
                 {step.label}
               </span>
