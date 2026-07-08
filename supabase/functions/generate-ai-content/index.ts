@@ -576,30 +576,43 @@ async function generateImageWithOpenAI(
   return { imageUrl: `data:image/png;base64,${b64}`, modelUsed: 'gpt-image-1' };
 }
 
+const OPENAI_IMAGE_MODELS = new Set(['dall-e-3', 'dall-e-2', 'gpt-image-1']);
+
 async function generateImage(
   prompt: string,
   serviceType: string,
   dalleSize: string,
   modelOverride: string | undefined,
   brief: string,
-): Promise<{ imageUrl: string; modelUsed: string; fallbackError: string | null }> {
+): Promise<{ imageUrl: string; modelUsed: string; fallbackError: string | null; bypassedFal: boolean }> {
+  // OpenAI models requested explicitly go straight to OpenAI — they don't exist
+  // on fal.ai, and routing them through fal would 404 and pollute the
+  // fal.ai health tracking with false "fallback" events. bypassedFal=true tells
+  // the caller to skip fal.ai health tracking entirely (this generation says
+  // nothing about fal.ai being up or down).
+  if (modelOverride && OPENAI_IMAGE_MODELS.has(modelOverride)) {
+    console.log(`[openai] Direct OpenAI generation requested (model=${modelOverride})`);
+    const direct = await generateImageWithOpenAI(prompt, dalleSize);
+    return { ...direct, fallbackError: null, bypassedFal: true };
+  }
+
   const falModel = pickFalModel(serviceType, modelOverride);
 
   if (falKey) {
     try {
       const result = await generateImageWithFal(prompt, falModel, dalleSize, brief);
-      return { ...result, fallbackError: null };
+      return { ...result, fallbackError: null, bypassedFal: false };
     } catch (err) {
       const falErrMsg = (err as Error).message;
       console.error(`[fal] Generation failed model=${falModel}, falling back to dall-e-3:`, falErrMsg);
       const fallback = await generateImageWithOpenAI(prompt, dalleSize);
-      return { ...fallback, fallbackError: `model=${falModel}: ${falErrMsg}`.slice(0, 500) };
+      return { ...fallback, fallbackError: `model=${falModel}: ${falErrMsg}`.slice(0, 500), bypassedFal: false };
     }
   }
 
   console.log('[fal] FAL_KEY not set — using dall-e-3 fallback');
   const fallback = await generateImageWithOpenAI(prompt, dalleSize);
-  return { ...fallback, fallbackError: 'FAL_KEY not configured' };
+  return { ...fallback, fallbackError: 'FAL_KEY not configured', bypassedFal: false };
 }
 
 // ── Edge Function entry point ──────────────────────────────────────────────────
@@ -1254,6 +1267,7 @@ Rules: Each headline must be max 40 characters. primaryTextShort max 125 charact
     let imageUrl: string | null = null;
     let imageModel: string | null = null;
     let imageFallbackError: string | null = null;
+    let imageBypassedFal = false;
 
     // ── Text generation ────────────────────────────────────────────────────────
     if (config.textPrompt) {
@@ -1312,6 +1326,7 @@ Rules: Each headline must be max 40 characters. primaryTextShort max 125 charact
       imageUrl = result.imageUrl;
       imageModel = result.modelUsed;
       imageFallbackError = result.fallbackError;
+      imageBypassedFal = result.bypassedFal;
 
       // ── Screen generated image (fail-closed) ────────────────────────────────
       if (imageUrl) {
@@ -1393,7 +1408,9 @@ Rules: Each headline must be max 40 characters. primaryTextShort max 125 charact
     // ── Image fallback alerting ────────────────────────────────────────────────
     // Track consecutive fal.ai → OpenAI fallbacks; after N in a row, email the
     // admin(s) once per incident window. Never blocks or fails the generation.
-    if (config.imagePrompt && imageUrl) {
+    // Skipped when the generation deliberately bypassed fal.ai (explicit OpenAI
+    // model override) — such requests say nothing about fal.ai health.
+    if (config.imagePrompt && imageUrl && !imageBypassedFal) {
       await trackImageFallback({
         supabase,
         resendApiKey,

@@ -8,4 +8,4 @@
 - [Applying migrations to the live Supabase project](supabase-live-migrations.md) — repo migrations don't auto-apply; use Management API + SUPABASE_ACCESS_TOKEN; edge fn deploys need `--use-api` (Docker bundler DNS fails).
 - [OpenAI image fallback](openai-image-fallback.md) — user's OpenAI key lacks dall-e-3; gpt-image-1 (b64-only) is the working fallback when fal.ai balance is exhausted.
 - [fal.ai API quirks](fal-api-quirks.md) — 401=invalid key vs 403=exhausted balance; ideogram v3 rendering_speed values changed (STANDARD→BALANCED); check [fal] logs when fallback masks errors.
-- [Image-alert e2e testing](image-alert-e2e.md) — force a fal fallback with modelOverride "dall-e-3"; choice params are title-case; RESEND_API_KEY lives in Supabase edge secrets only (set Jul 2026).
+- [Image-alert e2e testing](image-alert-e2e.md) — OpenAI model overrides now bypass fal AND its health tracking; force a fal fallback with a bogus fal model string instead; choice params are title-case.
