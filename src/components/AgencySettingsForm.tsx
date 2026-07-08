@@ -209,9 +209,45 @@ const AgencySettingsForm = () => {
     setSettings(prev => ({ ...prev, [field]: value }));
   };
 
+  const MAX_UPLOAD_SIZE = 2 * 1024 * 1024; // 2MB
+  const FAVICON_TYPES = ['image/png', 'image/x-icon', 'image/vnd.microsoft.icon', 'image/svg+xml', 'image/jpeg', 'image/webp'];
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'logo_url' | 'favicon_url') => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
+
+    const input = e.target;
+    const isIcoFile = /\.ico$/i.test(file.name);
+
+    if (!file.type.startsWith('image/') && !isIcoFile) {
+      toast({
+        title: "Invalid file type",
+        description: "Please select an image file (PNG, JPG, SVG, WebP, or ICO).",
+        variant: "destructive"
+      });
+      input.value = "";
+      return;
+    }
+
+    if (field === 'favicon_url' && !isIcoFile && !FAVICON_TYPES.includes(file.type)) {
+      toast({
+        title: "Invalid favicon format",
+        description: "Favicons must be ICO, PNG, SVG, JPG, or WebP files.",
+        variant: "destructive"
+      });
+      input.value = "";
+      return;
+    }
+
+    if (file.size > MAX_UPLOAD_SIZE) {
+      toast({
+        title: "File too large",
+        description: `The file is ${(file.size / (1024 * 1024)).toFixed(1)}MB. Maximum allowed size is 2MB.`,
+        variant: "destructive"
+      });
+      input.value = "";
+      return;
+    }
 
     setUploading(true);
     try {
@@ -244,6 +280,7 @@ const AgencySettingsForm = () => {
       });
     } finally {
       setUploading(false);
+      input.value = "";
     }
   };
 
