@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useWhiteLabel } from "@/contexts/WhiteLabelContext";
-import { ArrowRight, CheckCircle, Star } from "lucide-react";
+import { ArrowRight, CheckCircle } from "lucide-react";
 
 const SalesFunnelHero = () => {
   const { agencySettings } = useWhiteLabel();
@@ -22,16 +22,6 @@ const SalesFunnelHero = () => {
       </div>
       
       <div className="container mx-auto text-center relative z-10 max-w-5xl">
-        {/* Social Proof */}
-        <div className="flex items-center justify-center gap-2 mb-6 animate-fade-in">
-          <div className="flex">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-            ))}
-          </div>
-          <span className="text-sm text-gray-600">Trusted by 500+ businesses</span>
-        </div>
-
         {/* Main Headline */}
         <h1 className="text-5xl md:text-7xl font-bold mb-6 text-black leading-tight animate-fade-in">
           {heroTitle}
