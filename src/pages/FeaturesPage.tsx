@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import Features from "@/components/Features";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,10 +10,16 @@ import {
   Clock, 
   Globe,
   ArrowRight,
-  CheckCircle2
+  CheckCircle2,
+  Sparkles,
+  ShoppingCart,
+  CreditCard,
 } from "lucide-react";
 
 const FeaturesPage = () => {
+  const [heroVisible, setHeroVisible] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setHeroVisible(true), 80); return () => clearTimeout(t); }, []);
+
   const additionalFeatures = [
     {
       category: "Platform Features",

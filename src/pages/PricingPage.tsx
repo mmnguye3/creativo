@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +19,8 @@ import {
 
 const PricingPage = () => {
   const navigate = useNavigate();
+  const [heroVisible, setHeroVisible] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setHeroVisible(true), 80); return () => clearTimeout(t); }, []);
   const services = [
     {
       name: "Design Services",
@@ -114,18 +117,47 @@ const PricingPage = () => {
   return (
     <div className="pt-20">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-hero">
-        <div className="absolute inset-0 bg-black/40"></div>
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">
-            Complete <span className="bg-gradient-primary bg-clip-text text-transparent">Design</span> Solutions
-          </h1>
-          <p className="text-xl text-white max-w-3xl mx-auto mb-8">
-            Comprehensive design platform enabling agencies to offer professional design services with streamlined workflows and client management.
-          </p>
-          <div className="inline-flex items-center gap-2 bg-gradient-glass border border-white/20 rounded-full px-6 py-2 text-sm backdrop-blur-md">
-            <Star className="w-4 h-4 text-primary-glow" />
-            <span className="text-foreground">Flexible revision policy for agency needs</span>
+      <section className="relative bg-zinc-950 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-orange-500/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+        </div>
+        <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-orange-400 text-xs font-bold tracking-[0.18em] uppercase mb-4"
+              style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(14px)', transition: 'opacity 0.55s ease, transform 0.55s ease', transitionDelay: '0s' }}>
+              Pricing
+            </p>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.08] mb-5"
+              style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(16px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '0.08s' }}>
+              Start your agency for less than{' '}
+              <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
+                one client pays you
+              </span>
+            </h1>
+            <p className="text-zinc-400 text-lg leading-relaxed mb-8"
+              style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(14px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '0.17s' }}>
+              Plans from $297/mo. One retainer client covers it — everything after that is margin.
+            </p>
+            <div className="mb-8"
+              style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(12px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '0.26s' }}>
+              <Button
+                onClick={() => document.getElementById('pricing-plans')?.scrollIntoView({ behavior: 'smooth' })}
+                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl px-8 h-12 text-base shadow-lg shadow-orange-500/25"
+              >
+                See Plans
+              </Button>
+            </div>
+            <div className="flex flex-wrap justify-center gap-2.5"
+              style={{ opacity: heroVisible ? 1 : 0, transition: 'opacity 0.6s ease', transitionDelay: '0.36s' }}>
+              {['No contracts', 'Cancel anytime', '1,200+ agencies launched', 'Live in 24 hours'].map(badge => (
+                <span key={badge}
+                  className="inline-flex items-center gap-1.5 bg-green-500/10 border border-green-500/20 text-green-400 rounded-full px-3.5 py-1.5 text-xs font-medium">
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  {badge}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </section>

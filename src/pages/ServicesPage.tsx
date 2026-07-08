@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -39,6 +40,9 @@ import {
 } from "lucide-react";
 
 const ServicesPage = () => {
+  const [heroVisible, setHeroVisible] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setHeroVisible(true), 80); return () => clearTimeout(t); }, []);
+
   const serviceCategories = [
     {
       title: "Digital Ads",
@@ -273,20 +277,77 @@ const ServicesPage = () => {
   return (
     <div className="pt-20">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-hero">
-        <div className="absolute inset-0 bg-black/40"></div>
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">
-            Our <span className="bg-gradient-primary bg-clip-text text-transparent">Services</span>
-          </h1>
-          <p className="text-xl text-white max-w-3xl mx-auto mb-8">
-            From social media ads to complete brand packages, we've got all your design needs covered.
-          </p>
+      <section className="relative bg-zinc-950 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-orange-500/5 rounded-full blur-3xl translate-x-1/4 -translate-y-1/4" />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+        </div>
+        <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left — copy */}
+            <div>
+              <p className="text-orange-400 text-xs font-bold tracking-[0.18em] uppercase mb-4"
+                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(14px)', transition: 'opacity 0.55s ease, transform 0.55s ease', transitionDelay: '0s' }}>
+                Services
+              </p>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.08] mb-5"
+                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(16px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '0.08s' }}>
+                Every design your clients{' '}
+                <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
+                  will ever ask for
+                </span>
+              </h1>
+              <p className="text-zinc-400 text-lg leading-relaxed mb-8 max-w-lg"
+                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(14px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '0.17s' }}>
+                Twelve design verticals — social, brand, web, video, print — delivered under your agency's name in as little as 24 hours.
+              </p>
+              <div className="flex flex-wrap gap-3 mb-8"
+                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(12px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '0.26s' }}>
+                <Button
+                  onClick={() => document.getElementById('services-grid')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl px-6 h-11 shadow-lg shadow-orange-500/25"
+                >
+                  Browse Services
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+                <Button variant="outline" asChild
+                  className="border-white/20 text-white hover:bg-white/10 rounded-xl px-6 h-11 bg-transparent">
+                  <Link to="/pricing">See Pricing</Link>
+                </Button>
+              </div>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5"
+                style={{ opacity: heroVisible ? 1 : 0, transition: 'opacity 0.6s ease', transitionDelay: '0.36s' }}>
+                {[
+                  { num: '48k+', label: 'designs delivered' },
+                  { num: '24hr', label: 'avg turnaround' },
+                  { num: '4.9★', label: 'vendor rating' },
+                ].map(({ num, label }, i) => (
+                  <span key={i} className="flex items-center gap-1.5 text-sm">
+                    {i > 0 && <span className="text-zinc-700 mr-1 hidden sm:inline">·</span>}
+                    <span className="text-white font-bold">{num}</span>
+                    <span className="text-zinc-500">{label}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Right — Collage */}
+            <div className="flex items-center justify-center lg:justify-end"
+              style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'rotate(2deg)' : 'translateY(24px) rotate(2deg)', transition: 'opacity 0.75s ease, transform 0.75s ease', transitionDelay: '0.15s' }}>
+              <div className="rounded-[22px] overflow-hidden shadow-2xl shadow-black/60 border border-white/10 max-w-[520px] w-full">
+                <picture>
+                  <source srcSet="/designs-collage.webp" type="image/webp" />
+                  <img src="/designs-collage.png" alt="Collage of sample social media designs created through Cretivo"
+                    loading="eager" decoding="async" width={1280} height={720} className="w-full h-auto block" />
+                </picture>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* All Services Section */}
-      <section className="py-24 bg-black">
+      <section id="services-grid" className="py-24 bg-black">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
