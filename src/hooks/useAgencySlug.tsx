@@ -26,6 +26,9 @@ const RESERVED_PATHS = [
   'privacy-policy',
   'terms-of-service',
   'cart',
+  'reset-password',
+  'sign-in',
+  'sign-up',
 ];
 
 export const useAgencySlug = (): AgencySlugInfo => {
