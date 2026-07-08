@@ -115,6 +115,7 @@ export type Database = {
       }
       ai_generations: {
         Row: {
+          client_email: string | null
           content_type: string | null
           created_at: string | null
           description: string | null
@@ -122,12 +123,18 @@ export type Database = {
           id: string
           metadata: Json | null
           project_name: string | null
+          purchase_order_id: string | null
+          review_reason: string | null
+          review_status: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           service_type: string
           status: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
+          client_email?: string | null
           content_type?: string | null
           created_at?: string | null
           description?: string | null
@@ -135,12 +142,18 @@ export type Database = {
           id?: string
           metadata?: Json | null
           project_name?: string | null
+          purchase_order_id?: string | null
+          review_reason?: string | null
+          review_status?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           service_type: string
           status?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
+          client_email?: string | null
           content_type?: string | null
           created_at?: string | null
           description?: string | null
@@ -148,6 +161,11 @@ export type Database = {
           id?: string
           metadata?: Json | null
           project_name?: string | null
+          purchase_order_id?: string | null
+          review_reason?: string | null
+          review_status?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           service_type?: string
           status?: string | null
           updated_at?: string | null
@@ -235,38 +253,89 @@ export type Database = {
         }
         Relationships: []
       }
+      gambling_whitelist: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      generation_rate_limits: {
+        Row: {
+          count: number
+          user_id: string
+          window_start: string
+        }
+        Insert: {
+          count?: number
+          user_id: string
+          window_start?: string
+        }
+        Update: {
+          count?: number
+          user_id?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       moderation_logs: {
         Row: {
           action_taken: string
           agency_name: string | null
+          alert_resolved: boolean
           created_at: string
           flagged_categories: string[]
           id: string
+          layer_triggered: string | null
           prompt: string
           service_type: string | null
           source: string
+          tier: number | null
+          user_email: string | null
           user_id: string
         }
         Insert: {
           action_taken?: string
           agency_name?: string | null
+          alert_resolved?: boolean
           created_at?: string
           flagged_categories?: string[]
           id?: string
+          layer_triggered?: string | null
           prompt: string
           service_type?: string | null
           source?: string
+          tier?: number | null
+          user_email?: string | null
           user_id: string
         }
         Update: {
           action_taken?: string
           agency_name?: string | null
+          alert_resolved?: boolean
           created_at?: string
           flagged_categories?: string[]
           id?: string
+          layer_triggered?: string | null
           prompt?: string
           service_type?: string | null
           source?: string
+          tier?: number | null
+          user_email?: string | null
           user_id?: string
         }
         Relationships: []
@@ -339,6 +408,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_and_increment_rate_limit: {
+        Args: { uid: string; max_per_minute: number }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
