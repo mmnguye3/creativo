@@ -9,6 +9,7 @@ import {
   ContentGuidelinesPanel,
   ViolationErrorCard,
   parseModerationError,
+  type ModerationError,
 } from '@/components/ContentGuidelines';
 import {
   SERVICES, SERVICE_FAMILIES, getService, getServicesByFamily,
@@ -42,11 +43,6 @@ interface RecentGen {
   generated_content: string | null;
   created_at:        string;
   metadata:          Record<string, string> | null;
-}
-
-interface ModerationError {
-  category: string;
-  message:  string;
 }
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
@@ -807,7 +803,7 @@ export function AIStudio() {
       }
 
       if (data?.error === 'CONTENT_VIOLATION') {
-        setViolation({ category: data.category, message: data.message });
+        setViolation({ error: 'CONTENT_VIOLATION', category: data.category, message: data.message });
         setPhase('blocked');
         return;
       }

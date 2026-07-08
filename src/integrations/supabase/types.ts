@@ -121,6 +121,8 @@ export type Database = {
           description: string | null
           generated_content: string | null
           id: string
+          image_model: string | null
+          image_url: string | null
           metadata: Json | null
           project_name: string | null
           purchase_order_id: string | null
@@ -140,6 +142,8 @@ export type Database = {
           description?: string | null
           generated_content?: string | null
           id?: string
+          image_model?: string | null
+          image_url?: string | null
           metadata?: Json | null
           project_name?: string | null
           purchase_order_id?: string | null
@@ -159,6 +163,8 @@ export type Database = {
           description?: string | null
           generated_content?: string | null
           id?: string
+          image_model?: string | null
+          image_url?: string | null
           metadata?: Json | null
           project_name?: string | null
           purchase_order_id?: string | null
