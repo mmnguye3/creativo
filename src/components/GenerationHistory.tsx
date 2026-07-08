@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Copy, Download, History, ExternalLink, Megaphone } from "lucide-react";
+import { Copy, Download, History, ExternalLink, Megaphone, Clock, ShieldX, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,6 +17,8 @@ interface Generation {
   image_url: string | null;
   image_model: string | null;
   status: 'pending' | 'draft' | 'completed' | 'failed';
+  review_status: 'pending_review' | 'approved' | 'rejected' | null;
+  rejection_reason: string | null;
   created_at: string;
   client_email: string | null;
   purchase_order_id: string | null;
@@ -54,7 +56,7 @@ export const GenerationHistory: React.FC<GenerationHistoryProps> = ({ onViewAdCa
         .from('ai_generations')
         .select('*')
         .eq('user_id', user.id)
-        .eq('status', 'completed')
+        .or('status.eq.completed,review_status.eq.pending_review,review_status.eq.rejected')
         .order('created_at', { ascending: false })
         .limit(30);
 
@@ -160,7 +162,22 @@ export const GenerationHistory: React.FC<GenerationHistoryProps> = ({ onViewAdCa
                       <div className="flex items-center gap-2 flex-wrap">
                         {isAdCampaign && <Megaphone className="h-4 w-4 text-orange-400 flex-shrink-0" />}
                         <Badge variant="outline">{getServiceTypeLabel(generation.service_type)}</Badge>
-                        <Badge variant={getStatusColor(generation.status)}>{generation.status}</Badge>
+                        {/* Review-status badge takes precedence for pending_review / rejected */}
+                        {generation.review_status === 'pending_review' ? (
+                          <Badge className="bg-amber-500/20 text-amber-600 border-amber-500/30 text-[10px] flex items-center gap-1">
+                            <Clock className="h-2.5 w-2.5" /> In review
+                          </Badge>
+                        ) : generation.review_status === 'rejected' ? (
+                          <Badge className="bg-red-500/20 text-red-500 border-red-500/30 text-[10px] flex items-center gap-1">
+                            <ShieldX className="h-2.5 w-2.5" /> Rejected
+                          </Badge>
+                        ) : generation.review_status === 'approved' || generation.status === 'completed' ? (
+                          <Badge className="bg-green-500/20 text-green-600 border-green-500/30 text-[10px] flex items-center gap-1">
+                            <CheckCircle2 className="h-2.5 w-2.5" /> Ready
+                          </Badge>
+                        ) : (
+                          <Badge variant={getStatusColor(generation.status)}>{generation.status}</Badge>
+                        )}
                         {isAdCampaign && platformLabel && (
                           <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">
                             {platformLabel}
@@ -220,7 +237,32 @@ export const GenerationHistory: React.FC<GenerationHistoryProps> = ({ onViewAdCa
 
                         <p className="text-sm text-muted-foreground">{generation.description}</p>
 
-                        {generation.status === 'completed' && (
+                        {/* ── In-review status ── */}
+                        {generation.review_status === 'pending_review' && (
+                          <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700">
+                            <Clock className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                            <div>
+                              <p className="font-medium">Under review</p>
+                              <p className="text-amber-600 mt-0.5">Your request has been submitted for admin review. You will be notified when it's ready. No charge has been applied.</p>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* ── Rejected status ── */}
+                        {generation.review_status === 'rejected' && (
+                          <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
+                            <ShieldX className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                            <div>
+                              <p className="font-medium">Request rejected</p>
+                              {generation.rejection_reason && (
+                                <p className="text-red-600 mt-0.5">{generation.rejection_reason}</p>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* ── Completed: content + download ── */}
+                        {generation.status === 'completed' && generation.review_status !== 'pending_review' && generation.review_status !== 'rejected' && (
                           <div className="space-y-2">
                             {generation.generated_content && (
                               <Button

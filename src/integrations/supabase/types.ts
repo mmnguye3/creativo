@@ -127,6 +127,10 @@ export type Database = {
       }
       ai_generations: {
         Row: {
+          admin_generated_at: string | null
+          admin_generated_by: string | null
+          admin_image_model: string | null
+          admin_image_url: string | null
           client_email: string | null
           content_type: string | null
           created_at: string | null
@@ -139,6 +143,10 @@ export type Database = {
           metadata: Json | null
           project_name: string | null
           purchase_order_id: string | null
+          rejected_at: string | null
+          rejection_reason: string | null
+          released_at: string | null
+          released_by: string | null
           review_reason: string | null
           review_status: string | null
           reviewed_at: string | null
@@ -149,6 +157,10 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          admin_generated_at?: string | null
+          admin_generated_by?: string | null
+          admin_image_model?: string | null
+          admin_image_url?: string | null
           client_email?: string | null
           content_type?: string | null
           created_at?: string | null
@@ -161,6 +173,10 @@ export type Database = {
           metadata?: Json | null
           project_name?: string | null
           purchase_order_id?: string | null
+          rejected_at?: string | null
+          rejection_reason?: string | null
+          released_at?: string | null
+          released_by?: string | null
           review_reason?: string | null
           review_status?: string | null
           reviewed_at?: string | null
@@ -171,6 +187,10 @@ export type Database = {
           user_id: string
         }
         Update: {
+          admin_generated_at?: string | null
+          admin_generated_by?: string | null
+          admin_image_model?: string | null
+          admin_image_url?: string | null
           client_email?: string | null
           content_type?: string | null
           created_at?: string | null
@@ -183,6 +203,10 @@ export type Database = {
           metadata?: Json | null
           project_name?: string | null
           purchase_order_id?: string | null
+          rejected_at?: string | null
+          rejection_reason?: string | null
+          released_at?: string | null
+          released_by?: string | null
           review_reason?: string | null
           review_status?: string | null
           reviewed_at?: string | null

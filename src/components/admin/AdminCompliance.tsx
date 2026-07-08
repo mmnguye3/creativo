@@ -7,9 +7,10 @@ import { Input } from '@/components/ui/input';
 import {
   ShieldAlert, ShieldCheck, ShieldX, Download, ChevronLeft, ChevronRight,
   AlertTriangle, Ban, CheckCircle2, Loader2, Eye, Zap, Clock,
-  FileSearch, Dices, Plus, Trash2, RefreshCw,
+  FileSearch, Dices, Plus, Trash2, RefreshCw, ImageOff, Send, Wand2,
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -36,6 +37,11 @@ interface PendingApproval {
   description: string | null;
   review_status: string | null;
   review_reason: string | null;
+  admin_image_url: string | null;
+  admin_image_model: string | null;
+  admin_generated_at: string | null;
+  released_at: string | null;
+  rejection_reason: string | null;
   created_at: string | null;
 }
 
@@ -172,6 +178,12 @@ export default function AdminCompliance() {
   const [actionBusy, setActionBusy] = useState<string | null>(null);
   const [detail, setDetail] = useState<ModerationLog | null>(null);
 
+  // ── Gate-2 review dialog state ──
+  const [reviewDialog, setReviewDialog] = useState<PendingApproval | null>(null);
+  const [rejectMode, setRejectMode] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
+  const [safetyWarning, setSafetyWarning] = useState<string | null>(null);
+
   // ── Data fetching ──────────────────────────────────────────────────────────
 
   const fetchLogs = useCallback(async (pageNum: number) => {
@@ -204,7 +216,10 @@ export default function AdminCompliance() {
     const from = pageNum * PAGE_SIZE;
     const { data, error, count } = await supabase
       .from('ai_generations')
-      .select('id, user_id, service_type, description, review_status, review_reason, created_at', { count: 'exact' })
+      .select(
+        'id, user_id, service_type, description, review_status, review_reason, admin_image_url, admin_image_model, admin_generated_at, released_at, rejection_reason, created_at',
+        { count: 'exact' },
+      )
       .eq('review_status', 'pending_review')
       .order('created_at', { ascending: false })
       .range(from, from + PAGE_SIZE - 1);
@@ -351,34 +366,108 @@ export default function AdminCompliance() {
     setActionBusy(null);
   };
 
-  const approvePending = async (gen: PendingApproval) => {
+  // ── Gate-2 review dialog helpers ─────────────────────────────────────────────
+
+  const openReviewDialog = (gen: PendingApproval) => {
+    setReviewDialog(gen);
+    setRejectMode(false);
+    setRejectReason('');
+    setSafetyWarning(null);
+  };
+
+  const closeReviewDialog = () => {
+    setReviewDialog(null);
+    setRejectMode(false);
+    setRejectReason('');
+    setSafetyWarning(null);
+  };
+
+  const handleAdminGenerate = async (gen: PendingApproval, isRegenerate = false) => {
     setActionBusy(gen.id);
-    const { error } = await supabase
-      .from('ai_generations')
-      .update({ review_status: 'approved', reviewed_at: new Date().toISOString() })
-      .eq('id', gen.id);
-    if (error) {
-      toast({ title: 'Update failed', description: error.message, variant: 'destructive' });
-    } else {
-      toast({ title: 'Generation approved' });
-      await refresh();
+    setSafetyWarning(null);
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-review-action', {
+        body: { action: isRegenerate ? 'regenerate' : 'approve_and_generate', generationId: gen.id },
+      });
+      if (error) throw new Error(error.message || 'Edge function error');
+      if (data?.safetyFlagged) {
+        setSafetyWarning(data.message ?? 'The generated image was flagged by the safety screen. Please reject this request.');
+        toast({ title: 'Safety screen flagged the output', description: data.message, variant: 'destructive' });
+      } else {
+        setReviewDialog(prev => prev ? { ...prev, admin_image_url: data.adminImageUrl ?? prev.admin_image_url, admin_image_model: data.adminImageModel ?? prev.admin_image_model } : null);
+        toast({ title: isRegenerate ? 'Image regenerated' : 'Image generated', description: 'Review the image below before releasing to the agency.' });
+        await fetchPending(pendingPage);
+      }
+    } catch (err) {
+      toast({ title: 'Generation failed', description: (err as Error).message, variant: 'destructive' });
     }
     setActionBusy(null);
   };
 
-  const rejectPending = async (gen: PendingApproval) => {
+  const handleAdminRelease = async (gen: PendingApproval) => {
     setActionBusy(gen.id);
-    const { error } = await supabase
-      .from('ai_generations')
-      .update({ review_status: 'rejected', reviewed_at: new Date().toISOString() })
-      .eq('id', gen.id);
-    if (error) {
-      toast({ title: 'Update failed', description: error.message, variant: 'destructive' });
-    } else {
-      toast({ title: 'Generation rejected' });
-      await refresh();
+    try {
+      const { error } = await supabase.functions.invoke('admin-review-action', {
+        body: { action: 'release', generationId: gen.id },
+      });
+      if (error) throw new Error(error.message || 'Edge function error');
+      toast({ title: 'Released to agency', description: 'The generation is now available to the vendor.' });
+      closeReviewDialog();
+      await Promise.all([fetchPending(pendingPage), fetchStats()]);
+    } catch (err) {
+      toast({ title: 'Release failed', description: (err as Error).message, variant: 'destructive' });
     }
     setActionBusy(null);
+  };
+
+  const handleAdminReject = async (gen: PendingApproval) => {
+    if (!rejectReason.trim()) {
+      toast({ title: 'Rejection reason required', description: 'Please enter a reason so the vendor understands why their request was declined.', variant: 'destructive' });
+      return;
+    }
+    setActionBusy(gen.id);
+    try {
+      const { error } = await supabase.functions.invoke('admin-review-action', {
+        body: { action: 'reject', generationId: gen.id, rejectionReason: rejectReason },
+      });
+      if (error) throw new Error(error.message || 'Edge function error');
+      toast({ title: 'Request rejected', description: 'The vendor has been notified.' });
+      closeReviewDialog();
+      await Promise.all([fetchPending(pendingPage), fetchStats()]);
+    } catch (err) {
+      toast({ title: 'Reject failed', description: (err as Error).message, variant: 'destructive' });
+    }
+    setActionBusy(null);
+  };
+
+  const exportReviewCsv = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('ai_generations')
+        .select('id, user_id, service_type, description, review_status, review_reason, reviewed_at, reviewed_by, released_at, rejected_reason:rejection_reason, admin_image_model, created_at')
+        .in('review_status', ['approved', 'rejected'])
+        .order('reviewed_at', { ascending: false })
+        .limit(2000);
+      if (error) throw error;
+      const rows = data || [];
+      const header = ['id', 'user_id', 'service_type', 'description', 'review_status', 'review_reason', 'reviewed_at', 'reviewed_by', 'released_at', 'rejection_reason', 'admin_image_model', 'created_at'];
+      const esc = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+      const csv = [
+        header.join(','),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ...rows.map((r: any) => header.map(k => esc(r[k])).join(',')),
+      ].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `review-decisions-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast({ title: 'Review log exported', description: `${rows.length} decisions exported.` });
+    } catch (err) {
+      toast({ title: 'Export failed', description: (err as Error).message, variant: 'destructive' });
+    }
   };
 
   // Fire-and-forget email notification; never blocks the admin action.
@@ -660,15 +749,22 @@ export default function AdminCompliance() {
       )}
 
       {/* ═══════════════════════════════════════════════════════════════════════ */}
-      {/* TAB: Pending Approvals                                                 */}
+      {/* TAB: Pending Approvals (Gate-2 two-step review queue)                 */}
       {/* ═══════════════════════════════════════════════════════════════════════ */}
       {activeTab === 'pending' && (
         <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-          <div className="px-5 py-4 border-b border-stone-100">
-            <h3 className="font-semibold text-stone-800">Pending Approvals</h3>
-            <p className="text-xs text-stone-400 mt-0.5">
-              Generations flagged as brand / IP gray-zone by the LLM classifier — content still delivered but queued for admin review
-            </p>
+          <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-stone-100">
+            <div>
+              <h3 className="font-semibold text-stone-800">Gray-Zone Review Queue</h3>
+              <p className="text-xs text-stone-400 mt-0.5">
+                Requests flagged as brand / IP gray-zone — HELD, not generated. Admin must approve &amp; generate, then release or reject.
+              </p>
+            </div>
+            <Button variant="outline" size="sm" onClick={exportReviewCsv}
+              className="h-8 text-xs rounded-xl border-stone-200 text-stone-600 hover:bg-stone-50"
+              data-testid="button-export-review-csv">
+              <Download className="w-3.5 h-3.5 mr-1.5" /> Export Review Log
+            </Button>
           </div>
           {pending.length === 0 ? (
             <EmptyState icon={FileSearch} label="No pending approvals" />
@@ -677,42 +773,46 @@ export default function AdminCompliance() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-stone-100">
-                    {['User ID', 'Service', 'Description', 'Reason', 'Date', 'Actions'].map(h => (
+                    {['User', 'Service', 'Prompt', 'Flag Reason', 'Image', 'Submitted', 'Actions'].map(h => (
                       <th key={h} className="text-left px-4 py-3 text-xs font-medium text-stone-400 whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-stone-50">
                   {pending.map(gen => (
-                    <tr key={gen.id} className="hover:bg-stone-50/60 transition-colors" data-testid={`row-pending-${gen.id}`}>
+                    <tr key={gen.id} className="hover:bg-amber-50/30 transition-colors" data-testid={`row-pending-${gen.id}`}>
                       <td className="px-4 py-3 text-xs font-mono text-stone-500">{gen.user_id.slice(0, 8)}…</td>
-                      <td className="px-4 py-3 text-xs text-stone-700 whitespace-nowrap">{gen.service_type}</td>
-                      <td className="px-4 py-3 text-xs text-stone-500 max-w-[200px] truncate">{gen.description || '—'}</td>
+                      <td className="px-4 py-3 text-xs text-stone-700 whitespace-nowrap">
+                        {gen.service_type.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-stone-500 max-w-[180px]">
+                        <span className="line-clamp-2">{gen.description || '—'}</span>
+                      </td>
                       <td className="px-4 py-3">
                         <span className="text-[10px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-medium whitespace-nowrap">
                           {gen.review_reason || 'brand-ip-gray-zone'}
                         </span>
                       </td>
+                      <td className="px-4 py-3">
+                        {gen.admin_image_url ? (
+                          <div className="w-10 h-10 rounded-lg overflow-hidden border border-stone-200 bg-stone-50">
+                            <img src={gen.admin_image_url} alt="Admin preview" className="w-full h-full object-cover" />
+                          </div>
+                        ) : (
+                          <div className="w-10 h-10 rounded-lg border border-dashed border-stone-300 bg-stone-50 flex items-center justify-center">
+                            <ImageOff className="w-3.5 h-3.5 text-stone-300" />
+                          </div>
+                        )}
+                      </td>
                       <td className="px-4 py-3 text-xs text-stone-400 whitespace-nowrap">{fmtDate(gen.created_at)}</td>
                       <td className="px-4 py-3">
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            onClick={() => approvePending(gen)}
-                            disabled={actionBusy === gen.id}
-                            className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-lg border border-green-200 text-green-600 hover:bg-green-50 transition-colors disabled:opacity-50"
-                            data-testid={`button-approve-${gen.id}`}
-                          >
-                            <CheckCircle2 className="w-3 h-3" /> Approve
-                          </button>
-                          <button
-                            onClick={() => rejectPending(gen)}
-                            disabled={actionBusy === gen.id}
-                            className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-lg border border-red-200 text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
-                            data-testid={`button-reject-${gen.id}`}
-                          >
-                            <ShieldX className="w-3 h-3" /> Reject
-                          </button>
-                        </div>
+                        <button
+                          onClick={() => openReviewDialog(gen)}
+                          className="flex items-center gap-1 text-[10px] px-2.5 py-1.5 rounded-lg border border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 transition-colors font-medium"
+                          data-testid={`button-review-${gen.id}`}
+                        >
+                          <Eye className="w-3 h-3" /> Review
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -898,6 +998,170 @@ export default function AdminCompliance() {
           </div>
         </div>
       )}
+
+      {/* ── Gate-2 Review Dialog ─────────────────────────────────────────────── */}
+      <Dialog open={!!reviewDialog} onOpenChange={open => { if (!open) closeReviewDialog(); }}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-sm flex items-center gap-2">
+              <FileSearch className="w-4 h-4 text-amber-500" />
+              Gray-Zone Review — Gate 2
+            </DialogTitle>
+          </DialogHeader>
+          {reviewDialog && (() => {
+            const gen = reviewDialog;
+            const busy = actionBusy === gen.id;
+            const hasAdminImage = !!gen.admin_image_url;
+            return (
+              <div className="space-y-4 text-sm">
+                {/* Meta */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div>
+                    <p className="text-[10px] font-medium text-stone-400 mb-0.5">User</p>
+                    <p className="text-xs text-stone-700 font-mono">{gen.user_id.slice(0, 8)}…</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-medium text-stone-400 mb-0.5">Service</p>
+                    <p className="text-xs text-stone-700">{gen.service_type.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-medium text-stone-400 mb-0.5">Submitted</p>
+                    <p className="text-xs text-stone-700">{fmtDate(gen.created_at)}</p>
+                  </div>
+                  <div className="col-span-2 sm:col-span-3">
+                    <p className="text-[10px] font-medium text-stone-400 mb-0.5">Flag Reason</p>
+                    <span className="text-[10px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-medium">
+                      {gen.review_reason || 'brand-ip-gray-zone'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Prompt */}
+                <div>
+                  <p className="text-[10px] font-medium text-stone-400 mb-1">Vendor Prompt</p>
+                  <p className="text-xs text-stone-700 bg-stone-50 rounded-lg p-3 whitespace-pre-wrap max-h-28 overflow-y-auto border border-stone-100">
+                    {gen.description || '(no description)'}
+                  </p>
+                </div>
+
+                {/* Safety warning */}
+                {safetyWarning && (
+                  <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
+                    <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                    <p>{safetyWarning}</p>
+                  </div>
+                )}
+
+                {/* Image slot */}
+                <div>
+                  <p className="text-[10px] font-medium text-stone-400 mb-2">
+                    Generated Image (Admin-only preview — not visible to vendor until released)
+                  </p>
+                  {hasAdminImage ? (
+                    <div className="rounded-xl overflow-hidden border border-stone-200 bg-stone-50">
+                      <img
+                        src={gen.admin_image_url!}
+                        alt="Admin-generated preview"
+                        className="w-full max-h-64 object-contain"
+                      />
+                      {gen.admin_image_model && (
+                        <p className="text-[10px] text-stone-400 px-3 py-1.5 border-t border-stone-100">
+                          Model: {gen.admin_image_model}
+                          {gen.admin_generated_at && ` · Generated ${fmtDate(gen.admin_generated_at)}`}
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center border-2 border-dashed border-stone-200 rounded-xl py-10 bg-stone-50 text-stone-400 gap-2">
+                      <ImageOff className="w-8 h-8 opacity-40" />
+                      <p className="text-xs font-medium">Not generated — awaiting review</p>
+                      <p className="text-[10px]">Click "Approve &amp; Generate" to create the image for admin review</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Actions */}
+                {!rejectMode ? (
+                  <div className="flex flex-wrap gap-2 pt-2 border-t border-stone-100">
+                    {!hasAdminImage ? (
+                      <Button
+                        onClick={() => handleAdminGenerate(gen)}
+                        disabled={busy}
+                        className="h-8 px-3 text-xs rounded-xl bg-emerald-600 text-white hover:bg-emerald-700"
+                        data-testid={`button-admin-generate-${gen.id}`}
+                      >
+                        {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Wand2 className="w-3.5 h-3.5 mr-1.5" />}
+                        Approve &amp; Generate
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          onClick={() => handleAdminRelease(gen)}
+                          disabled={busy}
+                          className="h-8 px-3 text-xs rounded-xl bg-emerald-600 text-white hover:bg-emerald-700"
+                          data-testid={`button-admin-release-${gen.id}`}
+                        >
+                          {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Send className="w-3.5 h-3.5 mr-1.5" />}
+                          Release to Agency
+                        </Button>
+                        <Button
+                          onClick={() => handleAdminGenerate(gen, true)}
+                          disabled={busy}
+                          variant="outline"
+                          className="h-8 px-3 text-xs rounded-xl border-stone-200"
+                          data-testid={`button-admin-regenerate-${gen.id}`}
+                        >
+                          {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <RefreshCw className="w-3.5 h-3.5 mr-1.5" />}
+                          Regenerate
+                        </Button>
+                      </>
+                    )}
+                    <Button
+                      onClick={() => setRejectMode(true)}
+                      disabled={busy}
+                      variant="outline"
+                      className="h-8 px-3 text-xs rounded-xl border-red-200 text-red-500 hover:bg-red-50 ml-auto"
+                      data-testid={`button-admin-reject-open-${gen.id}`}
+                    >
+                      <ShieldX className="w-3.5 h-3.5 mr-1.5" /> Reject
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-2 pt-2 border-t border-stone-100">
+                    <p className="text-xs font-medium text-stone-600">Rejection reason (visible to vendor):</p>
+                    <Textarea
+                      value={rejectReason}
+                      onChange={e => setRejectReason(e.target.value)}
+                      placeholder="e.g. This request references a registered trademark and cannot be approved..."
+                      className="text-xs resize-none h-20 rounded-xl border-stone-200"
+                      data-testid="input-reject-reason"
+                    />
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => handleAdminReject(gen)}
+                        disabled={busy || !rejectReason.trim()}
+                        className="h-8 px-3 text-xs rounded-xl bg-red-600 text-white hover:bg-red-700"
+                        data-testid={`button-admin-reject-confirm-${gen.id}`}
+                      >
+                        {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <ShieldX className="w-3.5 h-3.5 mr-1.5" />}
+                        Confirm Reject
+                      </Button>
+                      <Button
+                        onClick={() => { setRejectMode(false); setRejectReason(''); }}
+                        variant="outline"
+                        className="h-8 px-3 text-xs rounded-xl border-stone-200"
+                        data-testid="button-reject-cancel"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
 
       {/* ── Detail dialog ── */}
       <Dialog open={!!detail} onOpenChange={() => setDetail(null)}>
