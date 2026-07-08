@@ -21,12 +21,15 @@ export type Database = {
           contact_email: string | null
           contact_phone: string | null
           created_at: string | null
+          facebook_url: string | null
           favicon_url: string | null
           features_enabled: boolean | null
           hero_subtitle: string | null
           hero_title: string | null
           hide_powered_by: boolean | null
           id: string
+          instagram_url: string | null
+          linkedin_url: string | null
           logo_url: string | null
           meta_description: string | null
           meta_title: string | null
@@ -35,6 +38,7 @@ export type Database = {
           secondary_color: string | null
           services_enabled: boolean | null
           testimonials_enabled: boolean | null
+          twitter_url: string | null
           updated_at: string | null
           user_id: string
         }
@@ -44,12 +48,15 @@ export type Database = {
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string | null
+          facebook_url?: string | null
           favicon_url?: string | null
           features_enabled?: boolean | null
           hero_subtitle?: string | null
           hero_title?: string | null
           hide_powered_by?: boolean | null
           id?: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
           logo_url?: string | null
           meta_description?: string | null
           meta_title?: string | null
@@ -58,6 +65,7 @@ export type Database = {
           secondary_color?: string | null
           services_enabled?: boolean | null
           testimonials_enabled?: boolean | null
+          twitter_url?: string | null
           updated_at?: string | null
           user_id: string
         }
@@ -67,12 +75,15 @@ export type Database = {
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string | null
+          facebook_url?: string | null
           favicon_url?: string | null
           features_enabled?: boolean | null
           hero_subtitle?: string | null
           hero_title?: string | null
           hide_powered_by?: boolean | null
           id?: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
           logo_url?: string | null
           meta_description?: string | null
           meta_title?: string | null
@@ -81,6 +92,7 @@ export type Database = {
           secondary_color?: string | null
           services_enabled?: boolean | null
           testimonials_enabled?: boolean | null
+          twitter_url?: string | null
           updated_at?: string | null
           user_id?: string
         }

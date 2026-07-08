@@ -29,6 +29,10 @@ interface AgencySettings {
   meta_description: string;
   favicon_url: string;
   hide_powered_by: boolean;
+  instagram_url: string;
+  facebook_url: string;
+  twitter_url: string;
+  linkedin_url: string;
 }
 
 const AgencySettingsForm = () => {
@@ -56,6 +60,10 @@ const AgencySettingsForm = () => {
     meta_description: "",
     favicon_url: "",
     hide_powered_by: false,
+    instagram_url: "",
+    facebook_url: "",
+    twitter_url: "",
+    linkedin_url: "",
   });
 
   useEffect(() => {
@@ -123,6 +131,10 @@ const AgencySettingsForm = () => {
           meta_description: data.meta_description || "",
           favicon_url: data.favicon_url || "",
           hide_powered_by: data.hide_powered_by ?? false,
+          instagram_url: (data as any).instagram_url || "",
+          facebook_url: (data as any).facebook_url || "",
+          twitter_url: (data as any).twitter_url || "",
+          linkedin_url: (data as any).linkedin_url || "",
         });
       }
     } catch (error) {
@@ -161,6 +173,10 @@ const AgencySettingsForm = () => {
         meta_description: settings.meta_description,
         favicon_url: settings.favicon_url,
         hide_powered_by: settings.hide_powered_by,
+        instagram_url: settings.instagram_url || null,
+        facebook_url: settings.facebook_url || null,
+        twitter_url: settings.twitter_url || null,
+        linkedin_url: settings.linkedin_url || null,
       };
 
       const { data, error } = await supabase
@@ -375,6 +391,53 @@ const AgencySettingsForm = () => {
                     value={settings.contact_phone}
                     onChange={(e) => handleInputChange("contact_phone", e.target.value)}
                     placeholder="+1 (555) 123-4567"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Social Media</CardTitle>
+              <CardDescription>Add your social links — they appear as icons in the footer</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="instagram_url">Instagram URL</Label>
+                  <Input
+                    id="instagram_url"
+                    value={settings.instagram_url}
+                    onChange={(e) => handleInputChange("instagram_url", e.target.value)}
+                    placeholder="https://instagram.com/youragency"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="facebook_url">Facebook URL</Label>
+                  <Input
+                    id="facebook_url"
+                    value={settings.facebook_url}
+                    onChange={(e) => handleInputChange("facebook_url", e.target.value)}
+                    placeholder="https://facebook.com/youragency"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="twitter_url">X / Twitter URL</Label>
+                  <Input
+                    id="twitter_url"
+                    value={settings.twitter_url}
+                    onChange={(e) => handleInputChange("twitter_url", e.target.value)}
+                    placeholder="https://x.com/youragency"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="linkedin_url">LinkedIn URL</Label>
+                  <Input
+                    id="linkedin_url"
+                    value={settings.linkedin_url}
+                    onChange={(e) => handleInputChange("linkedin_url", e.target.value)}
+                    placeholder="https://linkedin.com/company/youragency"
                   />
                 </div>
               </div>

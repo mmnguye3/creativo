@@ -24,6 +24,10 @@ export interface AgencySettings {
   meta_description: string | null;
   favicon_url: string | null;
   hide_powered_by: boolean;
+  instagram_url: string | null;
+  facebook_url: string | null;
+  twitter_url: string | null;
+  linkedin_url: string | null;
 }
 
 interface WhiteLabelContextType {
