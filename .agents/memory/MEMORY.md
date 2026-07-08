@@ -1,4 +1,5 @@
 - [Admin dashboard layout](admin-dashboard.md) — full-screen sidebar layout at /admin, not embedded in Dashboard.tsx tabs; uses zinc-950 sidebar + warm cream #FDF8F4 main area.
+- [Vendor dashboard layout](vendor-dashboard.md) — /dashboard fully rewritten same sidebar shell; VendorOverview in src/components/dashboard/VendorOverview.tsx; scopes queries by user_id / agency_settings.id.
 - [Logo asset](logo-asset.md) — white-on-transparent logo at /public/cretivo-logo.png (1633x514 RGBA PNG); used at h-8/h-9 in navbars.
 - [AI Ads edge function](ai-ads-edge.md) — ad-campaign service type uses GPT JSON mode + dynamic prompts built from request params (platform/objective/tone/targetAudience/promoDetail); TikTok uses 1024x1792 portrait image.
 - [Customer orders table](orders-schema.md) — table is customer_orders (not orders/purchase_orders); agency link via agency_id → agency_settings.id; status values: pending, in_progress, completed, cancelled.

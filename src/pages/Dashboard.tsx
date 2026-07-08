@@ -1,35 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useAdmin } from '@/hooks/useAdmin';
-import { Navigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { User, Settings, FileText, MessageSquare, Sparkles, History, Users, Building2, ShoppingCart, Shield, Megaphone } from 'lucide-react';
+import {
+  LayoutDashboard, Sparkles, Megaphone, History, ShoppingCart,
+  Building2, User, Plus, Search, Bell, Menu, X, LogOut,
+  ChevronRight, Users,
+} from 'lucide-react';
 import { AIGenerator } from '@/components/AIGenerator';
 import { AIAdsGenerator } from '@/components/AIAdsGenerator';
 import { GenerationHistory } from '@/components/GenerationHistory';
 import { ClientProjects } from '@/components/ClientProjects';
 import { OrderManagement } from '@/components/OrderManagement';
 import AgencySettingsForm from '@/components/AgencySettingsForm';
-import UserManagement from '@/components/admin/UserManagement';
-import SubdomainManagement from '@/components/admin/SubdomainManagement';
-import AdminAnalytics from '@/components/admin/AdminAnalytics';
+import VendorOverview from '@/components/dashboard/VendorOverview';
 
-interface Profile {
-  id: string;
-  first_name: string | null;
-  last_name: string | null;
-  company: string | null;
-  phone: string | null;
-  avatar_url: string | null;
-}
+type Section =
+  | 'overview' | 'ai-generator' | 'ai-ads' | 'history'
+  | 'orders' | 'projects' | 'agency-settings' | 'profile';
+
+const NAV_ITEMS: { id: Section; label: string; icon: React.ElementType }[] = [
+  { id: 'overview',         label: 'Overview',        icon: LayoutDashboard },
+  { id: 'ai-generator',     label: 'AI Generator',    icon: Sparkles },
+  { id: 'ai-ads',           label: 'AI Ads',          icon: Megaphone },
+  { id: 'history',          label: 'History',         icon: History },
+  { id: 'orders',           label: 'Orders',          icon: ShoppingCart },
+  { id: 'projects',         label: 'Client Projects', icon: Users },
+  { id: 'agency-settings',  label: 'Agency Settings', icon: Building2 },
+  { id: 'profile',          label: 'Profile',         icon: User },
+];
+
+const SECTION_TITLES: Record<Section, string> = {
+  'overview':        'Dashboard',
+  'ai-generator':    'AI Generator',
+  'ai-ads':          'AI Ads',
+  'history':         'Generation History',
+  'orders':          'Orders',
+  'projects':        'Client Projects',
+  'agency-settings': 'Agency Settings',
+  'profile':         'Profile',
+};
 
 interface HistoryGeneration {
   id: string;
@@ -39,414 +54,375 @@ interface HistoryGeneration {
   description?: string;
 }
 
-const Dashboard = () => {
-  const { user, loading, signOut } = useAuth();
-  const { isAdmin } = useAdmin();
-  const { toast } = useToast();
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [profileLoading, setProfileLoading] = useState(true);
-  const [updating, setUpdating] = useState(false);
-  const [activeTab, setActiveTab] = useState('ai-generator');
-  const [selectedAdGeneration, setSelectedAdGeneration] = useState<HistoryGeneration | null>(null);
+interface Profile {
+  first_name: string | null;
+  last_name: string | null;
+  company: string | null;
+  phone: string | null;
+}
 
+/* ─── Inline Profile Section ─── */
+function ProfileSection({ userId, userEmail }: { userId: string; userEmail: string }) {
+  const { toast } = useToast();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [company, setCompany] = useState('');
   const [phone, setPhone] = useState('');
+  const [updating, setUpdating] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    supabase.from('profiles').select('*').eq('id', userId).single()
+      .then(({ data }) => {
+        if (data) {
+          setFirstName(data.first_name || '');
+          setLastName(data.last_name || '');
+          setCompany(data.company || '');
+          setPhone(data.phone || '');
+        }
+        setLoaded(true);
+      });
+  }, [userId]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUpdating(true);
+    const { error } = await supabase.from('profiles').upsert({
+      id: userId, first_name: firstName, last_name: lastName, company, phone,
+    });
+    setUpdating(false);
+    toast(error
+      ? { title: 'Error updating profile', variant: 'destructive' }
+      : { title: 'Profile updated' }
+    );
+  };
+
+  if (!loaded) return <div className="flex justify-center py-16"><div className="w-6 h-6 rounded-full border-2 border-orange-500 border-t-transparent animate-spin" /></div>;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 max-w-xl">
+      <h3 className="font-semibold text-stone-800 mb-1">Profile Information</h3>
+      <p className="text-sm text-stone-400 mb-6">Update your personal information and preferences.</p>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <Label className="text-stone-700 text-xs font-medium">First Name</Label>
+            <Input value={firstName} onChange={e => setFirstName(e.target.value)}
+              className="border-stone-200 focus-visible:ring-orange-400" />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-stone-700 text-xs font-medium">Last Name</Label>
+            <Input value={lastName} onChange={e => setLastName(e.target.value)}
+              className="border-stone-200 focus-visible:ring-orange-400" />
+          </div>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-stone-700 text-xs font-medium">Email</Label>
+          <Input value={userEmail} disabled className="opacity-50 border-stone-200" />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-stone-700 text-xs font-medium">Company / Agency Name</Label>
+          <Input value={company} onChange={e => setCompany(e.target.value)}
+            className="border-stone-200 focus-visible:ring-orange-400" />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-stone-700 text-xs font-medium">Phone</Label>
+          <Input value={phone} onChange={e => setPhone(e.target.value)}
+            className="border-stone-200 focus-visible:ring-orange-400" />
+        </div>
+        <Button type="submit" disabled={updating}
+          className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl px-6">
+          {updating ? 'Saving…' : 'Save Changes'}
+        </Button>
+      </form>
+    </div>
+  );
+}
+
+/* ─── Wrapper for existing dark components → light surface ─── */
+function LightWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-5">
+      {children}
+    </div>
+  );
+}
+
+/* ─── Main Dashboard ─── */
+const Dashboard = () => {
+  const { user, signOut, loading } = useAuth();
+  const navigate = useNavigate();
+  const [activeSection, setActiveSection] = useState<Section>('overview');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [selectedAdGeneration, setSelectedAdGeneration] = useState<HistoryGeneration | null>(null);
 
   useEffect(() => {
     if (user) {
-      fetchProfile();
+      supabase.from('profiles').select('first_name, last_name, company, phone')
+        .eq('id', user.id).single()
+        .then(({ data }) => { if (data) setProfile(data); });
     }
   }, [user]);
 
-  const fetchProfile = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user?.id)
-        .single();
+  // Auto-collapse on tablet
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 1024px)');
+    setSidebarCollapsed(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setSidebarCollapsed(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
-      if (error && error.code !== 'PGRST116') {
-        throw error;
-      }
-
-      if (data) {
-        setProfile(data);
-        setFirstName(data.first_name || '');
-        setLastName(data.last_name || '');
-        setCompany(data.company || '');
-        setPhone(data.phone || '');
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      toast({
-        title: "Error loading profile",
-        description: "Please refresh the page and try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setProfileLoading(false);
-    }
-  };
-
-  const updateProfile = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setUpdating(true);
-
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .upsert({
-          id: user?.id,
-          first_name: firstName,
-          last_name: lastName,
-          company: company,
-          phone: phone
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Profile updated",
-        description: "Your profile has been updated successfully."
-      });
-
-      fetchProfile();
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      toast({
-        title: "Error updating profile",
-        description: "Please try again later.",
-        variant: "destructive"
-      });
-    } finally {
-      setUpdating(false);
-    }
-  };
-
-  const handleSignOut = async () => {
-    await signOut();
-  };
-
-  const handleViewAdCampaign = (generation: HistoryGeneration) => {
-    setSelectedAdGeneration(generation);
-    setActiveTab('ai-ads');
-  };
-
-  if (loading || profileLoading) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-gray-300">Loading your dashboard...</p>
+      <div className="min-h-screen bg-[#FDF8F4] flex items-center justify-center">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full border-2 border-orange-500 border-t-transparent animate-spin" />
+          <span className="text-stone-500">Loading your dashboard…</span>
         </div>
       </div>
     );
   }
 
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
+  if (!user) return <Navigate to="/auth" replace />;
 
-  const userInitials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U';
-  const agencyName = company || (firstName && lastName ? `${firstName} ${lastName}` : 'Your Agency');
+  const firstName = profile?.first_name || '';
+  const lastName = profile?.last_name || '';
+  const company = profile?.company || '';
+  const displayName = (firstName || lastName)
+    ? `${firstName} ${lastName}`.trim()
+    : user.email?.split('@')[0] || 'Vendor';
+  const agencyName = company || displayName;
+  const initials = [firstName[0], lastName[0]].filter(Boolean).join('').toUpperCase()
+    || user.email?.[0]?.toUpperCase() || 'V';
+
+  const handleNavigate = (section: string) => {
+    setActiveSection(section as Section);
+    setMobileSidebarOpen(false);
+  };
+
+  const handleViewAdCampaign = (gen: HistoryGeneration) => {
+    setSelectedAdGeneration(gen);
+    setActiveSection('ai-ads');
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
+  const renderSection = () => {
+    switch (activeSection) {
+      case 'overview':
+        return <VendorOverview onNavigate={handleNavigate} />;
+      case 'ai-generator':
+        return <AIGenerator onGenerationComplete={() => {}} />;
+      case 'ai-ads':
+        return (
+          <AIAdsGenerator
+            agencyName={agencyName}
+            initialGeneration={selectedAdGeneration}
+            onClear={() => setSelectedAdGeneration(null)}
+          />
+        );
+      case 'history':
+        return <GenerationHistory onViewAdCampaign={handleViewAdCampaign} />;
+      case 'orders':
+        return <OrderManagement />;
+      case 'projects':
+        return <ClientProjects />;
+      case 'agency-settings':
+        return <AgencySettingsForm />;
+      case 'profile':
+        return <ProfileSection userId={user.id} userEmail={user.email || ''} />;
+      default:
+        return null;
+    }
+  };
+
+  /* ─── Sidebar inner content (shared between desktop + mobile drawer) ─── */
+  const SidebarContent = ({ collapsed }: { collapsed: boolean }) => (
+    <div className="flex flex-col h-full">
+      {/* Logo */}
+      <div className={`px-4 py-5 flex items-center ${collapsed ? 'justify-center' : 'gap-3'}`}>
+        {collapsed ? (
+          <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center shrink-0">
+            <span className="text-white font-black text-sm">C</span>
+          </div>
+        ) : (
+          <img src="/cretivo-logo.png" alt="Cretivo" className="h-8 w-auto max-w-[140px] object-contain" />
+        )}
+      </div>
+
+      {/* CTA — New Generation */}
+      <div className={`px-3 mb-5 ${collapsed ? 'flex justify-center' : ''}`}>
+        <button
+          onClick={() => handleNavigate('ai-generator')}
+          className={`flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-2xl transition-all shadow-lg shadow-orange-500/25 ${
+            collapsed ? 'w-10 h-10 justify-center p-0' : 'w-full px-4 py-2.5 text-sm'
+          }`}
+          title={collapsed ? 'New Generation' : undefined}
+        >
+          <Plus className="w-4 h-4 shrink-0" />
+          {!collapsed && <span>New Generation</span>}
+        </button>
+      </div>
+
+      {/* Nav */}
+      <nav className="flex-1 px-2 space-y-0.5 overflow-y-auto">
+        {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
+          const active = activeSection === id;
+          return (
+            <button
+              key={id}
+              onClick={() => handleNavigate(id)}
+              className={`w-full flex items-center gap-3 rounded-xl transition-all duration-150 ${
+                collapsed ? 'justify-center px-0 py-3' : 'px-3 py-2.5'
+              } ${
+                active
+                  ? 'bg-stone-100 text-stone-900 font-semibold shadow-sm'
+                  : 'text-zinc-400 hover:text-white hover:bg-white/10'
+              }`}
+              title={collapsed ? label : undefined}
+            >
+              <Icon className={`shrink-0 ${collapsed ? 'w-5 h-5' : 'w-4 h-4'}`} />
+              {!collapsed && <span className="text-sm">{label}</span>}
+              {!collapsed && active && <ChevronRight className="w-3.5 h-3.5 ml-auto opacity-50" />}
+            </button>
+          );
+        })}
+      </nav>
+
+      {/* User + Sign Out */}
+      <div className={`p-3 border-t border-white/10 ${collapsed ? 'flex flex-col items-center gap-2' : ''}`}>
+        {!collapsed && (
+          <div className="flex items-center gap-2 px-2 py-2 mb-1">
+            <Avatar className="w-7 h-7 shrink-0">
+              <AvatarFallback className="bg-orange-500 text-white text-xs font-bold">{initials}</AvatarFallback>
+            </Avatar>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-semibold text-white truncate">{displayName}</p>
+              <p className="text-[10px] text-zinc-500 truncate">{agencyName !== displayName ? agencyName : user.email}</p>
+            </div>
+          </div>
+        )}
+        <button
+          onClick={handleSignOut}
+          className={`flex items-center gap-2 text-zinc-500 hover:text-red-400 transition-colors text-xs rounded-lg hover:bg-white/5 ${
+            collapsed ? 'w-10 h-10 justify-center p-0' : 'w-full px-2 py-2'
+          }`}
+          title={collapsed ? 'Sign Out' : undefined}
+        >
+          <LogOut className="w-4 h-4 shrink-0" />
+          {!collapsed && 'Sign Out'}
+        </button>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-black pt-20">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white">Welcome back, {firstName || user.email}!</h1>
-          <p className="text-gray-300 mt-2">Manage your account and projects from your dashboard.</p>
+    <div className="flex h-screen bg-[#FDF8F4] overflow-hidden">
+      {/* ── Desktop/Tablet Sidebar ── */}
+      <aside
+        className={`hidden md:flex flex-col bg-zinc-950 flex-shrink-0 transition-all duration-300 h-screen sticky top-0 ${
+          sidebarCollapsed ? 'w-[72px]' : 'w-60'
+        }`}
+      >
+        <SidebarContent collapsed={sidebarCollapsed} />
+      </aside>
+
+      {/* ── Mobile Sidebar Overlay ── */}
+      {mobileSidebarOpen && (
+        <div className="md:hidden fixed inset-0 z-50 flex">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setMobileSidebarOpen(false)} />
+          <aside className="relative w-64 bg-zinc-950 h-full flex flex-col z-10 shadow-2xl">
+            <button
+              onClick={() => setMobileSidebarOpen(false)}
+              className="absolute top-4 right-4 text-zinc-400 hover:text-white p-1"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <SidebarContent collapsed={false} />
+          </aside>
         </div>
+      )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content with Tabs */}
-          <div className="lg:col-span-2">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              {/* Horizontally scrollable tab list for mobile */}
-              <div className="overflow-x-auto -mx-1 px-1">
-                <TabsList className={`flex bg-gray-800 border-gray-700 w-max min-w-full`}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <TabsTrigger value="ai-generator" className="flex items-center gap-1.5 whitespace-nowrap">
-                        <Sparkles className="h-4 w-4" />
-                        <span className="hidden sm:inline">AI Generator</span>
-                      </TabsTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Create new AI-powered content</p></TooltipContent>
-                  </Tooltip>
+      {/* ── Main content ── */}
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+        {/* Top bar */}
+        <header className="flex-shrink-0 h-16 bg-white border-b border-stone-100 flex items-center gap-3 px-4 md:px-6 shadow-sm">
+          <button
+            className="text-stone-400 hover:text-stone-700 transition-colors p-1.5 rounded-lg hover:bg-stone-100"
+            onClick={() => {
+              if (window.innerWidth < 768) setMobileSidebarOpen(true);
+              else setSidebarCollapsed(prev => !prev);
+            }}
+            aria-label="Toggle sidebar"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <TabsTrigger value="ai-ads" className="flex items-center gap-1.5 whitespace-nowrap">
-                        <Megaphone className="h-4 w-4" />
-                        <span className="hidden sm:inline">AI Ads</span>
-                      </TabsTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Generate complete ad campaigns with copy and creative</p></TooltipContent>
-                  </Tooltip>
+          <h1 className="font-bold text-stone-800 text-base md:text-lg leading-none">
+            {SECTION_TITLES[activeSection]}
+          </h1>
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <TabsTrigger value="history" className="flex items-center gap-1.5 whitespace-nowrap">
-                        <History className="h-4 w-4" />
-                        <span className="hidden sm:inline">History</span>
-                      </TabsTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent><p>View all your previously generated content</p></TooltipContent>
-                  </Tooltip>
+          <div className="flex-1 max-w-xs mx-auto hidden sm:block">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Search…"
+                className="w-full h-8 pl-9 pr-4 rounded-xl bg-stone-100 border border-stone-200 text-sm text-stone-700 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400/40 focus:border-orange-400"
+              />
+            </div>
+          </div>
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <TabsTrigger value="client-projects" className="flex items-center gap-1.5 whitespace-nowrap">
-                        <Users className="h-4 w-4" />
-                        <span className="hidden sm:inline">Projects</span>
-                      </TabsTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Track completed client projects</p></TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <TabsTrigger value="orders" className="flex items-center gap-1.5 whitespace-nowrap">
-                        <ShoppingCart className="h-4 w-4" />
-                        <span className="hidden sm:inline">Orders</span>
-                      </TabsTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent><p>View and manage customer orders</p></TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <TabsTrigger value="agency-settings" className="flex items-center gap-1.5 whitespace-nowrap">
-                        <Building2 className="h-4 w-4" />
-                        <span className="hidden sm:inline">Agency</span>
-                      </TabsTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Configure your white-label agency website</p></TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <TabsTrigger value="profile" className="flex items-center gap-1.5 whitespace-nowrap">
-                        <User className="h-4 w-4" />
-                        <span className="hidden sm:inline">Profile</span>
-                      </TabsTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Manage your account information</p></TooltipContent>
-                  </Tooltip>
-
-                  {isAdmin && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <TabsTrigger value="admin" className="flex items-center gap-1.5 whitespace-nowrap">
-                          <Shield className="h-4 w-4" />
-                          <span className="hidden sm:inline">Admin</span>
-                        </TabsTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent><p>Admin dashboard</p></TooltipContent>
-                    </Tooltip>
-                  )}
-                </TabsList>
+          <div className="ml-auto flex items-center gap-3">
+            <button className="relative text-stone-400 hover:text-stone-700 transition-colors p-1.5 rounded-lg hover:bg-stone-100">
+              <Bell className="w-5 h-5" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-orange-500 rounded-full" />
+            </button>
+            <div className="flex items-center gap-2">
+              <Avatar className="w-8 h-8">
+                <AvatarFallback className="bg-orange-500 text-white text-xs font-bold">{initials}</AvatarFallback>
+              </Avatar>
+              <div className="hidden sm:block">
+                <p className="text-xs font-semibold text-stone-800 leading-tight">{displayName}</p>
+                <p className="text-[10px] text-stone-400 leading-tight">{agencyName !== displayName ? agencyName : 'Vendor'}</p>
               </div>
-
-              <TabsContent value="ai-generator" className="mt-6 bg-gray-900 rounded-lg p-4">
-                <AIGenerator onGenerationComplete={() => {}} />
-              </TabsContent>
-
-              <TabsContent value="ai-ads" className="mt-6 bg-gray-900 rounded-lg p-4">
-                <AIAdsGenerator
-                  agencyName={agencyName}
-                  initialGeneration={selectedAdGeneration}
-                  onClear={() => setSelectedAdGeneration(null)}
-                />
-              </TabsContent>
-
-              <TabsContent value="history" className="mt-6 bg-gray-900 rounded-lg p-4">
-                <GenerationHistory onViewAdCampaign={handleViewAdCampaign} />
-              </TabsContent>
-
-              <TabsContent value="client-projects" className="mt-6 bg-gray-900 rounded-lg p-4">
-                <ClientProjects />
-              </TabsContent>
-
-              <TabsContent value="orders" className="mt-6 bg-gray-900 rounded-lg p-4">
-                <OrderManagement />
-              </TabsContent>
-
-              <TabsContent value="agency-settings" className="mt-6 bg-gray-900 rounded-lg p-4">
-                <AgencySettingsForm />
-              </TabsContent>
-
-              <TabsContent value="profile" className="mt-6 bg-gray-900 rounded-lg p-4">
-                <Card className="bg-black border-orange-200/50">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-white">
-                      <User className="h-5 w-5" />
-                      Profile Information
-                    </CardTitle>
-                    <CardDescription className="text-gray-400">
-                      Update your personal information and preferences.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <form onSubmit={updateProfile} className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="firstName">First Name</Label>
-                          <Input
-                            id="firstName"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="lastName">Last Name</Label>
-                          <Input
-                            id="lastName"
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                          id="email"
-                          value={user.email || ''}
-                          disabled
-                          className="opacity-50"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="company">Company</Label>
-                        <Input
-                          id="company"
-                          value={company}
-                          onChange={(e) => setCompany(e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Phone</Label>
-                        <Input
-                          id="phone"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                        />
-                      </div>
-                      <Button type="submit" disabled={updating}>
-                        {updating ? 'Updating...' : 'Update Profile'}
-                      </Button>
-                    </form>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              {isAdmin && (
-                <TabsContent value="admin" className="mt-6 space-y-6">
-                  <Card className="bg-gray-900 border-gray-700">
-                    <CardHeader>
-                      <CardTitle className="text-white flex items-center gap-2">
-                        <Shield className="h-5 w-5" />
-                        Admin Dashboard
-                      </CardTitle>
-                      <CardDescription>
-                        Manage users, subdomains, and view platform analytics
-                      </CardDescription>
-                    </CardHeader>
-                  </Card>
-
-                  <Tabs defaultValue="analytics" className="w-full">
-                    <TabsList className="grid w-full grid-cols-3 bg-gray-800 border-gray-700">
-                      <TabsTrigger value="analytics">Analytics</TabsTrigger>
-                      <TabsTrigger value="users">User Management</TabsTrigger>
-                      <TabsTrigger value="subdomains">Subdomains</TabsTrigger>
-                    </TabsList>
-
-                    <TabsContent value="analytics" className="mt-4">
-                      <AdminAnalytics />
-                    </TabsContent>
-
-                    <TabsContent value="users" className="mt-4">
-                      <UserManagement />
-                    </TabsContent>
-
-                    <TabsContent value="subdomains" className="mt-4">
-                      <SubdomainManagement />
-                    </TabsContent>
-                  </Tabs>
-                </TabsContent>
-              )}
-            </Tabs>
+            </div>
           </div>
+        </header>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            <Card className="bg-black border-orange-200/50">
-              <CardContent className="pt-6">
-                <div className="flex flex-col items-center text-center">
-                  <Avatar className="h-20 w-20 mb-4">
-                    <AvatarFallback className="text-lg">{userInitials}</AvatarFallback>
-                  </Avatar>
-                  <h3 className="font-semibold text-lg text-white">
-                    {firstName && lastName ? `${firstName} ${lastName}` : 'User'}
-                  </h3>
-                  <p className="text-sm text-gray-400">{user.email}</p>
-                  {company && <p className="text-sm text-gray-400">{company}</p>}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-black border-orange-200/50">
-              <CardHeader>
-                <CardTitle className="text-lg text-white">Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="outline" className="w-full justify-start text-white border-gray-600 hover:bg-gray-800" asChild>
-                      <a href="/contact">
-                        <MessageSquare className="h-4 w-4 mr-2" />
-                        Contact Support
-                      </a>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent><p>Get help with technical issues</p></TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="outline" className="w-full justify-start text-white border-gray-600 hover:bg-gray-800" asChild>
-                      <a href="/services">
-                        <FileText className="h-4 w-4 mr-2" />
-                        Browse Services
-                      </a>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent><p>Explore all available services</p></TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="outline" className="w-full justify-start text-white border-gray-600 hover:bg-gray-800">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Account Settings
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent><p>Manage your subscription and preferences</p></TooltipContent>
-                </Tooltip>
-                <Button
-                  variant="destructive"
-                  className="w-full"
-                  onClick={handleSignOut}
-                >
-                  Sign Out
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+        {/* Scrollable content */}
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 pb-20 md:pb-6">
+          {renderSection()}
+        </main>
       </div>
+
+      {/* ── Mobile Bottom Navigation ── */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-950 border-t border-white/10 flex z-40">
+        {NAV_ITEMS.slice(0, 5).map(({ id, label, icon: Icon }) => {
+          const active = activeSection === id;
+          return (
+            <button
+              key={id}
+              onClick={() => handleNavigate(id)}
+              className={`flex-1 flex flex-col items-center justify-center py-2.5 gap-0.5 transition-colors ${
+                active ? 'text-orange-500' : 'text-zinc-500 hover:text-zinc-300'
+              }`}
+            >
+              <Icon className="w-5 h-5" />
+              <span className="text-[9px] font-medium">{label.split(' ')[0]}</span>
+            </button>
+          );
+        })}
+      </nav>
     </div>
   );
 };
