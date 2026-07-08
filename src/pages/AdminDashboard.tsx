@@ -55,6 +55,7 @@ interface AdminOrder {
   status: string;
   created_at: string;
   agency_id: string;
+  agencyName?: string;
 }
 
 interface AIGeneration {
@@ -93,12 +94,19 @@ function AllOrdersSection() {
 
   const fetchOrders = async () => {
     try {
-      const { data, error } = await supabase
-        .from('customer_orders')
-        .select('id, customer_name, customer_email, customer_company, total_amount, status, created_at, agency_id')
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      setOrders(data || []);
+      const [ordersRes, agenciesRes] = await Promise.all([
+        supabase
+          .from('customer_orders')
+          .select('id, customer_name, customer_email, customer_company, total_amount, status, created_at, agency_id')
+          .order('created_at', { ascending: false }),
+        supabase.from('agency_settings').select('id, agency_name'),
+      ]);
+      if (ordersRes.error) throw ordersRes.error;
+      const agencyMap = new Map((agenciesRes.data || []).map(a => [a.id, a.agency_name || 'Unknown']));
+      setOrders((ordersRes.data || []).map(o => ({
+        ...o,
+        agencyName: agencyMap.get(o.agency_id) || 'Unknown',
+      })));
     } catch (err: unknown) {
       toast({ title: 'Failed to load orders', variant: 'destructive' });
     } finally {
@@ -148,7 +156,7 @@ function AllOrdersSection() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-stone-100">
-                {['Customer', 'Email', 'Company', 'Amount', 'Status', 'Date', 'Actions'].map(h => (
+                {['Customer', 'Email', 'Company', 'Agency', 'Amount', 'Status', 'Date', 'Actions'].map(h => (
                   <th key={h} className="text-left px-4 py-3 text-xs font-medium text-stone-400 whitespace-nowrap">{h}</th>
                 ))}
               </tr>
@@ -159,6 +167,7 @@ function AllOrdersSection() {
                   <td className="px-4 py-3 font-medium text-stone-800 text-xs">{order.customer_name}</td>
                   <td className="px-4 py-3 text-xs text-stone-500">{order.customer_email}</td>
                   <td className="px-4 py-3 text-xs text-stone-400">{order.customer_company || '—'}</td>
+                  <td className="px-4 py-3 text-xs text-stone-500" data-testid={`text-agency-${order.id}`}>{order.agencyName || 'Unknown'}</td>
                   <td className="px-4 py-3 text-xs font-semibold text-stone-800">${(order.total_amount || 0).toFixed(2)}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium ${STATUS_CHIP[order.status] || 'bg-stone-100 text-stone-600'}`}>
