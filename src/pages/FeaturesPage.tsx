@@ -72,20 +72,71 @@ const FeaturesPage = () => {
   return (
     <div className="pt-20">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-hero">
-        <div className="absolute inset-0 bg-black/40"></div>
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">
-            Platform <span className="bg-gradient-primary bg-clip-text text-transparent">Features</span>
-          </h1>
-          <p className="text-xl text-white max-w-3xl mx-auto mb-8">
-            Discover all the powerful features that make our white-label platform the perfect choice for your design agency.
-          </p>
+      <section className="relative bg-zinc-950 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-3xl -translate-x-1/4 -translate-y-1/4" />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+        </div>
+        <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left — copy */}
+            <div>
+              <p className="text-orange-400 text-xs font-bold tracking-[0.18em] uppercase mb-4"
+                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(14px)', transition: 'opacity 0.55s ease, transform 0.55s ease', transitionDelay: '0s' }}>
+                Features
+              </p>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.08] mb-5"
+                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(16px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '0.08s' }}>
+                Built so you can{' '}
+                <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
+                  sell, not fulfill
+                </span>
+              </h1>
+              <p className="text-zinc-400 text-lg leading-relaxed mb-8 max-w-lg"
+                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(14px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '0.17s' }}>
+                Your brand on the storefront, our engine underneath — AI generation, order management, and payments handled for you.
+              </p>
+              <div
+                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(12px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '0.26s' }}>
+                <Button
+                  onClick={() => document.getElementById('features-grid')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl px-6 h-11 shadow-lg shadow-orange-500/25"
+                >
+                  Explore Features
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Right — feature chips */}
+            <div className="flex flex-col gap-3"
+              style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(20px)', transition: 'opacity 0.7s ease, transform 0.7s ease', transitionDelay: '0.15s' }}>
+              {[
+                { icon: Globe, title: 'White-label storefront', desc: 'Your domain, your logo, your prices', color: 'bg-blue-500/10 text-blue-400' },
+                { icon: Sparkles, title: 'AI ad & content generation', desc: 'Client-ready creative in seconds', color: 'bg-violet-500/10 text-violet-400' },
+                { icon: ShoppingCart, title: 'Order & client management', desc: 'Briefs, revisions, delivery in one place', color: 'bg-orange-500/10 text-orange-400' },
+                { icon: CreditCard, title: 'Payments & invoicing', desc: 'Get paid under your own brand', color: 'bg-green-500/10 text-green-400' },
+              ].map(({ icon: Icon, title, desc, color }) => (
+                <div key={title}
+                  className="flex items-center gap-4 bg-white/[0.03] border border-white/8 rounded-2xl px-5 py-4 hover:border-orange-500/20 transition-colors">
+                  <div className={`w-10 h-10 rounded-xl ${color} flex items-center justify-center shrink-0`}>
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-white font-semibold text-sm">{title}</p>
+                    <p className="text-zinc-500 text-xs mt-0.5">{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Main Features Component */}
-      <Features />
+      <div id="features-grid">
+        {/* Main Features Component */}
+        <Features />
+      </div>
 
       {/* Additional Feature Categories */}
       <section className="py-20 bg-black">

@@ -8,31 +8,287 @@ const corsHeaders = {
 };
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const falKey = Deno.env.get('FAL_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
+// ── fal.ai model routing ───────────────────────────────────────────────────────
+//
+// Decision table:
+//   Text-in-image (ads, promos, social w/ headlines) → Ideogram v3  (best text rendering)
+//   Brand / design-system assets (logos, packaging)  → Recraft V3   (brand colour controls)
+//   Product photography / UGC creatives              → FLUX Schnell (fast & cheap for volume)
+//   Photorealistic hero / web-design visuals         → FLUX Pro 1.1 (highest photorealism)
+// ────────────────────────────────────────────────────────────────────────────────
+const SERVICE_TO_FAL_MODEL: Record<string, string> = {
+  // Ideogram v3 — text rendering in image
+  'ad-campaign':           'fal-ai/ideogram/v3',
+  'social-media-graphics': 'fal-ai/ideogram/v3',
+  'flyers':                'fal-ai/ideogram/v3',
+  'banners':               'fal-ai/ideogram/v3',
+  'brochures':             'fal-ai/ideogram/v3',
+  'print-design':          'fal-ai/ideogram/v3',
+  // Recraft V3 — brand colour support
+  'logo-branding':         'fal-ai/recraft-v3',
+  'business-cards':        'fal-ai/recraft-v3',
+  'packaging-design':      'fal-ai/recraft-v3',
+  'labels':                'fal-ai/recraft-v3',
+  'signage-design':        'fal-ai/recraft-v3',
+  // FLUX Schnell — fast / volume (product & UGC)
+  'product-photography':   'fal-ai/flux/schnell',
+  'product-mockups':       'fal-ai/flux/schnell',
+  'amazon-a-plus':         'fal-ai/flux/schnell',
+  'storefront-design':     'fal-ai/flux/schnell',
+  // FLUX Pro 1.1 — photorealistic / web visuals
+  'website-design':        'fal-ai/flux-pro/v1.1',
+  'landing-pages':         'fal-ai/flux-pro/v1.1',
+  'ui-ux-design':          'fal-ai/flux-pro/v1.1',
+  'figma-prototypes':      'fal-ai/flux-pro/v1.1',
+  'responsive-design':     'fal-ai/flux-pro/v1.1',
+  'illustrations':         'fal-ai/flux-pro/v1.1',
+};
+
+const DEFAULT_FAL_MODEL = 'fal-ai/flux/schnell';
+
+function pickFalModel(serviceType: string, modelOverride?: string): string {
+  if (modelOverride) return modelOverride;
+  return SERVICE_TO_FAL_MODEL[serviceType] ?? DEFAULT_FAL_MODEL;
+}
+
+// ── Size conversion helpers ────────────────────────────────────────────────────
+function toFalImageSize(dalleSize: string): string {
+  if (dalleSize === '1024x1792') return 'portrait_16_9';
+  if (dalleSize === '1792x1024') return 'landscape_16_9';
+  return 'square_hd';
+}
+
+function toIdeogramAspectRatio(dalleSize: string): string {
+  if (dalleSize === '1024x1792') return 'ASPECT_9_16';
+  if (dalleSize === '1792x1024') return 'ASPECT_16_9';
+  return 'ASPECT_1_1';
+}
+
+// ── Extract hex brand colours from brief text ──────────────────────────────────
+function extractHexColors(text: string): Array<{ r: number; g: number; b: number }> {
+  const matches = text.match(/#[0-9a-fA-F]{6}/g) ?? [];
+  return matches.slice(0, 3).map(hex => ({
+    r: parseInt(hex.slice(1, 3), 16),
+    g: parseInt(hex.slice(3, 5), 16),
+    b: parseInt(hex.slice(5, 7), 16),
+  }));
+}
+
+// ── Retry helper ───────────────────────────────────────────────────────────────
+const retryWithBackoff = async (fn: () => Promise<Response>, maxRetries = 3): Promise<Response> => {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const response = await fn();
+      if (response.ok) return response;
+      if (response.status === 429) {
+        const wait = Math.pow(2, i) * 1000;
+        console.log(`Rate limited, waiting ${wait}ms before retry ${i + 1}`);
+        await new Promise(r => setTimeout(r, wait));
+        continue;
+      }
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    } catch (error) {
+      if (i === maxRetries - 1) throw error;
+      await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+    }
+  }
+  throw new Error('Max retries exceeded');
+};
+
+// ── fal.ai image generation ────────────────────────────────────────────────────
+async function generateImageWithFal(
+  prompt: string,
+  model: string,
+  dalleSize: string,
+  brief = '',
+): Promise<{ imageUrl: string; modelUsed: string }> {
+  if (!falKey) throw new Error('FAL_KEY not configured');
+
+  let requestBody: Record<string, unknown>;
+
+  if (model === 'fal-ai/ideogram/v3') {
+    requestBody = {
+      prompt,
+      aspect_ratio: toIdeogramAspectRatio(dalleSize),
+      rendering_speed: 'STANDARD',
+      magic_prompt_option: 'ON',
+    };
+  } else if (model === 'fal-ai/recraft-v3') {
+    const brandColors = extractHexColors(brief);
+    requestBody = {
+      prompt,
+      image_size: toFalImageSize(dalleSize),
+      style: 'realistic_image',
+      ...(brandColors.length > 0 ? { colors: brandColors } : {}),
+    };
+  } else if (model === 'fal-ai/flux/schnell') {
+    requestBody = {
+      prompt,
+      image_size: toFalImageSize(dalleSize),
+      num_inference_steps: 4,
+      num_images: 1,
+      enable_safety_checker: true,
+    };
+  } else {
+    // FLUX Pro and other models
+    requestBody = {
+      prompt,
+      image_size: toFalImageSize(dalleSize),
+      num_images: 1,
+    };
+  }
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 50000);
+
+  let response: Response;
+  try {
+    console.log(`[fal] → model=${model} size=${dalleSize}`);
+    response = await fetch(`https://fal.run/${model}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Key ${falKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+
+  if (!response.ok) {
+    const errText = await response.text().catch(() => response.statusText);
+    throw new Error(`fal.ai ${response.status}: ${errText.slice(0, 400)}`);
+  }
+
+  const data = await response.json();
+
+  // Normalise across model response shapes
+  const imageUrl: string | undefined =
+    data?.images?.[0]?.url ??
+    data?.image?.url ??
+    data?.output?.images?.[0]?.url;
+
+  if (!imageUrl) {
+    throw new Error(`No image URL in fal.ai response (keys: ${Object.keys(data).join(', ')})`);
+  }
+
+  console.log(`[fal] ✓ model=${model} url_prefix=${imageUrl.slice(0, 60)}`);
+  return { imageUrl, modelUsed: model };
+}
+
+// ── OpenAI DALL·E 3 image generation (fallback) ────────────────────────────────
+async function generateImageWithOpenAI(
+  prompt: string,
+  dalleSize: string,
+): Promise<{ imageUrl: string; modelUsed: string }> {
+  if (!openAIApiKey) throw new Error('OpenAI API key not configured');
+
+  const imageResponse = await retryWithBackoff(() =>
+    fetch('https://api.openai.com/v1/images/generations', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'dall-e-3',
+        prompt,
+        n: 1,
+        size: dalleSize,
+        quality: 'standard',
+      }),
+    })
+  );
+
+  const imageData = await imageResponse.json();
+
+  if (!imageData?.data?.[0]?.url) {
+    throw new Error(`No image URL in OpenAI response: ${JSON.stringify(imageData).slice(0, 300)}`);
+  }
+
+  console.log('[openai] ✓ dall-e-3 image generated');
+  return { imageUrl: imageData.data[0].url, modelUsed: 'dall-e-3' };
+}
+
+// ── Unified image generation with fal → OpenAI fallback ───────────────────────
+async function generateImage(
+  prompt: string,
+  serviceType: string,
+  dalleSize: string,
+  modelOverride: string | undefined,
+  brief: string,
+): Promise<{ imageUrl: string; modelUsed: string }> {
+  const falModel = pickFalModel(serviceType, modelOverride);
+
+  if (falKey) {
+    try {
+      return await generateImageWithFal(prompt, falModel, dalleSize, brief);
+    } catch (err) {
+      console.error(`[fal] Generation failed model=${falModel}, falling back to dall-e-3:`, (err as Error).message);
+      return await generateImageWithOpenAI(prompt, dalleSize);
+    }
+  }
+
+  console.log('[fal] FAL_KEY not set — using dall-e-3 fallback');
+  return await generateImageWithOpenAI(prompt, dalleSize);
+}
+
+// ── Edge Function entry point ──────────────────────────────────────────────────
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Parse body once and save so the error handler can reference generationId
+  let body: Record<string, unknown>;
   try {
-    const body = await req.json();
-    const { serviceType, description, userId, generationId, platform, objective, tone, targetAudience, promoDetail } = body;
+    body = await req.json();
+  } catch {
+    return new Response(
+      JSON.stringify({ error: 'Invalid JSON body' }),
+      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
 
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
-    }
+  const {
+    serviceType,
+    description,
+    userId,
+    generationId,
+    platform,
+    objective,
+    tone,
+    targetAudience,
+    promoDetail,
+    modelOverride,   // optional: force a specific fal model
+  } = body as Record<string, string | undefined>;
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    console.log(`Generating content for service: ${serviceType}, user: ${userId}`);
+  try {
+    if (!openAIApiKey) throw new Error('OpenAI API key not configured');
+    if (!serviceType) throw new Error('serviceType is required');
 
-    const serviceConfig: Record<string, { contentType: string; textPrompt: string | null; imagePrompt: string | null; useJsonMode?: boolean; imageSize?: string }> = {
+    console.log(`[generate] serviceType=${serviceType} user=${userId} generationId=${generationId}`);
+
+    // ── Service config (text + image prompts) ──────────────────────────────────
+    const serviceConfig: Record<string, {
+      contentType: string;
+      textPrompt: string | null;
+      imagePrompt: string | null;
+      useJsonMode?: boolean;
+      imageSize?: string;
+    }> = {
       'social-media-graphics': {
         contentType: 'combo',
         textPrompt: `Create engaging social media graphics copy for: ${description}. Include platform-specific text, hashtags, and engaging captions.`,
-        imagePrompt: `Create vibrant, engaging social media graphics for: ${description}. Modern, eye-catching design optimized for social platforms.`
+        imagePrompt: `Create vibrant, engaging social media graphics for: ${description}. Modern, eye-catching design optimised for social platforms.`
       },
       'logo-branding': {
         contentType: 'image',
@@ -47,7 +303,7 @@ serve(async (req) => {
       'illustrations': {
         contentType: 'image',
         textPrompt: null,
-        imagePrompt: `Create a custom illustration for: ${description}. Professional, high-quality artwork with modern style and vibrant colors.`
+        imagePrompt: `Create a custom illustration for: ${description}. Professional, high-quality artwork with modern style and vibrant colours.`
       },
       'packaging-design': {
         contentType: 'image',
@@ -71,7 +327,7 @@ serve(async (req) => {
       },
       'video-ads': {
         contentType: 'text',
-        textPrompt: `Create a video advertisement concept and script for: ${description}. Include storyboard, call-to-action, target audience considerations, and platform optimization.`,
+        textPrompt: `Create a video advertisement concept and script for: ${description}. Include storyboard, call-to-action, target audience considerations, and platform optimisation.`,
         imagePrompt: null
       },
       'animated-explainers': {
@@ -86,8 +342,8 @@ serve(async (req) => {
       },
       'landing-pages': {
         contentType: 'combo',
-        textPrompt: `Create a high-converting landing page copy and structure for: ${description}. Include headlines, value propositions, call-to-actions, and conversion optimization elements.`,
-        imagePrompt: `Create compelling landing page design mockups for: ${description}. Focus on conversion optimization and clear visual hierarchy.`
+        textPrompt: `Create a high-converting landing page copy and structure for: ${description}. Include headlines, value propositions, call-to-actions, and conversion optimisation elements.`,
+        imagePrompt: `Create compelling landing page design mockups for: ${description}. Focus on conversion optimisation and clear visual hierarchy.`
       },
       'ui-ux-design': {
         contentType: 'combo',
@@ -101,8 +357,8 @@ serve(async (req) => {
       },
       'responsive-design': {
         contentType: 'combo',
-        textPrompt: `Create responsive design guidelines for: ${description}. Include breakpoints, mobile-first approach, and cross-device optimization strategies.`,
-        imagePrompt: `Create responsive design mockups for: ${description}. Multi-device layouts optimized for desktop, tablet, and mobile.`
+        textPrompt: `Create responsive design guidelines for: ${description}. Include breakpoints, mobile-first approach, and cross-device optimisation strategies.`,
+        imagePrompt: `Create responsive design mockups for: ${description}. Multi-device layouts optimised for desktop, tablet, and mobile.`
       },
       'email-templates': {
         contentType: 'text',
@@ -131,28 +387,28 @@ serve(async (req) => {
       },
       'amazon-a-plus': {
         contentType: 'combo',
-        textPrompt: `Create Amazon A+ content copy for: ${description}. Include product features, benefits, brand story, and SEO-optimized descriptions.`,
+        textPrompt: `Create Amazon A+ content copy for: ${description}. Include product features, benefits, brand story, and SEO-optimised descriptions.`,
         imagePrompt: `Create Amazon A+ content graphics for: ${description}. Professional, conversion-focused visuals that highlight product benefits.`
       },
       'product-photography': {
         contentType: 'image',
         textPrompt: null,
-        imagePrompt: `Create professional product photography concepts for: ${description}. High-quality, commercial-grade images with proper lighting and composition.`
+        imagePrompt: `Create professional product photography for: ${description}. High-quality, commercial-grade image with proper lighting, clean background, and sharp detail. No text overlays.`
       },
       'storefront-design': {
         contentType: 'combo',
-        textPrompt: `Create e-commerce storefront strategy for: ${description}. Include layout recommendations, product organization, and conversion optimization.`,
+        textPrompt: `Create e-commerce storefront strategy for: ${description}. Include layout recommendations, product organisation, and conversion optimisation.`,
         imagePrompt: `Create attractive e-commerce storefront designs for: ${description}. Professional, conversion-focused online store layouts.`
       },
       'listing-optimization': {
         contentType: 'text',
-        textPrompt: `Create optimized product listing content for: ${description}. Include SEO keywords, compelling descriptions, bullet points, and conversion elements.`,
+        textPrompt: `Create optimised product listing content for: ${description}. Include SEO keywords, compelling descriptions, bullet points, and conversion elements.`,
         imagePrompt: null
       },
       'product-mockups': {
         contentType: 'image',
         textPrompt: null,
-        imagePrompt: `Create realistic product mockups for: ${description}. Professional presentation in real-world contexts and usage scenarios.`
+        imagePrompt: `Create realistic product mockups for: ${description}. Professional presentation in real-world contexts and usage scenarios. Photorealistic quality.`
       },
       'business-cards': {
         contentType: 'image',
@@ -167,7 +423,7 @@ serve(async (req) => {
       'banners': {
         contentType: 'image',
         textPrompt: null,
-        imagePrompt: `Create large format banner designs for: ${description}. High-impact, readable design optimized for viewing distance.`
+        imagePrompt: `Create large format banner designs for: ${description}. High-impact, readable design optimised for viewing distance.`
       },
       'signage-design': {
         contentType: 'image',
@@ -176,7 +432,7 @@ serve(async (req) => {
       }
     };
 
-    // Build ad-campaign config dynamically from request params
+    // ── Ad-campaign config built dynamically ───────────────────────────────────
     if (serviceType === 'ad-campaign') {
       const platformLabels: Record<string, string> = {
         'facebook-instagram': 'Facebook and Instagram',
@@ -190,8 +446,8 @@ serve(async (req) => {
         'luxury': 'luxurious, premium, and aspirational',
         'bold': 'bold, direct, and high-impact',
       };
-      const platformLabel = platformLabels[platform] || platform || 'social media';
-      const toneDesc = toneDescriptions[tone] || tone || 'professional';
+      const platformLabel = platformLabels[platform ?? ''] || platform || 'social media';
+      const toneDesc = toneDescriptions[tone ?? ''] || tone || 'professional';
       const imageSize = platform === 'tiktok' ? '1024x1792' : '1024x1024';
 
       serviceConfig['ad-campaign'] = {
@@ -219,39 +475,18 @@ Return ONLY a valid JSON object with exactly these fields. No markdown fences, n
 }
 
 Rules: Each headline must be max 40 characters. primaryTextShort max 125 characters. description max 30 characters. ctaButton must be exactly one of: Shop Now, Learn More, Sign Up, Get Offer, Book Now. hashtags must include the # symbol.`,
-        imagePrompt: `Professional ${platformLabel} advertisement creative image for: ${description}. ${toneDesc} visual style. Commercial photography quality, clean composition, bold and attention-grabbing colors, product-forward. No text, no words, no letters overlaid on image. Suitable for paid advertising on ${platformLabel}.${promoDetail ? ` Visually conveys: ${promoDetail}.` : ''}`,
+        imagePrompt: `Professional ${platformLabel} advertisement visual for: ${description}. ${toneDesc} style. Commercial quality, bold colours, product-forward composition. No text, no words, no letters.${promoDetail ? ` Visually conveys: ${promoDetail}.` : ''}`,
       };
     }
 
-    const config = serviceConfig[serviceType as keyof typeof serviceConfig];
-    if (!config) {
-      throw new Error(`Unsupported service type: ${serviceType}`);
-    }
+    const config = serviceConfig[serviceType];
+    if (!config) throw new Error(`Unsupported service type: ${serviceType}`);
 
-    let generatedContent = null;
-    let imageUrl = null;
+    let generatedContent: string | null = null;
+    let imageUrl: string | null = null;
+    let imageModel: string | null = null;
 
-    const retryWithBackoff = async (fn: () => Promise<Response>, maxRetries = 3) => {
-      for (let i = 0; i < maxRetries; i++) {
-        try {
-          const response = await fn();
-          if (response.ok) return response;
-          if (response.status === 429) {
-            const waitTime = Math.pow(2, i) * 1000;
-            console.log(`Rate limited, waiting ${waitTime}ms before retry ${i + 1}`);
-            await new Promise(resolve => setTimeout(resolve, waitTime));
-            continue;
-          }
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        } catch (error) {
-          if (i === maxRetries - 1) throw error;
-          await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
-        }
-      }
-      throw new Error('Max retries exceeded');
-    };
-
-    // Generate text content
+    // ── Text generation (always OpenAI) ───────────────────────────────────────
     if (config.textPrompt) {
       const requestBody: Record<string, unknown> = {
         model: 'gpt-4o-mini',
@@ -262,7 +497,6 @@ Rules: Each headline must be max 40 characters. primaryTextShort max 125 charact
         max_tokens: 1200,
         temperature: config.useJsonMode ? 0.8 : 0.7,
       };
-
       if (config.useJsonMode) {
         requestBody.response_format = { type: 'json_object' };
       }
@@ -281,15 +515,13 @@ Rules: Each headline must be max 40 characters. primaryTextShort max 125 charact
       const textData = await textResponse.json();
       generatedContent = textData.choices[0].message.content;
 
-      // For ad-campaign: strip markdown fences and validate JSON
       if (serviceType === 'ad-campaign') {
         let jsonStr = (generatedContent as string)
           .replace(/^```json?\s*/i, '')
           .replace(/```\s*$/i, '')
           .trim();
         try {
-          const parsed = JSON.parse(jsonStr);
-          generatedContent = JSON.stringify(parsed);
+          generatedContent = JSON.stringify(JSON.parse(jsonStr));
         } catch (e) {
           console.warn('Ad campaign JSON parse warning:', e);
           generatedContent = jsonStr;
@@ -297,79 +529,75 @@ Rules: Each headline must be max 40 characters. primaryTextShort max 125 charact
       }
     }
 
-    // Generate image
+    // ── Image generation (fal.ai with OpenAI fallback) ─────────────────────────
     if (config.imagePrompt) {
-      const imageSize = config.imageSize || '1024x1024';
-      const imageResponse = await retryWithBackoff(() =>
-        fetch('https://api.openai.com/v1/images/generations', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${openAIApiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'dall-e-3',
-            prompt: config.imagePrompt,
-            n: 1,
-            size: imageSize,
-            quality: 'standard',
-          }),
-        })
+      const dalleSize = config.imageSize || '1024x1024';
+      const brief = [description, targetAudience, promoDetail].filter(Boolean).join(' ');
+      const result = await generateImage(
+        config.imagePrompt,
+        serviceType,
+        dalleSize,
+        modelOverride,
+        brief,
       );
-
-      const imageData = await imageResponse.json();
-      imageUrl = imageData.data[0].url;
+      imageUrl = result.imageUrl;
+      imageModel = result.modelUsed;
     }
+
+    // ── Persist results ────────────────────────────────────────────────────────
+    const updatePayload: Record<string, unknown> = {
+      generated_content: generatedContent,
+      image_url: imageUrl,
+      status: 'draft',
+      updated_at: new Date().toISOString(),
+    };
+    if (imageModel) updatePayload.image_model = imageModel;
 
     const { error: updateError } = await supabase
       .from('ai_generations')
-      .update({
-        generated_content: generatedContent,
-        image_url: imageUrl,
-        status: 'draft',
-        updated_at: new Date().toISOString(),
-      })
+      .update(updatePayload)
       .eq('id', generationId);
 
     if (updateError) {
-      console.error('Error updating generation:', updateError);
+      console.error('DB update error:', updateError);
       throw new Error('Failed to save generation results');
     }
 
-    console.log(`Successfully generated content for generation ${generationId}`);
+    console.log(`[generate] ✓ generationId=${generationId} imageModel=${imageModel ?? 'none'}`);
 
     return new Response(
       JSON.stringify({
         success: true,
         generatedContent,
         imageUrl,
+        imageModel,
         contentType: config.contentType,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error: unknown) {
-    console.error('Error in generate-ai-content function:', error);
+    const errMsg = (error as Error).message || 'Unknown error';
+    console.error('[generate] Error:', errMsg);
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const errorBody = await req.json().catch(() => ({})) as Record<string, unknown>;
-    const generationId = errorBody.generationId;
-
+    // Mark the row as failed (generationId is in scope from the parsed body)
     if (generationId) {
       await supabase
         .from('ai_generations')
         .update({ status: 'failed', updated_at: new Date().toISOString() })
-        .eq('id', generationId);
+        .eq('id', generationId)
+        .then(({ error: dbErr }) => {
+          if (dbErr) console.error('Failed to mark generation as failed:', dbErr);
+        });
     }
 
-    const errMsg = (error as Error).message || '';
     let errorMessage = 'Failed to generate content';
     if (errMsg.includes('429') || errMsg.includes('Too Many Requests')) {
-      errorMessage = 'OpenAI API rate limit exceeded. Please try again in a few moments.';
-    } else if (errMsg.includes('Bad Request')) {
-      errorMessage = 'Invalid request to OpenAI API. Please check your input and try again.';
+      errorMessage = 'API rate limit exceeded. Please try again in a few moments.';
     } else if (errMsg.includes('OpenAI API key not configured')) {
       errorMessage = 'OpenAI API key is not configured. Please contact support.';
+    } else if (errMsg.includes('FAL_KEY')) {
+      errorMessage = 'Image generation service not configured. Please contact support.';
     }
 
     return new Response(

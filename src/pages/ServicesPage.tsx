@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -39,9 +39,102 @@ import {
   Car
 } from "lucide-react";
 
+// ── Hero video / poster cards ─────────────────────────────────────────────────
+// Drop MP4 clips into public/hero-clips/ as clip-1.mp4 … clip-5.mp4.
+// Until a clip file exists the card shows its poster image (identical to the
+// static-picture version). The poster WebP files are already there.
+const HERO_CLIPS = [
+  {
+    id: 1,
+    clip: '/hero-clips/clip-1.mp4',
+    poster: '/hero-clips/poster-1.webp',
+    posterFallback: '/hero-clips/poster-1.jpg',
+    alt: 'Skincare serum social media post',
+    rotation: -3,
+    duration: 4.2,
+    delay: 0,
+    pos: { top: '4%', left: '20%', width: '52%' },
+  },
+  {
+    id: 2,
+    clip: '/hero-clips/clip-2.mp4',
+    poster: '/hero-clips/poster-2.webp',
+    posterFallback: '/hero-clips/poster-2.jpg',
+    alt: 'Dream Home real-estate ad',
+    rotation: -8,
+    duration: 5.1,
+    delay: 0.7,
+    pos: { top: '2%', left: '0%', width: '41%' },
+  },
+  {
+    id: 3,
+    clip: '/hero-clips/clip-3.mp4',
+    poster: '/hero-clips/poster-3.webp',
+    posterFallback: '/hero-clips/poster-3.jpg',
+    alt: 'Podcast episodes social content',
+    rotation: 5,
+    duration: 4.6,
+    delay: 1.4,
+    pos: { bottom: '4%', left: '13%', width: '44%' },
+  },
+  {
+    id: 4,
+    clip: '/hero-clips/clip-4.mp4',
+    poster: '/hero-clips/poster-4.webp',
+    posterFallback: '/hero-clips/poster-4.jpg',
+    alt: 'Product lifestyle photography design',
+    rotation: 7,
+    duration: 3.9,
+    delay: 0.3,
+    pos: { top: '30%', right: '0%', width: '44%' },
+  },
+  {
+    id: 5,
+    clip: '/hero-clips/clip-5.mp4',
+    poster: '/hero-clips/poster-5.webp',
+    posterFallback: '/hero-clips/poster-5.jpg',
+    alt: 'Brand strategy marketing design',
+    rotation: -5,
+    duration: 5.3,
+    delay: 1.1,
+    pos: { bottom: '2%', right: '6%', width: '41%' },
+  },
+] as const;
+
 const ServicesPage = () => {
   const [heroVisible, setHeroVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const heroRightRef = useRef<HTMLDivElement>(null);
+  const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
+
   useEffect(() => { const t = setTimeout(() => setHeroVisible(true), 80); return () => clearTimeout(t); }, []);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  // Play videos when hero is in viewport; pause when scrolled away (saves battery)
+  useEffect(() => {
+    if (isMobile) return;
+    const container = heroRightRef.current;
+    if (!container) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        const vids = Object.values(videoRefs.current).filter(Boolean) as HTMLVideoElement[];
+        if (entry.isIntersecting) {
+          vids.forEach(v => { v.play().catch(() => {}); });
+        } else {
+          vids.forEach(v => v.pause());
+        }
+      },
+      { threshold: 0.1 },
+    );
+    obs.observe(container);
+    return () => obs.disconnect();
+  }, [isMobile]);
 
   const serviceCategories = [
     {
@@ -287,22 +380,22 @@ const ServicesPage = () => {
             {/* Left — copy */}
             <div>
               <p className="text-orange-400 text-xs font-bold tracking-[0.18em] uppercase mb-4"
-                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(14px)', transition: 'opacity 0.55s ease, transform 0.55s ease', transitionDelay: '0s' }}>
+                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(14px)', transition: 'opacity 0.55s ease 0s, transform 0.55s ease 0s' }}>
                 Services
               </p>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.08] mb-5"
-                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(16px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '0.08s' }}>
+                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(16px)', transition: 'opacity 0.6s ease 0.08s, transform 0.6s ease 0.08s' }}>
                 Every design your clients{' '}
                 <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
                   will ever ask for
                 </span>
               </h1>
               <p className="text-zinc-400 text-lg leading-relaxed mb-8 max-w-lg"
-                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(14px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '0.17s' }}>
+                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(14px)', transition: 'opacity 0.6s ease 0.17s, transform 0.6s ease 0.17s' }}>
                 Twelve design verticals — social, brand, web, video, print — delivered under your agency's name in as little as 24 hours.
               </p>
               <div className="flex flex-wrap gap-3 mb-8"
-                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(12px)', transition: 'opacity 0.6s ease, transform 0.6s ease', transitionDelay: '0.26s' }}>
+                style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'translateY(0)' : 'translateY(12px)', transition: 'opacity 0.6s ease 0.26s, transform 0.6s ease 0.26s' }}>
                 <Button
                   onClick={() => document.getElementById('services-grid')?.scrollIntoView({ behavior: 'smooth' })}
                   className="bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl px-6 h-11 shadow-lg shadow-orange-500/25"
@@ -316,7 +409,7 @@ const ServicesPage = () => {
                 </Button>
               </div>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5"
-                style={{ opacity: heroVisible ? 1 : 0, transition: 'opacity 0.6s ease', transitionDelay: '0.36s' }}>
+                style={{ opacity: heroVisible ? 1 : 0, transition: 'opacity 0.6s ease 0.36s' }}>
                 {[
                   { num: '48k+', label: 'designs delivered' },
                   { num: '24hr', label: 'avg turnaround' },
@@ -331,16 +424,84 @@ const ServicesPage = () => {
               </div>
             </div>
 
-            {/* Right — Collage */}
-            <div className="flex items-center justify-center lg:justify-end"
-              style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'rotate(2deg)' : 'translateY(24px) rotate(2deg)', transition: 'opacity 0.75s ease, transform 0.75s ease', transitionDelay: '0.15s' }}>
-              <div className="rounded-[22px] overflow-hidden shadow-2xl shadow-black/60 border border-white/10 max-w-[520px] w-full">
-                <picture>
-                  <source srcSet="/designs-collage.webp" type="image/webp" />
-                  <img src="/designs-collage.png" alt="Collage of sample social media designs created through Cretivo"
-                    loading="eager" decoding="async" width={1280} height={720} className="w-full h-auto block" />
-                </picture>
-              </div>
+            {/* Right — Floating video / poster cards */}
+            {/* ── Desktop: scattered absolute layout ─────────────────── */}
+            <div
+              ref={heroRightRef}
+              className="hidden lg:block relative h-[500px] w-full"
+              style={{
+                opacity: heroVisible ? 1 : 0,
+                transition: 'opacity 0.75s ease 0.15s',
+              }}
+              aria-hidden="true"
+            >
+              <style>{`
+                @keyframes hfloat-1{0%,100%{transform:translateY(0px) rotate(-3deg)}50%{transform:translateY(-7px) rotate(-3deg)}}
+                @keyframes hfloat-2{0%,100%{transform:translateY(0px) rotate(-8deg)}50%{transform:translateY(-5px) rotate(-8deg)}}
+                @keyframes hfloat-3{0%,100%{transform:translateY(0px) rotate(5deg)} 50%{transform:translateY(-8px) rotate(5deg)}}
+                @keyframes hfloat-4{0%,100%{transform:translateY(0px) rotate(7deg)} 50%{transform:translateY(-6px) rotate(7deg)}}
+                @keyframes hfloat-5{0%,100%{transform:translateY(0px) rotate(-5deg)}50%{transform:translateY(-9px) rotate(-5deg)}}
+                .hero-vid-card{transition:box-shadow 0.25s ease,filter 0.25s ease}
+                .hero-vid-card:hover{box-shadow:0 28px 56px rgba(0,0,0,0.55)!important;filter:brightness(1.06)}
+              `}</style>
+
+              {HERO_CLIPS.map((card) => (
+                <div
+                  key={card.id}
+                  className="absolute hero-vid-card"
+                  style={{
+                    ...card.pos,
+                    animation: `hfloat-${card.id} ${card.duration}s ease-in-out ${card.delay}s infinite`,
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    boxShadow: '0 16px 40px rgba(0,0,0,0.45)',
+                    border: '1px solid rgba(255,255,255,0.10)',
+                    zIndex: card.id === 1 ? 3 : card.id === 4 ? 4 : 2,
+                  }}
+                >
+                  {/* Video element — shows poster until clip file is uploaded */}
+                  <video
+                    ref={(el) => { videoRefs.current[card.id] = el; }}
+                    src={card.clip}
+                    poster={card.poster}
+                    muted
+                    loop
+                    playsInline
+                    preload="none"
+                    aria-label={card.alt}
+                    style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: 'auto' }}
+                    onError={(e) => {
+                      // If clip is missing, hide the broken-video icon by clearing src
+                      const v = e.currentTarget;
+                      if (v.src && !v.src.endsWith('.webp')) {
+                        v.removeAttribute('src');
+                        v.load();
+                      }
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* ── Mobile: 2×2 poster grid (no video — saves data) ─────── */}
+            <div className="grid grid-cols-2 gap-3 lg:hidden" aria-hidden="true"
+              style={{ opacity: heroVisible ? 1 : 0, transition: 'opacity 0.75s ease 0.15s' }}>
+              {HERO_CLIPS.slice(0, 4).map((card) => (
+                <div key={card.id}
+                  style={{
+                    borderRadius: '14px',
+                    overflow: 'hidden',
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                    border: '1px solid rgba(255,255,255,0.09)',
+                    transform: `rotate(${card.rotation * 0.3}deg)`,
+                  }}>
+                  <picture>
+                    <source srcSet={card.poster} type="image/webp" />
+                    <img src={card.posterFallback} alt={card.alt} loading="lazy" decoding="async"
+                      style={{ display: 'block', width: '100%', height: 'auto' }} />
+                  </picture>
+                </div>
+              ))}
             </div>
           </div>
         </div>
