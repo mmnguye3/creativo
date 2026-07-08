@@ -44,6 +44,7 @@ import videoContentIcon from "@/assets/icons/video-content.png";
 import ecommerceIcon from "@/assets/icons/ecommerce-content.png";
 import emailDesignIcon from "@/assets/icons/email-design.png";
 import illustrationsIcon from "@/assets/icons/illustrations-graphics.png";
+import packagingIcon from "@/assets/icons/packaging-branding.png";
 
 // ── Hero video / poster cards ─────────────────────────────────────────────────
 // Drop MP4 clips into public/hero-clips/ as clip-1.mp4 … clip-5.mp4.
@@ -262,6 +263,7 @@ const ServicesPage = () => {
     {
       title: "Packaging & Branding",
       icon: Package,
+      iconImage: packagingIcon,
       services: [
         "Package Design",
         "Packaging Insert",
