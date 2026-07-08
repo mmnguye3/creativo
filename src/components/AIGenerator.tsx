@@ -12,6 +12,13 @@ import { Loader2, Copy, Download, Sparkles, Lightbulb, RefreshCw, X, Check } fro
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import {
+  ContentAckGate,
+  ContentGuidelinesPanel,
+  ViolationErrorCard,
+  parseModerationError,
+  type ModerationError,
+} from "@/components/ContentGuidelines";
 
 interface AIGeneratorProps {
   onGenerationComplete?: () => void;
@@ -578,6 +585,7 @@ export const AIGenerator: React.FC<AIGeneratorProps> = ({ onGenerationComplete }
   const [contentType, setContentType] = useState<'text' | 'image' | 'combo' | null>(null);
   const [currentGenerationId, setCurrentGenerationId] = useState<string>('');
   const [showPreview, setShowPreview] = useState<boolean>(false);
+  const [violation, setViolation] = useState<ModerationError | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -629,6 +637,7 @@ export const AIGenerator: React.FC<AIGeneratorProps> = ({ onGenerationComplete }
     setIsGenerating(true);
     setGeneratedContent(null);
     setGeneratedImage(null);
+    setViolation(null);
 
     try {
       // Create a generation record first
@@ -675,11 +684,16 @@ export const AIGenerator: React.FC<AIGeneratorProps> = ({ onGenerationComplete }
 
     } catch (error) {
       console.error('Generation error:', error);
-      toast({
-        title: "Generation Failed",
-        description: error.message || "Failed to generate content. Please try again.",
-        variant: "destructive",
-      });
+      const modError = await parseModerationError(error);
+      if (modError) {
+        setViolation(modError);
+      } else {
+        toast({
+          title: "Generation Failed",
+          description: (error as Error).message || "Failed to generate content. Please try again.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -774,6 +788,13 @@ export const AIGenerator: React.FC<AIGeneratorProps> = ({ onGenerationComplete }
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        <ContentAckGate userId={user?.id}>
+        <ContentGuidelinesPanel />
+
+        {violation && (
+          <ViolationErrorCard violation={violation} onDismiss={() => setViolation(null)} />
+        )}
+
         {/* Client Information Section */}
         <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
           <h3 className="font-semibold text-sm">Client Information</h3>
@@ -1036,6 +1057,7 @@ export const AIGenerator: React.FC<AIGeneratorProps> = ({ onGenerationComplete }
             </div>
           </div>
         )}
+        </ContentAckGate>
       </CardContent>
     </Card>
   );

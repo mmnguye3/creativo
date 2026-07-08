@@ -4,3 +4,4 @@
 - [AI Ads edge function](ai-ads-edge.md) — ad-campaign service type uses GPT JSON mode + dynamic prompts built from request params (platform/objective/tone/targetAudience/promoDetail); TikTok uses 1024x1792 portrait image.
 - [Customer orders table](orders-schema.md) — table is customer_orders (not orders/purchase_orders); agency link via agency_id → agency_settings.id; status values: pending, in_progress, completed, cancelled.
 - [Dashboard tabs](dashboard-tabs.md) — Dashboard.tsx uses controlled Tabs (value/onValueChange) with horizontal-scroll TabsList; AI Ads tab wired via selectedAdGeneration state + onViewAdCampaign callback from GenerationHistory.
+- [Supabase edge function identity](supabase-edge-fn-auth.md) — derive userId from JWT, never body; REVOKE PUBLIC EXECUTE on SECURITY DEFINER RPCs.

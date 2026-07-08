@@ -10,6 +10,13 @@ import { Loader2, Copy, Check, RefreshCw, Megaphone, ImageIcon, Heart, MessageCi
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import {
+  ContentAckGate,
+  ContentGuidelinesPanel,
+  ViolationErrorCard,
+  parseModerationError,
+  type ModerationError,
+} from '@/components/ContentGuidelines';
 
 interface AdBriefForm {
   platform: 'facebook-instagram' | 'google-ads' | 'tiktok';
@@ -265,6 +272,7 @@ export const AIAdsGenerator: React.FC<AIAdsGeneratorProps> = ({ agencyName = 'Yo
   const [isGenerating, setIsGenerating] = useState(false);
   const [activeHeadline, setActiveHeadline] = useState(0);
   const [savedToHistory, setSavedToHistory] = useState(false);
+  const [violation, setViolation] = useState<ModerationError | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -309,6 +317,7 @@ export const AIAdsGenerator: React.FC<AIAdsGeneratorProps> = ({ agencyName = 'Yo
     setImageUrl(null);
     setImageModel(null);
     setSavedToHistory(false);
+    setViolation(null);
 
     try {
       const { data: gen, error: insertError } = await supabase
@@ -360,11 +369,16 @@ export const AIAdsGenerator: React.FC<AIAdsGeneratorProps> = ({ agencyName = 'Yo
 
       toast({ title: 'Ad campaign generated!', description: 'Review your ad package below.' });
     } catch (err: unknown) {
-      toast({
-        title: 'Generation failed',
-        description: (err as Error).message || 'Please try again.',
-        variant: 'destructive',
-      });
+      const modError = await parseModerationError(err);
+      if (modError) {
+        setViolation(modError);
+      } else {
+        toast({
+          title: 'Generation failed',
+          description: (err as Error).message || 'Please try again.',
+          variant: 'destructive',
+        });
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -412,6 +426,13 @@ export const AIAdsGenerator: React.FC<AIAdsGeneratorProps> = ({ agencyName = 'Yo
           <p className="text-zinc-400 text-xs mt-0.5">Generate complete ad campaigns with copy, creative, and CTAs</p>
         </div>
       </div>
+
+      <ContentAckGate userId={user?.id}>
+      <ContentGuidelinesPanel />
+
+      {violation && (
+        <ViolationErrorCard violation={violation} onDismiss={() => setViolation(null)} />
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* ── LEFT: Brief Form ── */}
@@ -761,6 +782,7 @@ export const AIAdsGenerator: React.FC<AIAdsGeneratorProps> = ({ agencyName = 'Yo
           )}
         </div>
       </div>
+      </ContentAckGate>
     </div>
   );
 };

@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import {
   LayoutDashboard, Package, Building2, Sparkles, Users, Globe, Settings,
   Plus, Search, Bell, Menu, X, LogOut, ChevronRight, Zap,
-  ShoppingCart, FileText, ExternalLink
+  ShoppingCart, FileText, ExternalLink, ShieldAlert
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,8 +20,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import AdminOverview from '@/components/admin/AdminOverview';
 import UserManagement from '@/components/admin/UserManagement';
 import SubdomainManagement from '@/components/admin/SubdomainManagement';
+import AdminCompliance from '@/components/admin/AdminCompliance';
 
-type Section = 'overview' | 'orders' | 'agencies' | 'ai-generations' | 'users' | 'subdomains' | 'settings';
+type Section = 'overview' | 'orders' | 'agencies' | 'ai-generations' | 'users' | 'subdomains' | 'compliance' | 'settings';
 
 const NAV_ITEMS: { id: Section; label: string; icon: React.ElementType }[] = [
   { id: 'overview',        label: 'Dashboard',      icon: LayoutDashboard },
@@ -30,6 +31,7 @@ const NAV_ITEMS: { id: Section; label: string; icon: React.ElementType }[] = [
   { id: 'ai-generations',  label: 'AI Generations',  icon: Sparkles },
   { id: 'users',           label: 'Users',           icon: Users },
   { id: 'subdomains',      label: 'Subdomains',      icon: Globe },
+  { id: 'compliance',      label: 'Compliance',      icon: ShieldAlert },
   { id: 'settings',        label: 'Settings',        icon: Settings },
 ];
 
@@ -40,6 +42,7 @@ const SECTION_TITLES: Record<Section, string> = {
   'ai-generations': 'AI Generations',
   users:           'User Management',
   subdomains:      'Subdomains',
+  compliance:      'Content Compliance',
   settings:        'Settings',
 };
 
@@ -503,6 +506,8 @@ const AdminDashboard = () => {
             <UserManagement />
           </div>
         );
+      case 'compliance':
+        return <AdminCompliance />;
       case 'settings':
         return <SettingsSection />;
       default:

@@ -235,35 +235,80 @@ export type Database = {
         }
         Relationships: []
       }
+      moderation_logs: {
+        Row: {
+          action_taken: string
+          agency_name: string | null
+          created_at: string
+          flagged_categories: string[]
+          id: string
+          prompt: string
+          service_type: string | null
+          source: string
+          user_id: string
+        }
+        Insert: {
+          action_taken?: string
+          agency_name?: string | null
+          created_at?: string
+          flagged_categories?: string[]
+          id?: string
+          prompt: string
+          service_type?: string | null
+          source?: string
+          user_id: string
+        }
+        Update: {
+          action_taken?: string
+          agency_name?: string | null
+          created_at?: string
+          flagged_categories?: string[]
+          id?: string
+          prompt?: string
+          service_type?: string | null
+          source?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           company: string | null
+          content_ack_at: string | null
           created_at: string | null
           first_name: string | null
           id: string
           last_name: string | null
           phone: string | null
+          suspended: boolean
+          under_review: boolean
           updated_at: string | null
         }
         Insert: {
           avatar_url?: string | null
           company?: string | null
+          content_ack_at?: string | null
           created_at?: string | null
           first_name?: string | null
           id: string
           last_name?: string | null
           phone?: string | null
+          suspended?: boolean
+          under_review?: boolean
           updated_at?: string | null
         }
         Update: {
           avatar_url?: string | null
           company?: string | null
+          content_ack_at?: string | null
           created_at?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
           phone?: string | null
+          suspended?: boolean
+          under_review?: boolean
           updated_at?: string | null
         }
         Relationships: []
@@ -301,7 +346,9 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_and_review: { Args: { uid: string }; Returns: undefined }
       is_admin: { Args: never; Returns: boolean }
+      is_agency_suspended: { Args: { aid: string }; Returns: boolean }
       is_valid_agency: { Args: { _agency_id: string }; Returns: boolean }
     }
     Enums: {

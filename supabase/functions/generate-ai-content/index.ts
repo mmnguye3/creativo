@@ -99,6 +99,114 @@ const retryWithBackoff = async (fn: () => Promise<Response>, maxRetries = 3): Pr
   throw new Error('Max retries exceeded');
 };
 
+// ── Content moderation (compliance gate) ───────────────────────────────────────
+//
+// Two layers, both fail-CLOSED:
+//   1. Custom rules — payment-processor-specific prohibited categories
+//   2. OpenAI omni-moderation-latest — general safety categories
+// Generated images are also screened before being returned.
+// ────────────────────────────────────────────────────────────────────────────────
+const CUSTOM_RULES: Array<{ category: string; label: string; pattern: RegExp }> = [
+  {
+    category: 'counterfeit',
+    label: 'Counterfeit or unauthorized branded goods',
+    pattern: /\b(counterfeit|knock[- ]?offs?|replica\s+(bags?|watch(es)?|shoes?|sneakers?|handbags?|jewelry|designer)|fake\s+(designer|gucci|louis\s?vuitton|rolex|nike|adidas|chanel|prada|dior|hermes)|1\s?:\s?1\s+(replica|copy|mirror)|aaa\+?\s+(replica|quality|grade)|mirror[- ]quality|unauthorized\s+(replica|copy|merchandise))\b/i,
+  },
+  {
+    category: 'gambling',
+    label: 'Unlicensed gambling services',
+    pattern: /\b(online\s+casinos?|sports?\s?bett?ing|slot\s+machines?|poker\s+(sites?|rooms?|apps?)|bett?ing\s+(sites?|apps?|platforms?|odds)|gambling\s+(sites?|apps?|platforms?)|jackpot\s+sites?|sweepstakes\s+casinos?|offshore\s+(casino|betting)|crypto\s+casinos?)\b/i,
+  },
+  {
+    category: 'securities-scam',
+    label: 'Securities fraud or investment scams',
+    pattern: /\b(pump[- ]?and[- ]?dump|guaranteed\s+(returns?|profits?)|double\s+your\s+(money|investment|crypto)|ponzi|pyramid\s+scheme|get\s+rich\s+quick|insider\s+(trading|tips?)|penny\s+stock\s+(alerts?|tips?|picks?)|forex\s+signals?|crypto\s+(pumps?|signals?)|risk[- ]?free\s+invest(ment|ing)?|100%\s+(returns?|profits?))\b/i,
+  },
+  {
+    category: 'sanctioned-entity',
+    label: 'Sanctioned entities or regions',
+    pattern: /\b(north\s+korea|dprk|iran(ian)?\s+(government|military|oil|bank)|syria(n)?\s+(government|oil|regime)|crimea|hezbollah|hamas|taliban|wagner\s+group|isis|al[- ]qaeda|sanctions?\s+evasion|ofac\s+(evasion|bypass|workaround))\b/i,
+  },
+  {
+    category: 'disinformation',
+    label: 'Election fraud or deepfake disinformation',
+    pattern: /\b(election\s+(fraud|rigging|interference)|rigged\s+election|fake\s+ballots?|deep[- ]?fakes?|voter\s+suppression|stolen\s+election|fabricated\s+news|disinformation\s+campaigns?|impersonat(e|ing|ion)\s+(a\s+)?(politician|candidate|official))\b/i,
+  },
+  {
+    category: 'drugs-weapons',
+    label: 'Drugs, weapons, or trafficking',
+    pattern: /\b(cocaine|heroin|meth(amphetamine)?|fentanyl|mdma|ecstasy|psilocybin|buy\s+(drugs|weed|narcotics)|cannabis\s+(delivery|shop|store|sales?)|marijuana\s+(delivery|dispensary|sales?)|ghost\s+guns?|untraceable\s+(guns?|firearms?)|firearms?\s+(sales?|stores?|shops?|dealers?)|assault\s+rifles?|silencers?|suppressors?\s+for\s+sale|explosives?|human\s+trafficking|organ\s+(sales?|trafficking)|escort\s+services?)\b/i,
+  },
+];
+
+async function moderateWithOpenAI(
+  input: string | Array<Record<string, unknown>>,
+): Promise<{ flagged: boolean; categories: string[] }> {
+  if (!openAIApiKey) throw new Error('OpenAI API key not configured');
+  const res = await fetch('https://api.openai.com/v1/moderations', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${openAIApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ model: 'omni-moderation-latest', input }),
+  });
+  if (!res.ok) {
+    const errText = await res.text().catch(() => res.statusText);
+    throw new Error(`Moderation API ${res.status}: ${errText.slice(0, 200)}`);
+  }
+  const data = await res.json();
+  const result = data?.results?.[0];
+  if (!result) throw new Error('Moderation API returned no results');
+  const categories = Object.entries(result.categories ?? {})
+    .filter(([, flagged]) => flagged === true)
+    .map(([name]) => name);
+  return { flagged: result.flagged === true, categories };
+}
+
+// deno-lint-ignore no-explicit-any
+async function logViolation(supabase: any, opts: {
+  userId?: string;
+  prompt: string;
+  serviceType?: string;
+  categories: string[];
+  source: 'prompt' | 'image' | 'suspension';
+}): Promise<void> {
+  try {
+    if (!opts.userId) return;
+    let agencyName: string | null = null;
+    const { data: agency } = await supabase
+      .from('agency_settings')
+      .select('agency_name')
+      .eq('user_id', opts.userId)
+      .maybeSingle();
+    agencyName = agency?.agency_name ?? null;
+
+    await supabase.from('moderation_logs').insert({
+      user_id: opts.userId,
+      agency_name: agencyName,
+      prompt: opts.prompt.slice(0, 2000),
+      service_type: opts.serviceType ?? null,
+      flagged_categories: opts.categories,
+      source: opts.source,
+      action_taken: 'blocked',
+    });
+
+    if (opts.source !== 'suspension') {
+      await supabase.rpc('increment_and_review', { uid: opts.userId });
+    }
+  } catch (e) {
+    console.error('[moderation] Failed to log violation:', (e as Error).message);
+  }
+}
+
+function violationResponse(category: string, message: string): Response {
+  return new Response(
+    JSON.stringify({ error: 'CONTENT_VIOLATION', category, message }),
+    { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+  );
+}
+
 // ── fal.ai image generation ────────────────────────────────────────────────────
 async function generateImageWithFal(
   prompt: string,
@@ -259,7 +367,7 @@ serve(async (req) => {
   const {
     serviceType,
     description,
-    userId,
+    userId: bodyUserId,
     generationId,
     platform,
     objective,
@@ -271,11 +379,143 @@ serve(async (req) => {
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+  // ── Authenticate the caller from the JWT — never trust body-supplied userId ──
+  let userId: string | undefined;
+  {
+    const authHeader = req.headers.get('Authorization') ?? '';
+    const jwt = authHeader.replace(/^Bearer\s+/i, '').trim();
+    if (jwt) {
+      const { data: userData, error: userErr } = await supabase.auth.getUser(jwt);
+      if (!userErr && userData?.user) userId = userData.user.id;
+    }
+  }
+  if (!userId) {
+    return new Response(
+      JSON.stringify({ error: 'Authentication required' }),
+      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+  if (bodyUserId && bodyUserId !== userId) {
+    console.warn(`[auth] body userId mismatch: body=${bodyUserId} jwt=${userId}`);
+    return new Response(
+      JSON.stringify({ error: 'User identity mismatch' }),
+      { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
   try {
     if (!openAIApiKey) throw new Error('OpenAI API key not configured');
     if (!serviceType) throw new Error('serviceType is required');
 
     console.log(`[generate] serviceType=${serviceType} user=${userId} generationId=${generationId}`);
+
+    // ── Verify the generation record belongs to the caller ────────────────────
+    if (generationId) {
+      const { data: genRow, error: genErr } = await supabase
+        .from('ai_generations')
+        .select('user_id')
+        .eq('id', generationId)
+        .maybeSingle();
+      if (genErr || !genRow || genRow.user_id !== userId) {
+        return new Response(
+          JSON.stringify({ error: 'Invalid generation record' }),
+          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
+    // ── Compliance gate (runs BEFORE any generation, fail-closed) ─────────────
+    const moderationInput = [description, targetAudience, promoDetail]
+      .filter(Boolean)
+      .join('\n');
+
+    // (a) Suspension check
+    if (userId) {
+      let suspended = false;
+      try {
+        const { data: prof, error: profErr } = await supabase
+          .from('profiles')
+          .select('suspended')
+          .eq('id', userId)
+          .maybeSingle();
+        if (profErr) throw profErr;
+        suspended = prof?.suspended === true;
+      } catch (e) {
+        // Fail closed: cannot verify account standing → block
+        console.error('[moderation] Suspension check failed:', (e as Error).message);
+        if (generationId) {
+          await supabase.from('ai_generations')
+            .update({ status: 'failed', updated_at: new Date().toISOString() })
+            .eq('id', generationId);
+        }
+        return violationResponse(
+          'verification-unavailable',
+          'We could not verify your account standing. Please try again later.'
+        );
+      }
+      if (suspended) {
+        await logViolation(supabase, {
+          userId, prompt: moderationInput || '(empty)', serviceType,
+          categories: ['account-suspended'], source: 'suspension',
+        });
+        if (generationId) {
+          await supabase.from('ai_generations')
+            .update({ status: 'failed', updated_at: new Date().toISOString() })
+            .eq('id', generationId);
+        }
+        return new Response(
+          JSON.stringify({
+            error: 'ACCOUNT_SUSPENDED',
+            category: 'account-suspended',
+            message: 'Your account is suspended. Content generation is unavailable. Please contact support.',
+          }),
+          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
+    // (b) + (c) Prompt moderation: custom rules first, then omni-moderation-latest
+    if (moderationInput.trim()) {
+      let blockedLabel: string | null = null;
+      let blockedCategories: string[] = [];
+      try {
+        const customHits = CUSTOM_RULES.filter(r => r.pattern.test(moderationInput));
+        if (customHits.length > 0) {
+          blockedLabel = customHits[0].label;
+          blockedCategories = customHits.map(h => h.category);
+        } else {
+          const mod = await moderateWithOpenAI(moderationInput);
+          if (mod.flagged) {
+            blockedCategories = mod.categories.length > 0 ? mod.categories : ['policy-violation'];
+            blockedLabel = blockedCategories[0].replace(/[/_-]/g, ' ');
+          }
+        }
+      } catch (e) {
+        // Fail closed: moderation unavailable → block
+        console.error('[moderation] Prompt moderation failed:', (e as Error).message);
+        blockedLabel = 'moderation unavailable';
+        blockedCategories = ['moderation-error'];
+      }
+
+      if (blockedLabel) {
+        console.warn(`[moderation] BLOCKED prompt user=${userId} categories=${blockedCategories.join(',')}`);
+        await logViolation(supabase, {
+          userId, prompt: moderationInput, serviceType,
+          categories: blockedCategories, source: 'prompt',
+        });
+        if (generationId) {
+          await supabase.from('ai_generations')
+            .update({ status: 'failed', updated_at: new Date().toISOString() })
+            .eq('id', generationId);
+        }
+        return violationResponse(
+          blockedLabel,
+          blockedCategories[0] === 'moderation-error'
+            ? 'Content screening is temporarily unavailable, so this request was not processed. Please try again shortly.'
+            : `This request violates our Content Standards (${blockedLabel}) and was not processed.`
+        );
+      }
+    }
 
     // ── Service config (text + image prompts) ──────────────────────────────────
     const serviceConfig: Record<string, {
@@ -542,6 +782,47 @@ Rules: Each headline must be max 40 characters. primaryTextShort max 125 charact
       );
       imageUrl = result.imageUrl;
       imageModel = result.modelUsed;
+
+      // ── Screen the generated image (fail-closed) ───────────────────────────
+      if (imageUrl) {
+        let imgBlockedLabel: string | null = null;
+        let imgBlockedCategories: string[] = [];
+        try {
+          const imgMod = await moderateWithOpenAI([
+            { type: 'image_url', image_url: { url: imageUrl } },
+          ]);
+          if (imgMod.flagged) {
+            imgBlockedCategories = imgMod.categories.length > 0 ? imgMod.categories : ['policy-violation'];
+            imgBlockedLabel = imgBlockedCategories[0].replace(/[/_-]/g, ' ');
+          }
+        } catch (e) {
+          console.error('[moderation] Image moderation failed:', (e as Error).message);
+          imgBlockedLabel = 'moderation unavailable';
+          imgBlockedCategories = ['moderation-error'];
+        }
+
+        if (imgBlockedLabel) {
+          console.warn(`[moderation] BLOCKED image user=${userId} categories=${imgBlockedCategories.join(',')}`);
+          await logViolation(supabase, {
+            userId,
+            prompt: [description, targetAudience, promoDetail].filter(Boolean).join('\n') || '(image output)',
+            serviceType,
+            categories: imgBlockedCategories,
+            source: 'image',
+          });
+          if (generationId) {
+            await supabase.from('ai_generations')
+              .update({ status: 'failed', updated_at: new Date().toISOString() })
+              .eq('id', generationId);
+          }
+          return violationResponse(
+            imgBlockedLabel,
+            imgBlockedCategories[0] === 'moderation-error'
+              ? 'Content screening is temporarily unavailable, so this result was withheld. Please try again shortly.'
+              : `The generated image violated our Content Standards (${imgBlockedLabel}) and was withheld.`
+          );
+        }
+      }
     }
 
     // ── Persist results ────────────────────────────────────────────────────────
