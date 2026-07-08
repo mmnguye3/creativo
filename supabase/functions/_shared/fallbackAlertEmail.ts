@@ -86,6 +86,87 @@ export function buildFallbackAlertEmail(opts: {
   return { subject, html };
 }
 
+export function buildFallbackRecoveryEmail(opts: {
+  lastFallbackError: string | null;
+}): { subject: string; html: string } {
+  const subject = 'Image quality recovered — fal.ai is generating again';
+
+  const escaped = (opts.lastFallbackError || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  const errorBlock = escaped
+    ? `
+      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:14px 18px;margin:20px 0;">
+        <p style="margin:0 0 4px 0;font-size:12px;color:#666;font-weight:bold;">Last fal.ai error before recovery</p>
+        <code style="display:block;font-size:12px;color:#6b7280;background:#fff;border-radius:6px;padding:8px 10px;word-break:break-all;">${escaped}</code>
+      </div>`
+    : '';
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"><title>${subject}</title></head>
+    <body style="font-family:Arial,sans-serif;line-height:1.6;color:#333;max-width:600px;margin:0 auto;padding:20px;">
+      <div style="border-bottom:2px solid #f97316;padding-bottom:16px;margin-bottom:24px;">
+        <h1 style="margin:0;font-size:20px;color:#111;">Cretivo</h1>
+      </div>
+      <h2 style="color:#16a34a;font-size:22px;margin:0 0 16px 0;">Image quality recovered</h2>
+      <p style="margin:0 0 12px 0;">
+        <strong>fal.ai</strong> (primary, higher quality) just completed an image generation
+        successfully. Customers are receiving full-quality images again — the earlier
+        degraded-quality incident is over.
+      </p>
+      ${errorBlock}
+      <p style="margin:0 0 12px 0;">
+        No action is needed. If fal.ai starts failing again, you will receive a new alert.
+      </p>
+      <div style="margin-top:32px;padding-top:16px;border-top:1px solid #ddd;font-size:12px;color:#999;">
+        <p style="margin:0;">This is an automated all-clear notice for the earlier image quality alert.</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  return { subject, html };
+}
+
+async function sendAdminEmail(opts: {
+  supabase: any;
+  resendApiKey: string;
+  subject: string;
+  html: string;
+  logTag: string;
+}): Promise<void> {
+  const emails = await getAdminEmails(opts.supabase);
+  if (emails.length === 0) {
+    console.error(`[fallback-alert] No admin emails found — ${opts.logTag} email not sent`);
+    return;
+  }
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${opts.resendApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: 'Cretivo <onboarding@resend.dev>',
+      to: emails,
+      subject: opts.subject,
+      html: opts.html,
+    }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text();
+    console.error(`[fallback-alert] Resend HTTP ${res.status} (${opts.logTag}): ${body.slice(0, 300)}`);
+  } else {
+    console.log(`[fallback-alert] ✓ ${opts.logTag} email sent to ${emails.length} admin(s)`);
+  }
+}
+
 async function getAdminEmails(supabase: any): Promise<string[]> {
   const { data: roles, error } = await supabase
     .from('user_roles')
@@ -123,7 +204,7 @@ export async function trackImageFallback(opts: {
   try {
     const { data: state, error: readErr } = await supabase
       .from('image_fallback_alert_state')
-      .select('consecutive_fallbacks, alerted_at')
+      .select('consecutive_fallbacks, alerted_at, last_fallback_error')
       .eq('id', 1)
       .maybeSingle();
     if (readErr) {
@@ -136,7 +217,11 @@ export async function trackImageFallback(opts: {
     // fal.ai succeeded → incident over, reset counter and alert window.
     if (!fallbackError) {
       if (state && (state.consecutive_fallbacks > 0 || state.alerted_at)) {
-        const { error: resetErr } = await supabase
+        const wasAlerted = Boolean(state.alerted_at);
+        // Conditional reset: only rows still marked with this incident's state
+        // are updated, so concurrent successes can't double-send the recovery
+        // email — exactly one caller sees a non-empty result for an alerted row.
+        let resetQuery = supabase
           .from('image_fallback_alert_state')
           .update({
             consecutive_fallbacks: 0,
@@ -145,8 +230,26 @@ export async function trackImageFallback(opts: {
             updated_at: now.toISOString(),
           })
           .eq('id', 1);
-        if (resetErr) console.error('[fallback-alert] State reset failed:', resetErr.message);
-        else console.log('[fallback-alert] fal.ai succeeded — incident state reset');
+        if (wasAlerted) resetQuery = resetQuery.not('alerted_at', 'is', null);
+        const { data: resetRows, error: resetErr } = await resetQuery.select('id');
+        if (resetErr) {
+          console.error('[fallback-alert] State reset failed:', resetErr.message);
+          return;
+        }
+        console.log('[fallback-alert] fal.ai succeeded — incident state reset');
+
+        // An alert was active for this incident → send the all-clear email,
+        // but only if we were the caller that actually cleared alerted_at.
+        if (wasAlerted && resetRows && resetRows.length > 0) {
+          if (!resendApiKey) {
+            console.error('[fallback-alert] RESEND_API_KEY not set — cannot send recovery email');
+            return;
+          }
+          const { subject, html } = buildFallbackRecoveryEmail({
+            lastFallbackError: state.last_fallback_error ?? null,
+          });
+          await sendAdminEmail({ supabase, resendApiKey, subject, html, logTag: 'Recovery' });
+        }
       }
       return;
     }
@@ -182,37 +285,11 @@ export async function trackImageFallback(opts: {
       return;
     }
 
-    const emails = await getAdminEmails(supabase);
-    if (emails.length === 0) {
-      console.error('[fallback-alert] No admin emails found — alert not sent');
-      return;
-    }
-
     const { subject, html } = buildFallbackAlertEmail({
       consecutiveCount: newCount,
       fallbackError,
     });
-
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${resendApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: 'Cretivo <onboarding@resend.dev>',
-        to: emails,
-        subject,
-        html,
-      }),
-    });
-
-    if (!res.ok) {
-      const body = await res.text();
-      console.error(`[fallback-alert] Resend HTTP ${res.status}: ${body.slice(0, 300)}`);
-    } else {
-      console.log(`[fallback-alert] ✓ Alert email sent to ${emails.length} admin(s)`);
-    }
+    await sendAdminEmail({ supabase, resendApiKey, subject, html, logTag: 'Alert' });
   } catch (e) {
     console.error('[fallback-alert] Unexpected error:', (e as Error).message);
   }
