@@ -39,6 +39,7 @@ import {
   Car
 } from "lucide-react";
 import digitalAdsIcon from "@/assets/icons/digital-ads.png";
+import socialMediaIcon from "@/assets/icons/social-media-content.png";
 
 // ── Hero video / poster cards ─────────────────────────────────────────────────
 // Drop MP4 clips into public/hero-clips/ as clip-1.mp4 … clip-5.mp4.
@@ -168,6 +169,7 @@ const ServicesPage = () => {
     {
       title: "Social Media Content",
       icon: Instagram,
+      iconImage: socialMediaIcon,
       services: [
         "Simple GIFs",
         "Social Feed Graphics",
