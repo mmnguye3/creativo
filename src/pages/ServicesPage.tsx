@@ -51,6 +51,7 @@ import longFormVideoIcon from "@/assets/icons/long-form-video.png";
 import webDesignIcon from "@/assets/icons/web-design.png";
 import marketingIcon from "@/assets/icons/marketing.png";
 import fullStackIcon from "@/assets/icons/full-stack.png";
+import ecomPlanIcon from "@/assets/icons/ecom.png";
 
 // ── Hero video / poster cards ─────────────────────────────────────────────────
 // Drop MP4 clips into public/hero-clips/ as clip-1.mp4 … clip-5.mp4.
@@ -154,224 +155,254 @@ const ServicesPage = () => {
     return () => obs.disconnect();
   }, [isMobile]);
 
-  const serviceCategories = [
+  interface ServiceGroup {
+    label?: string;
+    badge?: string;
+    items: string[];
+  }
+  interface ServiceCategoryData {
+    title: string;
+    icon: React.ComponentType<{ className?: string }>;
+    iconImage?: string;
+    description: string;
+    count: string;
+    cta: string;
+    groups: ServiceGroup[];
+  }
+
+  const serviceCategories: ServiceCategoryData[] = [
     {
       title: "Digital Ads",
       icon: Megaphone,
       iconImage: digitalAdsIcon,
-      services: [
-        "Graphic Meta Ads",
-        "Graphic Tiktok Ads", 
-        "Google Display Ads",
-        "Graphic Instagram Ads",
-        "Graphic Pinterest Ads",
-        "Graphic Twitter/X Ads",
-        "Graphic LinkedIn Ads",
-        "Graphic Carousel Ads",
-        "Video Meta Ads <1 min",
-        "Video Tiktok Ads <1 min",
-        "Video Instagram Ads <1 min",
-        "Video Pinterest Ads <1 min",
-        "Video LinkedIn Ads <1 min",
-        "Youtube Shorts Ads <1 min",
-        "Video Twitter/X Ads <1 min"
-      ]
+      description: "Paid social & display creatives for every platform",
+      count: "15 formats",
+      cta: "Order Digital Ads",
+      groups: [
+        {
+          label: "Graphic Ads",
+          items: ["Meta Ads", "TikTok Ads", "Google Display", "Instagram Ads", "Pinterest Ads", "Twitter/X Ads", "LinkedIn Ads", "Carousel Ads"],
+        },
+        {
+          label: "Video Ads",
+          badge: "⚡ Delivered in under 1 minute",
+          items: ["Meta Ads", "TikTok Ads", "Instagram Ads", "Pinterest Ads", "LinkedIn Ads", "YouTube Shorts", "Twitter/X Ads"],
+        },
+      ],
     },
     {
       title: "Social Media Content",
       icon: Instagram,
       iconImage: socialMediaIcon,
-      services: [
-        "Simple GIFs",
-        "Social Feed Graphics",
-        "Story Graphics",
-        "Cover Images",
-        "Podcast Cover Art",
-        "Meta Banners",
-        "Twitch Banners",
-        "Twitter/X Banners",
-        "YouTube Banners",
-        "YouTube Thumbnails",
-        "Blog Graphics",
-        "Background Removal",
-        "Static Design Animations",
-        "Icon Animations",
-        "Text Overlays <1 min"
-      ]
+      description: "Engaging visuals for every social channel",
+      count: "15 types",
+      cta: "Order Social Content",
+      groups: [
+        {
+          label: "Static & Graphics",
+          items: ["Feed Graphics", "Story Graphics", "Cover Images", "Podcast Cover Art", "Blog Graphics", "Background Removal"],
+        },
+        {
+          label: "Banners & Covers",
+          items: ["Meta Banners", "Twitch Banners", "Twitter/X Banners", "YouTube Banners", "YouTube Thumbnails"],
+        },
+        {
+          label: "Motion",
+          badge: "⚡ Under 1 min",
+          items: ["Simple GIFs", "Static Design Animations", "Icon Animations", "Text Overlays"],
+        },
+      ],
     },
     {
       title: "Video Content",
       icon: Video,
       iconImage: videoContentIcon,
-      services: [
-        "Captions <1 min",
-        "Cinemagraphs",
-        "Product Highlights <1 min",
-        "Transcriptions <2 min",
-        "UGC Mashups <1 min",
-        "English AI Voiceover",
-        "Video Openers/Titles",
-        "Explainer Videos",
-        "Lottie Animations",
-        "Advanced GIFs",
-        "Animated Explainer Video <1 min",
-        "Listing Videos <2 mins",
-        "Premium AI Voiceover <2 mins"
-      ]
+      description: "Short-form, animated & AI-powered video production",
+      count: "13 formats",
+      cta: "Order Video Content",
+      groups: [
+        {
+          label: "Quick Turnaround",
+          badge: "⚡ Under 2 min",
+          items: ["Captions", "Product Highlights", "UGC Mashups", "Animated Explainer Video", "Listing Videos"],
+        },
+        {
+          label: "Production",
+          items: ["Cinemagraphs", "Transcriptions", "English AI Voiceover", "Video Openers/Titles", "Explainer Videos", "Lottie Animations", "Advanced GIFs", "Premium AI Voiceover"],
+        },
+      ],
     },
     {
       title: "E-commerce Content",
       icon: ShoppingBag,
       iconImage: ecommerceIcon,
-      services: [
-        "Canva Graphics",
-        "Canva Videos",
-        "Listing Images",
-        "A+/EBC",
-        "A+ Premium",
-        "Brand Story",
-        "Storefront Modules",
-        "Product Mockups",
-        "Lifestyle Images",
-        "Product Infographs",
-        "Photo Editing",
-        "Listing Videos <5 mins",
-        "Product Highlights <5 mins"
-      ]
+      description: "Product imagery & Amazon listing content that converts",
+      count: "13 types",
+      cta: "Order Ecom Content",
+      groups: [
+        {
+          label: "Amazon / Marketplace",
+          items: ["Listing Images", "A+/EBC", "A+ Premium", "Brand Story", "Storefront Modules", "Product Infographs"],
+        },
+        {
+          label: "Creative",
+          items: ["Canva Graphics", "Canva Videos", "Product Mockups", "Lifestyle Images", "Photo Editing"],
+        },
+        {
+          label: "Video",
+          badge: "⚡ Under 5 min",
+          items: ["Listing Videos", "Product Highlights"],
+        },
+      ],
     },
     {
       title: "Email Design",
       icon: Mail,
       iconImage: emailDesignIcon,
-      services: [
-        "Email Template",
-        "Email Graphics",
-        "Email Signatures",
-        "Email Banners",
-        "Email Header",
-        "Email Footer"
-      ]
+      description: "On-brand email templates and marketing assets",
+      count: "6 types",
+      cta: "Order Email Design",
+      groups: [
+        {
+          items: ["Email Template", "Email Graphics", "Email Signatures", "Email Banners", "Email Header", "Email Footer"],
+        },
+      ],
     },
     {
       title: "Illustrations & Graphics",
       icon: Brush,
       iconImage: illustrationsIcon,
-      services: [
-        "Website Banner",
-        "Icons",
-        "Characters",
-        "Mascots",
-        "Flat Illustrations",
-        "Charts/Graphs",
-        "Animated Logos"
-      ]
+      description: "Custom artwork from icons to animated logos",
+      count: "7 types",
+      cta: "Order Illustrations",
+      groups: [
+        {
+          label: "Artwork",
+          items: ["Website Banner", "Icons", "Characters", "Mascots", "Flat Illustrations", "Charts/Graphs"],
+        },
+        {
+          label: "Motion",
+          items: ["Animated Logos"],
+        },
+      ],
     },
     {
       title: "Packaging & Branding",
       icon: Package,
       iconImage: packagingIcon,
-      services: [
-        "Package Design",
-        "Packaging Insert",
-        "Labels",
-        "Logo Design",
-        "Brand Style Guide",
-        "Brand Colors",
-        "Patterns",
-        "Vector Tracing"
-      ]
+      description: "Identity and packaging for physical and digital brands",
+      count: "8 types",
+      cta: "Order Branding",
+      groups: [
+        {
+          label: "Packaging",
+          items: ["Package Design", "Packaging Insert", "Labels"],
+        },
+        {
+          label: "Brand Identity",
+          items: ["Logo Design", "Brand Style Guide", "Brand Colors", "Patterns", "Vector Tracing"],
+        },
+      ],
     },
     {
       title: "Print Design",
       icon: Printer,
       iconImage: printDesignIcon,
-      services: [
-        "Business Cards",
-        "Banners",
-        "Catalog Design <5 pages",
-        "Flyer Design",
-        "Brochure Design",
-        "Poster Design",
-        "Signage Design",
-        "Album Covers",
-        "Book Covers",
-        "Postcards",
-        "Certificates/Awards",
-        "Menu Design",
-        "Stationary",
-        "Invitations",
-        "Trade Show Banners",
-        "T-Shirts",
-        "Billboard Design",
-        "Stickers"
-      ]
+      description: "Print-ready designs for every marketing channel",
+      count: "18 types",
+      cta: "Order Print Design",
+      groups: [
+        {
+          label: "Marketing Collateral",
+          items: ["Business Cards", "Flyer Design", "Brochure Design", "Poster Design", "Postcards", "Invitations"],
+        },
+        {
+          label: "Large Format",
+          items: ["Banners", "Signage Design", "Trade Show Banners", "Billboard Design"],
+        },
+        {
+          label: "Publications & Apparel",
+          items: ["Catalog Design <5 pages", "Album Covers", "Book Covers", "Certificates/Awards", "Menu Design", "Stationary", "T-Shirts", "Stickers"],
+        },
+      ],
     },
     {
       title: "Presentations & Documents",
       icon: Presentation,
       iconImage: documentsIcon,
-      services: [
-        "Slide Deck Design <10 slides",
-        "Slide Deck Templates",
-        "Slide Deck Graphics",
-        "Infographics",
-        "Newsletters",
-        "Sales Sheets",
-        "eBook Cover",
-        "Pitch Deck",
-        "PDF <10 Pages",
-        "Slide Deck Design <20 slides",
-        "PDF <20 Pages"
-      ]
+      description: "Polished slide decks, PDFs & business documents",
+      count: "11 types",
+      cta: "Order Presentations",
+      groups: [
+        {
+          label: "Slide Decks",
+          items: ["Slide Deck Design <10 slides", "Slide Deck Design <20 slides", "Slide Deck Templates", "Slide Deck Graphics", "Pitch Deck"],
+        },
+        {
+          label: "Documents",
+          items: ["Infographics", "Newsletters", "Sales Sheets", "eBook Cover", "PDF <10 Pages", "PDF <20 Pages"],
+        },
+      ],
     },
     {
       title: "Long Form Video",
       icon: Camera,
       iconImage: longFormVideoIcon,
-      services: [
-        "Meta Ads <3 mins",
-        "Tiktok Ads <3 mins",
-        "Instagram Ads <3 mins",
-        "Pinterest Ads <3 mins",
-        "LinkedIn Ads <3 mins",
-        "Youtube Shorts Ads <3 mins",
-        "Twitter/X Ads <3 mins",
-        "Text Overlays <3 mins",
-        "Captions <5 mins",
-        "Custom Captions <3 mins",
-        "Simple Character Animations",
-        "Standard Long Form Edit <5 mins",
-        "Event Promos <3 mins",
-        "B-roll Explainer Video <3 mins",
-        "Sizzle Reel <1 min",
-        "Standard Long Form Edit <10 mins",
-        "Event Promos <5 mins",
-        "B-roll Explainer Video <5 mins",
-        "Condensing Long Videos",
-        "Video Sales Letter",
-        "Sizzle Reel <3 mins",
-        "Pro Long Form Edit",
-        "UGC Mashups <5 mins",
-        "Captions <10 mins"
-      ]
+      description: "Multi-platform video editing & production at scale",
+      count: "24 formats",
+      cta: "Order Long Form Video",
+      groups: [
+        {
+          label: "Platform Ads",
+          badge: "⚡ Under 3 min",
+          items: ["Meta Ads", "TikTok Ads", "Instagram Ads", "Pinterest Ads", "LinkedIn Ads", "YouTube Shorts Ads", "Twitter/X Ads", "Text Overlays", "Event Promos", "B-roll Explainer", "Sizzle Reel"],
+        },
+        {
+          label: "Long Form Edits",
+          items: ["Standard Edit <5 mins", "Standard Edit <10 mins", "Pro Long Form Edit", "UGC Mashups <5 mins", "Condensing Long Videos", "Video Sales Letter", "Event Promos <5 mins", "B-roll Explainer <5 mins", "Sizzle Reel <3 mins"],
+        },
+        {
+          label: "Captions & Overlays",
+          items: ["Captions <5 mins", "Custom Captions <3 mins", "Captions <10 mins", "Simple Character Animations"],
+        },
+      ],
     },
     {
       title: "Web Design",
       icon: Monitor,
       iconImage: webDesignIcon,
-      services: [
-        "Page Section",
-        "Landing Page",
-        "Website Graphics",
-        "Website Design",
-        "Wireframe",
-        "Simple UI Kit",
-        "Simple APP UI Design",
-        "Figma Prototype",
-        "Vehicle Wraps"
-      ]
-    }
+      description: "Web design, UI/UX & digital experiences",
+      count: "9 types",
+      cta: "Order Web Design",
+      groups: [
+        {
+          label: "Design",
+          items: ["Page Section", "Landing Page", "Website Design", "Website Graphics", "Wireframe"],
+        },
+        {
+          label: "UI / App",
+          items: ["Simple UI Kit", "Simple APP UI Design", "Figma Prototype", "Vehicle Wraps"],
+        },
+      ],
+    },
   ];
+
+  const PLATFORM_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+    meta: Facebook,
+    facebook: Facebook,
+    instagram: Instagram,
+    youtube: Youtube,
+    linkedin: Linkedin,
+    twitter: Twitter,
+    'twitter/x': Twitter,
+  };
+  function getChipIcon(label: string): React.ComponentType<{ className?: string }> | null {
+    const lower = label.toLowerCase();
+    for (const [key, Icon] of Object.entries(PLATFORM_ICON_MAP)) {
+      if (lower.includes(key)) return Icon;
+    }
+    return null;
+  }
 
   const designPlans = [
     {
@@ -382,6 +413,7 @@ const ServicesPage = () => {
     },
     {
       icon: TrendingUp,
+      iconImage: ecomPlanIcon,
       title: "Ecom",
       description: "Get all the graphic & video creatives you need to run a successful e-commerce brand and drive more sales."
     },
@@ -547,36 +579,92 @@ const ServicesPage = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <style>{`
+            .svc-card { transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease; }
+            .svc-card:hover { border-color: rgba(249,115,22,0.45); box-shadow: 0 0 0 1px rgba(249,115,22,0.18), 0 20px 48px rgba(0,0,0,0.55); transform: translateY(-3px); }
+            .svc-chip { transition: background-color 0.18s ease, border-color 0.18s ease; }
+            .svc-chip:hover { background-color: rgba(249,115,22,0.12); border-color: rgba(249,115,22,0.35); }
+          `}</style>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {serviceCategories.map((category, categoryIndex) => (
-              <Card 
-                key={categoryIndex} 
-                className="bg-gradient-card border-white/10 hover:border-primary/20 transition-all duration-300 hover:shadow-card hover-lift animate-fade-in-up"
-                style={{ animationDelay: `${categoryIndex * 0.1}s` }}
+              <div
+                key={categoryIndex}
+                className="svc-card rounded-2xl border border-white/8 bg-white/[0.03] flex flex-col animate-fade-in-up"
+                style={{ animationDelay: `${categoryIndex * 0.07}s` }}
               >
-                <CardHeader>
-                  <div className="flex items-center gap-4 mb-4">
-                    {'iconImage' in category && category.iconImage ? (
-                      <img src={category.iconImage} alt="" aria-hidden="true" className="w-12 h-12 object-contain" loading="lazy" decoding="async" />
+                {/* Header */}
+                <div className="flex items-start gap-4 p-6 pb-4">
+                  <div className="flex-shrink-0">
+                    {category.iconImage ? (
+                      <div className="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center p-1.5">
+                        <img src={category.iconImage} alt="" aria-hidden="true" className="w-full h-full object-contain" loading="lazy" decoding="async" />
+                      </div>
                     ) : (
-                      <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/25">
                         <category.icon className="w-6 h-6 text-white" />
                       </div>
                     )}
-                    <CardTitle className="text-xl">{category.title}</CardTitle>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {(category.services || []).map((service, serviceIndex) => (
-                      <div key={serviceIndex} className="flex items-center gap-2 py-1">
-                        <Check className="w-4 h-4 text-primary-glow flex-shrink-0" />
-                        <span className="text-sm">{service}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-3 flex-wrap">
+                      <h3 className="text-white font-bold text-lg leading-tight">{category.title}</h3>
+                      <span className="flex-shrink-0 text-[11px] font-semibold tracking-wide text-orange-400 bg-orange-500/10 border border-orange-500/20 rounded-full px-2.5 py-0.5">
+                        {category.count}
+                      </span>
+                    </div>
+                    <p className="text-zinc-500 text-sm mt-0.5 leading-snug">{category.description}</p>
+                  </div>
+                </div>
+
+                {/* Groups */}
+                <div className="px-6 pb-4 flex-1 space-y-4">
+                  {category.groups.map((group, gi) => (
+                    <div key={gi}>
+                      {(group.label || group.badge) && (
+                        <div className="flex items-center gap-2 mb-2 flex-wrap">
+                          {group.label && (
+                            <span className="text-[10px] font-bold tracking-[0.12em] uppercase text-zinc-500">
+                              {group.label}
+                            </span>
+                          )}
+                          {group.badge && (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-orange-400 bg-orange-500/10 border border-orange-500/20 rounded-full px-2 py-0.5">
+                              {group.badge}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      <div className="flex flex-wrap gap-1.5">
+                        {group.items.map((item, ii) => {
+                          const PlatformIcon = getChipIcon(item);
+                          return (
+                            <span
+                              key={ii}
+                              className="svc-chip inline-flex items-center gap-1.5 text-xs text-zinc-300 bg-white/[0.05] border border-white/10 rounded-full px-2.5 py-1 cursor-default"
+                            >
+                              {PlatformIcon && <PlatformIcon className="w-3 h-3 text-zinc-400 flex-shrink-0" />}
+                              {item}
+                            </span>
+                          );
+                        })}
                       </div>
-                    ))}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Footer CTA */}
+                <div className="px-6 pb-6 pt-2">
+                  <div className="border-t border-white/6 pt-4">
+                    <Link
+                      to="/contact"
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-orange-400 hover:text-orange-300 transition-colors group"
+                    >
+                      {category.cta}
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                    </Link>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         </div>
