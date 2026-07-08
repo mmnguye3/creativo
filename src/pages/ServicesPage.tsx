@@ -53,8 +53,8 @@ const HERO_CLIPS = [
     rotation: -3,
     duration: 4.2,
     delay: 0,
-    ratio: '295 / 400',
-    pos: { top: '6%', left: '33%', width: '35%' },
+    ratio: '1 / 1',
+    pos: { top: '29%', left: '33%', width: '34%' },
   },
   {
     id: 2,
@@ -65,8 +65,8 @@ const HERO_CLIPS = [
     rotation: -8,
     duration: 5.1,
     delay: 0.7,
-    ratio: '246 / 300',
-    pos: { top: '8%', left: '0%', width: '30%' },
+    ratio: '1 / 1',
+    pos: { top: '3%', left: '0%', width: '30%' },
   },
   {
     id: 3,
@@ -77,8 +77,8 @@ const HERO_CLIPS = [
     rotation: 5,
     duration: 4.6,
     delay: 1.4,
-    ratio: '289 / 336',
-    pos: { bottom: '0%', left: '7%', width: '32%' },
+    ratio: '1 / 1',
+    pos: { bottom: '2%', left: '3%', width: '31%' },
   },
   {
     id: 4,
@@ -89,8 +89,8 @@ const HERO_CLIPS = [
     rotation: 7,
     duration: 3.9,
     delay: 0.3,
-    ratio: '286 / 343',
-    pos: { top: '4%', right: '0%', width: '31%' },
+    ratio: '1 / 1',
+    pos: { top: '3%', right: '2%', width: '31%' },
   },
   {
     id: 5,
@@ -101,8 +101,8 @@ const HERO_CLIPS = [
     rotation: -5,
     duration: 5.3,
     delay: 1.1,
-    ratio: '276 / 352',
-    pos: { bottom: '3%', right: '4%', width: '30%' },
+    ratio: '1 / 1',
+    pos: { bottom: '2%', right: '3%', width: '30%' },
   },
 ] as const;
 
@@ -499,7 +499,7 @@ const ServicesPage = () => {
                   <picture>
                     <source srcSet={card.poster} type="image/webp" />
                     <img src={card.posterFallback} alt={card.alt} loading="lazy" decoding="async"
-                      style={{ display: 'block', width: '100%', height: 'auto' }} />
+                      style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: '1 / 1', objectFit: 'cover' }} />
                   </picture>
                 </div>
               ))}
