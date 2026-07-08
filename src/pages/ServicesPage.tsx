@@ -38,6 +38,7 @@ import {
   Shirt,
   Car
 } from "lucide-react";
+import digitalAdsIcon from "@/assets/icons/digital-ads.png";
 
 // ── Hero video / poster cards ─────────────────────────────────────────────────
 // Drop MP4 clips into public/hero-clips/ as clip-1.mp4 … clip-5.mp4.
@@ -145,6 +146,7 @@ const ServicesPage = () => {
     {
       title: "Digital Ads",
       icon: Megaphone,
+      iconImage: digitalAdsIcon,
       services: [
         "Graphic Meta Ads",
         "Graphic Tiktok Ads", 
@@ -352,6 +354,7 @@ const ServicesPage = () => {
   const designPlans = [
     {
       icon: Megaphone,
+      iconImage: digitalAdsIcon,
       title: "Digital Ads",
       description: "Get all your social media graphic and video ads delivered on time, every single time, like a well-oiled machine."
     },
@@ -529,9 +532,13 @@ const ServicesPage = () => {
               >
                 <CardHeader>
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
-                      <category.icon className="w-6 h-6 text-white" />
-                    </div>
+                    {'iconImage' in category && category.iconImage ? (
+                      <img src={category.iconImage} alt="" aria-hidden="true" className="w-12 h-12 object-contain" loading="lazy" decoding="async" />
+                    ) : (
+                      <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
+                        <category.icon className="w-6 h-6 text-white" />
+                      </div>
+                    )}
                     <CardTitle className="text-xl">{category.title}</CardTitle>
                   </div>
                 </CardHeader>
@@ -568,9 +575,13 @@ const ServicesPage = () => {
               <Card key={index} className="bg-gradient-card border-white/10 hover:border-primary/20 transition-all duration-300 hover:shadow-card hover-lift">
                 <CardHeader>
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
-                      <plan.icon className="w-6 h-6 text-white" />
-                    </div>
+                    {'iconImage' in plan && plan.iconImage ? (
+                      <img src={plan.iconImage} alt="" aria-hidden="true" className="w-12 h-12 object-contain" loading="lazy" decoding="async" />
+                    ) : (
+                      <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
+                        <plan.icon className="w-6 h-6 text-white" />
+                      </div>
+                    )}
                     <CardTitle className="text-xl">{plan.title}</CardTitle>
                   </div>
                   <CardDescription className="text-base leading-relaxed">
