@@ -46,6 +46,7 @@ import emailDesignIcon from "@/assets/icons/email-design.png";
 import illustrationsIcon from "@/assets/icons/illustrations-graphics.png";
 import packagingIcon from "@/assets/icons/packaging-branding.png";
 import printDesignIcon from "@/assets/icons/print-design.png";
+import documentsIcon from "@/assets/icons/presentations-documents.png";
 
 // ── Hero video / poster cards ─────────────────────────────────────────────────
 // Drop MP4 clips into public/hero-clips/ as clip-1.mp4 … clip-5.mp4.
@@ -304,6 +305,7 @@ const ServicesPage = () => {
     {
       title: "Presentations & Documents",
       icon: Presentation,
+      iconImage: documentsIcon,
       services: [
         "Slide Deck Design <10 slides",
         "Slide Deck Templates",
