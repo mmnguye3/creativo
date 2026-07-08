@@ -408,10 +408,6 @@ const ServicesPage = () => {
                   Browse Services
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
-                <Button variant="outline" asChild
-                  className="border-white/20 text-white hover:bg-white/10 rounded-xl px-6 h-11 bg-transparent">
-                  <Link to="/pricing">See Pricing</Link>
-                </Button>
               </div>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5"
                 style={{ opacity: heroVisible ? 1 : 0, transition: 'opacity 0.6s ease 0.36s' }}>
