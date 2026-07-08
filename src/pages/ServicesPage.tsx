@@ -53,6 +53,7 @@ const HERO_CLIPS = [
     rotation: -3,
     duration: 4.2,
     delay: 0,
+    ratio: '295 / 400',
     pos: { top: '4%', left: '20%', width: '52%' },
   },
   {
@@ -64,6 +65,7 @@ const HERO_CLIPS = [
     rotation: -8,
     duration: 5.1,
     delay: 0.7,
+    ratio: '246 / 300',
     pos: { top: '2%', left: '0%', width: '41%' },
   },
   {
@@ -75,6 +77,7 @@ const HERO_CLIPS = [
     rotation: 5,
     duration: 4.6,
     delay: 1.4,
+    ratio: '289 / 336',
     pos: { bottom: '4%', left: '13%', width: '44%' },
   },
   {
@@ -86,6 +89,7 @@ const HERO_CLIPS = [
     rotation: 7,
     duration: 3.9,
     delay: 0.3,
+    ratio: '286 / 343',
     pos: { top: '30%', right: '0%', width: '44%' },
   },
   {
@@ -97,6 +101,7 @@ const HERO_CLIPS = [
     rotation: -5,
     duration: 5.3,
     delay: 1.1,
+    ratio: '276 / 352',
     pos: { bottom: '2%', right: '6%', width: '41%' },
   },
 ] as const;
@@ -469,7 +474,7 @@ const ServicesPage = () => {
                     playsInline
                     preload="none"
                     aria-label={card.alt}
-                    style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: 'auto' }}
+                    style={{ display: 'block', width: '100%', height: 'auto', aspectRatio: card.ratio, objectFit: 'cover' }}
                     onError={(e) => {
                       // If clip is missing, hide the broken-video icon by clearing src
                       const v = e.currentTarget;
