@@ -498,7 +498,7 @@ const SubdomainManagement = () => {
                           id="contact_phone"
                           value={agencySettings.contact_phone}
                           onChange={(e) => setAgencySettings({ ...agencySettings, contact_phone: e.target.value })}
-                          placeholder="+1 (555) 123-4567"
+                          placeholder="+1 (737) 257-0958"
                         />
                       </div>
                     </div>
