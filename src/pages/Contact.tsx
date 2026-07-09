@@ -95,7 +95,7 @@ const Contact = () => {
       icon: Phone,
       title: "Call Us",
       description: "Speak with our team Monday to Friday, 9AM-6PM EST",
-      contact: "(725) 224-7202",
+      contact: "(737) 257-0958",
       action: "Call Now"
     }
   ];

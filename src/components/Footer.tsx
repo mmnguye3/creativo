@@ -27,7 +27,7 @@ const footerLinks = [
     links: [
       { label: "Contact Us", href: "/contact", isRoute: true },
       { label: "Email Support", href: "mailto:support@cretivo.io", isRoute: false },
-      { label: "Phone Support", href: "tel:+17252247202", isRoute: false },
+      { label: "Phone Support", href: "tel:+17372570958", isRoute: false },
     ],
   },
 ];
@@ -74,9 +74,9 @@ const Footer = () => {
                 <Mail className="w-3.5 h-3.5 text-zinc-600" />
                 support@cretivo.io
               </a>
-              <a href="tel:+17252247202" className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
+              <a href="tel:+17372570958" className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
                 <Phone className="w-3.5 h-3.5 text-zinc-600" />
-                (725) 224-7202
+                (737) 257-0958
               </a>
               <div className="flex items-center gap-2 text-sm text-zinc-500">
                 <MapPin className="w-3.5 h-3.5 text-zinc-600" />
