@@ -269,7 +269,7 @@ export const OrderManagement = () => {
           {!agencyStripe.onboardingComplete && (
             <div className="flex items-center gap-1.5 text-xs text-amber-400 bg-amber-900/30 border border-amber-700/40 rounded-lg px-3 py-1.5">
               <AlertTriangle className="w-3.5 h-3.5" />
-              <span>Connect Stripe in Settings → Payments to enable payment links</span>
+              <span>Set up a payment account in Settings → Payments to enable payment links</span>
             </div>
           )}
           <Label htmlFor="status-filter" className="text-white whitespace-nowrap">Filter:</Label>
@@ -363,7 +363,7 @@ export const OrderManagement = () => {
                     <CheckCircle2 className="w-4 h-4 shrink-0" />
                     <div>
                       <p className="font-medium">Payment received</p>
-                      <p>Funds will appear in your Stripe account within 1–2 business days (after the 10% platform fee).</p>
+                      <p>Funds will appear in your payment account within 1–2 business days.</p>
                     </div>
                   </div>
                 )}
@@ -435,7 +435,7 @@ export const OrderManagement = () => {
                   {order.payment_status !== 'paid' && agencyStripe.onboardingComplete && (
                     <div className="space-y-2">
                       <p className="text-xs font-medium text-gray-400 flex items-center gap-1">
-                        <CreditCard className="w-3.5 h-3.5" /> Stripe Payment
+                        <CreditCard className="w-3.5 h-3.5" /> Payment
                       </p>
                       {quotingOrder === order.id ? (
                         <div className="flex items-center gap-2">
