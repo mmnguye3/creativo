@@ -38,8 +38,8 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-zinc-950/90 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-black/20"
+        scrolled || isOpen
+          ? "bg-zinc-950/95 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-black/20"
           : "bg-transparent"
       }`}
     >
@@ -126,7 +126,7 @@ const Navbar = () => {
 
         {/* Mobile menu */}
         {isOpen && (
-          <div className="lg:hidden border-t border-white/5 py-4 space-y-1">
+          <div className="lg:hidden border-t border-white/5 py-4 space-y-1 bg-zinc-950/95 backdrop-blur-xl -mx-4 px-4 shadow-lg shadow-black/20">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
