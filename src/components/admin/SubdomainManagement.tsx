@@ -178,6 +178,16 @@ const SubdomainManagement = () => {
       return;
     }
 
+    const slugValue = newSubdomain.subdomain.toLowerCase();
+    if (!/^[a-z0-9][a-z0-9-]*[a-z0-9]$/.test(slugValue) || slugValue.length < 2 || slugValue.length > 63) {
+      toast({
+        title: "Invalid URL slug",
+        description: "Slug must be 2–63 characters, lowercase letters, numbers, and hyphens only (no leading/trailing hyphens).",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       // Create subdomain
       const { data: subdomainData, error: subdomainError } = await supabase

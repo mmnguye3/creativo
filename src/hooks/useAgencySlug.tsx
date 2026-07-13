@@ -6,10 +6,10 @@ export interface AgencySlugInfo {
   isValid: boolean;
 }
 
-// Validate agency slug format (alphanumeric, hyphens, lowercase)
+// Validate agency slug format (alphanumeric, hyphens, lowercase, 2-63 chars)
 const isValidSlug = (slug: string): boolean => {
   const slugRegex = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;
-  return slugRegex.test(slug) && slug.length >= 3 && slug.length <= 63;
+  return slugRegex.test(slug) && slug.length >= 2 && slug.length <= 63;
 };
 
 // Reserved paths that should not be treated as agency slugs
@@ -74,7 +74,7 @@ export const useAgencySlug = (): AgencySlugInfo => {
       
       // Warn if invalid slug format
       if (slug && !isValid) {
-        console.warn(`Invalid agency slug format: "${slug}". Slugs must be 3-63 characters, lowercase alphanumeric with hyphens.`);
+        console.warn(`Invalid agency slug format: "${slug}". Slugs must be 2-63 characters, lowercase alphanumeric with hyphens.`);
       }
       
       setSlugInfo({
