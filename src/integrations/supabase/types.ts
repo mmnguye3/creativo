@@ -37,6 +37,8 @@ export type Database = {
           primary_color: string | null
           secondary_color: string | null
           services_enabled: boolean | null
+          stripe_account_id: string | null
+          stripe_onboarding_complete: boolean
           testimonials_enabled: boolean | null
           twitter_url: string | null
           updated_at: string | null
@@ -64,6 +66,8 @@ export type Database = {
           primary_color?: string | null
           secondary_color?: string | null
           services_enabled?: boolean | null
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean
           testimonials_enabled?: boolean | null
           twitter_url?: string | null
           updated_at?: string | null
@@ -91,6 +95,8 @@ export type Database = {
           primary_color?: string | null
           secondary_color?: string | null
           services_enabled?: boolean | null
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean
           testimonials_enabled?: boolean | null
           twitter_url?: string | null
           updated_at?: string | null
@@ -266,7 +272,10 @@ export type Database = {
           customer_phone: string | null
           id: string
           notes: string | null
+          payment_status: string
+          price_cents: number | null
           status: string | null
+          stripe_session_id: string | null
           total_amount: number | null
           updated_at: string | null
         }
@@ -279,7 +288,10 @@ export type Database = {
           customer_phone?: string | null
           id?: string
           notes?: string | null
+          payment_status?: string
+          price_cents?: number | null
           status?: string | null
+          stripe_session_id?: string | null
           total_amount?: number | null
           updated_at?: string | null
         }
@@ -292,7 +304,10 @@ export type Database = {
           customer_phone?: string | null
           id?: string
           notes?: string | null
+          payment_status?: string
+          price_cents?: number | null
           status?: string | null
+          stripe_session_id?: string | null
           total_amount?: number | null
           updated_at?: string | null
         }

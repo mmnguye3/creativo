@@ -2,7 +2,8 @@
 - [Vendor dashboard layout](vendor-dashboard.md) — /dashboard fully rewritten same sidebar shell; VendorOverview in src/components/dashboard/VendorOverview.tsx; scopes queries by user_id / agency_settings.id.
 - [Logo asset](logo-asset.md) — white-on-transparent logo at /public/cretivo-logo.png (1633x514 RGBA PNG); used at h-8/h-9 in navbars.
 - [AI Ads edge function](ai-ads-edge.md) — ad-campaign service type uses GPT JSON mode + dynamic prompts built from request params (platform/objective/tone/targetAudience/promoDetail); TikTok uses 1024x1792 portrait image.
-- [Customer orders table](orders-schema.md) — table is customer_orders (not orders/purchase_orders); agency link via agency_id → agency_settings.id; status values: pending, in_progress, completed, cancelled.
+- [Customer orders table](orders-schema.md) — table is customer_orders (not orders/purchase_orders); agency link via agency_id → agency_settings.id; status values: pending, quoted, awaiting_payment, paid, in_progress, completed, cancelled.
+- [Stripe Connect edge-fn pattern](stripe-connect-pattern.md) — destination charges on Supabase Deno edge fns; all webhook events stay on platform account; requires STRIPE_SECRET_KEY + STRIPE_WEBHOOK_SECRET in Supabase fn secrets.
 - [Supabase edge function identity](supabase-edge-fn-auth.md) — derive userId from JWT, never body; REVOKE PUBLIC EXECUTE on SECURITY DEFINER RPCs.
 - [Live Supabase schema drift](supabase-schema-drift.md) — live DB follows the Oct 2025 baseline migration; older/newer repo migrations may be unapplied, so verify columns via REST before trusting types.ts.
 - [Applying migrations to the live Supabase project](supabase-live-migrations.md) — repo migrations don't auto-apply; use Management API + SUPABASE_ACCESS_TOKEN; edge fn deploys need `--use-api` (Docker bundler DNS fails).
