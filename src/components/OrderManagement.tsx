@@ -1,16 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Sheet, SheetContent, SheetHeader, SheetTitle,
+} from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
   Loader2, Package, User, Mail, Phone, Building, Calendar, DollarSign,
-  FileText, Send, CreditCard, Copy, CheckCircle2, ExternalLink, AlertTriangle, ShoppingBag,
+  FileText, Send, CreditCard, Copy, CheckCircle2, ExternalLink,
+  AlertTriangle, ShoppingBag, RefreshCw, X,
 } from "lucide-react";
 
+/* ─── Types ─────────────────────────────────────────────────────────────────── */
 interface OrderItem {
   id: string;
   service_name: string;
@@ -42,6 +47,7 @@ interface AgencyStripeStatus {
   onboardingComplete: boolean;
 }
 
+/* ─── Constants ─────────────────────────────────────────────────────────────── */
 const STATUS_CHIP: Record<string, string> = {
   pending:          'bg-[#eef2f7] text-[#697386]',
   quoted:           'bg-[#e1effe] text-[#1c64f2]',
@@ -57,10 +63,65 @@ const PAYMENT_CHIP: Record<string, string> = {
   awaiting_payment: 'bg-[#f5f3ff] text-[#7c3aed]',
 };
 
+const PIPELINE_STEPS = ['pending', 'quoted', 'awaiting_payment', 'paid', 'in_progress', 'completed'] as const;
+const PIPELINE_LABELS: Record<string, string> = {
+  pending:          'Pending',
+  quoted:           'Quoted',
+  awaiting_payment: 'Awaiting\nPayment',
+  paid:             'Paid',
+  in_progress:      'In\nProgress',
+  completed:        'Done',
+};
+
 function formatStatus(status: string) {
   return status.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
+/* ─── Status Pipeline ────────────────────────────────────────────────────────── */
+function StatusPipeline({ status }: { status: string }) {
+  const idx = PIPELINE_STEPS.indexOf(status as typeof PIPELINE_STEPS[number]);
+  const isCancelled = status === 'cancelled';
+
+  if (isCancelled) {
+    return (
+      <div className="flex items-center gap-2 py-2">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-[#fee2e2] text-[#ef4444]">
+          <X className="w-3.5 h-3.5" /> Cancelled
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-start overflow-x-auto pb-1 gap-0">
+      {PIPELINE_STEPS.map((step, i) => {
+        const isDone    = idx > i;
+        const isCurrent = idx === i;
+        return (
+          <div key={step} className="flex items-center">
+            <div className="flex flex-col items-center gap-1.5 min-w-[52px]">
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold border-2 transition-colors ${
+                isDone    ? 'bg-[#def7ec] border-[#0e9f6e] text-[#0e9f6e]' :
+                isCurrent ? 'bg-orange-500 border-orange-500 text-white' :
+                            'bg-white border-[#e6e9ee] text-[#9fb3c8]'
+              }`}>
+                {isDone ? <CheckCircle2 className="w-3.5 h-3.5" /> : i + 1}
+              </div>
+              <span className={`text-[9px] font-semibold text-center leading-tight whitespace-pre-line ${
+                isCurrent ? 'text-orange-500' : isDone ? 'text-[#0e9f6e]' : 'text-[#9fb3c8]'
+              }`}>{PIPELINE_LABELS[step]}</span>
+            </div>
+            {i < PIPELINE_STEPS.length - 1 && (
+              <div className={`h-px w-4 mx-0.5 mb-4 shrink-0 transition-colors ${isDone ? 'bg-[#0e9f6e]/50' : 'bg-[#e6e9ee]'}`} />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── Skeleton ───────────────────────────────────────────────────────────────── */
 function OrderCardSkeleton() {
   return (
     <div className="bg-white rounded-xl border border-[#e6e9ee] shadow-[0_1px_3px_rgba(10,37,64,.06)] p-5 space-y-4">
@@ -80,6 +141,7 @@ function OrderCardSkeleton() {
   );
 }
 
+/* ─── Main Component ─────────────────────────────────────────────────────────── */
 export const OrderManagement = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -95,12 +157,34 @@ export const OrderManagement = () => {
   const [checkoutUrls, setCheckoutUrls] = useState<Record<string, string>>({});
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
   const [agencyStripe, setAgencyStripe] = useState<AgencyStripeStatus>({ stripeConnected: false, onboardingComplete: false });
+
+  // Sheet state
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [detailOrderId, setDetailOrderId] = useState<string | null>(null);
+  const [sheetCheckoutUrl, setSheetCheckoutUrl] = useState<string | null>(null);
+  const [fetchingLink, setFetchingLink] = useState(false);
+  const [sendingLinkEmail, setSendingLinkEmail] = useState(false);
+  const [sheetCopied, setSheetCopied] = useState(false);
+
   const { toast } = useToast();
+
+  // Derive the detail order from the live orders array so it stays in sync with card edits
+  const detailOrder = useMemo(
+    () => orders.find(o => o.id === detailOrderId) ?? null,
+    [orders, detailOrderId],
+  );
 
   useEffect(() => {
     fetchOrders();
     checkAgencyStripe();
   }, [statusFilter]);
+
+  // Sync sheet URL when detail order changes (e.g. from card actions)
+  useEffect(() => {
+    if (detailOrderId && checkoutUrls[detailOrderId]) {
+      setSheetCheckoutUrl(checkoutUrls[detailOrderId]);
+    }
+  }, [detailOrderId, checkoutUrls]);
 
   const checkAgencyStripe = async () => {
     try {
@@ -236,6 +320,57 @@ export const OrderManagement = () => {
     }
   };
 
+  /* ── Sheet actions ─────────────────────────────────────────────────────────── */
+  const openDetail = (order: Order) => {
+    setDetailOrderId(order.id);
+    setSheetCheckoutUrl(checkoutUrls[order.id] ?? null);
+    setSheetOpen(true);
+  };
+
+  const getCheckoutLink = async (order: Order, sendEmail = false) => {
+    if (sendEmail) setSendingLinkEmail(true);
+    else setFetchingLink(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('get-checkout-link', {
+        body: { orderId: order.id, sendEmail },
+      });
+      if (error) throw error;
+      const result = data as any;
+      if (result.paid) {
+        toast({ title: "Already paid", description: "This order has been paid." });
+        return;
+      }
+      if (!result.success) throw new Error(result.error ?? 'Failed to get link');
+
+      const url = result.checkoutUrl as string;
+      setSheetCheckoutUrl(url);
+      setCheckoutUrls(prev => ({ ...prev, [order.id]: url }));
+
+      if (result.isNew) {
+        setOrders(prev => prev.map(o => o.id === order.id
+          ? { ...o, stripe_session_id: result.sessionId, status: 'awaiting_payment', payment_status: 'awaiting_payment' }
+          : o));
+      }
+      if (sendEmail) {
+        toast({ title: "Link sent!", description: `Payment link emailed to ${order.customer_email}.` });
+      }
+    } catch (err: any) {
+      toast({ title: "Failed to get link", description: err.message, variant: "destructive" });
+    } finally {
+      setFetchingLink(false);
+      setSendingLinkEmail(false);
+    }
+  };
+
+  const copySheetLink = () => {
+    if (!sheetCheckoutUrl) return;
+    navigator.clipboard.writeText(sheetCheckoutUrl);
+    setSheetCopied(true);
+    setTimeout(() => setSheetCopied(false), 2000);
+    toast({ title: "Copied!", description: "Payment link copied to clipboard." });
+  };
+
+  /* ── Loading ───────────────────────────────────────────────────────────────── */
   if (loading) {
     return (
       <div className="space-y-5">
@@ -248,276 +383,559 @@ export const OrderManagement = () => {
     );
   }
 
+  /* ── Render ────────────────────────────────────────────────────────────────── */
   return (
-    <div className="space-y-5">
-      {/* Header */}
-      <div className="flex flex-wrap justify-between items-center gap-4">
-        <h2 className="text-xl font-bold text-[#0a2540]">Order Management</h2>
-        <div className="flex items-center gap-3">
-          {!agencyStripe.onboardingComplete && (
-            <div className="flex items-center gap-1.5 text-xs text-[#ea580c] bg-[#fff4ed] border border-orange-200 rounded-xl px-3 py-1.5">
-              <AlertTriangle className="w-3.5 h-3.5" />
-              <span>Set up Payments in Settings to enable payment links</span>
-            </div>
-          )}
-          <div className="flex items-center gap-2">
-            <Label htmlFor="status-filter" className="text-xs text-[#697386] whitespace-nowrap font-medium">Filter:</Label>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-44 h-8 text-xs bg-white border-[#e6e9ee] text-[#425466] rounded-xl">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Orders</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="quoted">Quoted</SelectItem>
-                <SelectItem value="awaiting_payment">Awaiting Payment</SelectItem>
-                <SelectItem value="paid">Paid</SelectItem>
-                <SelectItem value="in_progress">In Progress</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="cancelled">Cancelled</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </div>
-
-      {/* Empty state */}
-      {orders.length === 0 ? (
-        <div className="bg-white rounded-xl border border-[#e6e9ee] shadow-[0_1px_3px_rgba(10,37,64,.06)]">
-          <div className="flex flex-col items-center justify-center py-16 gap-3">
-            <div className="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center">
-              <ShoppingBag className="w-7 h-7 text-orange-400" />
-            </div>
-            <div className="text-center">
-              <p className="text-sm font-semibold text-[#0a2540]">No Orders Found</p>
-              <p className="text-xs text-[#697386] mt-1 max-w-xs">
-                {statusFilter === "all"
-                  ? "You haven't received any orders yet. Share your agency site to start getting orders."
-                  : `No ${formatStatus(statusFilter).toLowerCase()} orders found.`}
-              </p>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {orders.map((order) => (
-            <div key={order.id} className="bg-white rounded-xl border border-[#e6e9ee] shadow-[0_1px_3px_rgba(10,37,64,.06)] hover:shadow-[0_4px_16px_rgba(10,37,64,.08)] transition-shadow">
-              {/* Card header */}
-              <div className="px-5 py-4 border-b border-[#e6e9ee]">
-                <div className="flex justify-between items-start gap-3">
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
-                        <User className="h-3.5 w-3.5 text-orange-500" />
-                      </div>
-                      <p className="font-semibold text-[#0a2540]">{order.customer_name}</p>
+    <>
+      {/* ── Order Detail Side Sheet ──────────────────────────────────────────── */}
+      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+        <SheetContent
+          side="right"
+          className="sm:max-w-xl w-full flex flex-col p-0 bg-white"
+        >
+          {detailOrder ? (
+            <>
+              {/* Sheet header */}
+              <SheetHeader className="px-6 py-5 border-b border-[#e6e9ee] shrink-0">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
+                      <span className="text-orange-600 font-bold text-base">
+                        {detailOrder.customer_name.charAt(0).toUpperCase()}
+                      </span>
                     </div>
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-[#697386]">
-                      <div className="flex items-center gap-1"><Mail className="h-3 w-3" />{order.customer_email}</div>
-                      {order.customer_phone && <div className="flex items-center gap-1"><Phone className="h-3 w-3" />{order.customer_phone}</div>}
-                      {order.customer_company && <div className="flex items-center gap-1"><Building className="h-3 w-3" />{order.customer_company}</div>}
+                    <div className="min-w-0">
+                      <SheetTitle className="text-[#0a2540] font-bold text-base truncate">
+                        {detailOrder.customer_name}
+                      </SheetTitle>
+                      <p className="text-xs text-[#697386] mt-0.5 truncate">{detailOrder.customer_email}</p>
                     </div>
                   </div>
-                  <div className="text-right space-y-1.5 shrink-0">
-                    <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold ${STATUS_CHIP[order.status] || 'bg-[#eef2f7] text-[#697386]'}`}>
-                      {formatStatus(order.status)}
+                  <div className="text-right shrink-0">
+                    <p className="text-lg font-bold text-orange-500">
+                      {detailOrder.price_cents
+                        ? `$${(detailOrder.price_cents / 100).toFixed(2)}`
+                        : `$${detailOrder.total_amount}`}
+                    </p>
+                    <p className="text-[10px] text-[#697386] mt-0.5">
+                      #{detailOrder.id.slice(0, 8).toUpperCase()}
+                    </p>
+                  </div>
+                </div>
+                {/* Contact meta */}
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2">
+                  {detailOrder.customer_phone && (
+                    <span className="flex items-center gap-1 text-xs text-[#697386]">
+                      <Phone className="h-3 w-3" />{detailOrder.customer_phone}
                     </span>
-                    {order.payment_status !== 'unpaid' && order.payment_status in PAYMENT_CHIP && (
-                      <div className="flex justify-end">
-                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${PAYMENT_CHIP[order.payment_status]}`}>
-                          {order.payment_status === 'paid' && <CheckCircle2 className="w-2.5 h-2.5" />}
-                          {order.payment_status === 'paid' ? 'Paid' : 'Awaiting Payment'}
-                        </span>
-                      </div>
+                  )}
+                  {detailOrder.customer_company && (
+                    <span className="flex items-center gap-1 text-xs text-[#697386]">
+                      <Building className="h-3 w-3" />{detailOrder.customer_company}
+                    </span>
+                  )}
+                  <span className="flex items-center gap-1 text-xs text-[#697386]">
+                    <Calendar className="h-3 w-3" />{new Date(detailOrder.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+              </SheetHeader>
+
+              {/* Sheet body — scrollable */}
+              <div className="flex-1 overflow-y-auto">
+
+                {/* Status chips */}
+                <div className="px-6 py-4 border-b border-[#e6e9ee]">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold ${STATUS_CHIP[detailOrder.status] ?? 'bg-[#eef2f7] text-[#697386]'}`}>
+                      {formatStatus(detailOrder.status)}
+                    </span>
+                    {detailOrder.payment_status in PAYMENT_CHIP && (
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${PAYMENT_CHIP[detailOrder.payment_status]}`}>
+                        {detailOrder.payment_status === 'paid' && <CheckCircle2 className="w-3 h-3" />}
+                        {detailOrder.payment_status === 'paid' ? 'Paid' : 'Awaiting Payment'}
+                      </span>
                     )}
-                    <div className="text-base font-bold text-orange-500">
-                      {order.price_cents ? `$${(order.price_cents / 100).toFixed(2)}` : `$${order.total_amount}`}
-                    </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Card body */}
-              <div className="px-5 py-4 space-y-4">
-                <div className="flex flex-wrap items-center gap-4 text-xs text-[#697386]">
-                  <div className="flex items-center gap-1"><Calendar className="h-3 w-3" />Ordered: {new Date(order.created_at).toLocaleDateString()}</div>
-                  <div className="flex items-center gap-1"><Package className="h-3 w-3" /><span>ID: {order.id.slice(0, 8)}</span></div>
+                  <StatusPipeline status={detailOrder.status} />
                 </div>
 
-                {/* Order items */}
-                {order.customer_order_items && order.customer_order_items.length > 0 && (
-                  <div className="space-y-1.5">
-                    <h4 className="text-xs font-semibold text-[#0a2540]">Order Items</h4>
-                    <div className="space-y-1">
-                      {order.customer_order_items.map(item => (
-                        <div key={item.id} className="flex justify-between items-center bg-[#f6f9fc] border border-[#e6e9ee] px-3 py-2 rounded-xl">
-                          <div>
-                            <span className="text-xs font-medium text-[#0a2540]">{item.service_name}</span>
-                            {item.service_description && <p className="text-[10px] text-[#697386]">{item.service_description}</p>}
+                {/* Line items */}
+                {detailOrder.customer_order_items && detailOrder.customer_order_items.length > 0 && (
+                  <div className="px-6 py-4 border-b border-[#e6e9ee]">
+                    <h3 className="text-[10px] font-semibold text-[#697386] uppercase tracking-wider mb-3">
+                      Order Items
+                    </h3>
+                    <div className="space-y-2">
+                      {detailOrder.customer_order_items.map(item => (
+                        <div key={item.id} className="flex justify-between items-start gap-3 bg-[#f6f9fc] border border-[#e6e9ee] px-3 py-2.5 rounded-xl">
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-[#0a2540]">{item.service_name}</p>
+                            {item.service_description && (
+                              <p className="text-xs text-[#697386] mt-0.5">{item.service_description}</p>
+                            )}
                           </div>
-                          <span className="text-xs font-semibold text-[#0a2540]">{item.quantity}× ${item.price}</span>
+                          <div className="text-right shrink-0">
+                            <p className="text-sm font-semibold text-[#0a2540]">${item.price}</p>
+                            {item.quantity > 1 && (
+                              <p className="text-[10px] text-[#697386]">×{item.quantity}</p>
+                            )}
+                          </div>
                         </div>
                       ))}
                     </div>
-                  </div>
-                )}
-
-                {/* Paid notice */}
-                {order.payment_status === 'paid' && (
-                  <div className="flex items-center gap-2 p-3 bg-[#def7ec]/50 border border-[#def7ec] rounded-xl text-xs text-[#0e9f6e]">
-                    <CheckCircle2 className="w-4 h-4 shrink-0" />
-                    <div>
-                      <p className="font-semibold">Payment received</p>
-                      <p className="opacity-80">Funds will appear in your payment account within 1–2 business days.</p>
+                    {/* Quote vs original total */}
+                    <div className="flex justify-between items-center mt-3 pt-3 border-t border-[#e6e9ee]">
+                      <span className="text-xs text-[#697386]">
+                        {detailOrder.price_cents ? 'Quoted price' : 'Submitted total'}
+                      </span>
+                      <span className="text-sm font-bold text-orange-500">
+                        {detailOrder.price_cents
+                          ? `$${(detailOrder.price_cents / 100).toFixed(2)}`
+                          : `$${detailOrder.total_amount}`}
+                      </span>
                     </div>
                   </div>
                 )}
 
-                {/* Checkout URL */}
-                {checkoutUrls[order.id] && order.payment_status !== 'paid' && (
-                  <div className="space-y-1.5">
-                    <p className="text-xs font-semibold text-[#697386]">Payment link — share with customer:</p>
-                    <div className="flex items-center gap-2">
-                      <Input
-                        readOnly
-                        value={checkoutUrls[order.id]}
-                        className="bg-[#f6f9fc] border-[#e6e9ee] text-[#425466] text-xs h-8 rounded-xl"
-                        data-testid={`input-checkout-url-${order.id}`}
-                      />
-                      <Button size="sm" variant="outline" className="h-8 shrink-0 border-[#e6e9ee]" onClick={() => copyCheckoutUrl(order.id, checkoutUrls[order.id])} data-testid={`button-copy-url-${order.id}`}>
-                        {copiedUrl === order.id ? <CheckCircle2 className="w-3.5 h-3.5 text-[#0e9f6e]" /> : <Copy className="w-3.5 h-3.5" />}
-                      </Button>
-                      <Button size="sm" variant="outline" className="h-8 shrink-0 border-[#e6e9ee]" onClick={() => window.open(checkoutUrls[order.id], '_blank')} data-testid={`button-open-url-${order.id}`}>
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </Button>
-                    </div>
-                  </div>
-                )}
+                {/* Payment Link section */}
+                <div className="px-6 py-4 border-b border-[#e6e9ee]">
+                  <h3 className="text-[10px] font-semibold text-[#697386] uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                    <CreditCard className="w-3.5 h-3.5" /> Payment Link
+                  </h3>
 
-                {/* Notes */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      <FileText className="h-3.5 w-3.5 text-[#697386]" />
-                      <h4 className="text-xs font-semibold text-[#0a2540]">Notes</h4>
-                    </div>
-                    {editingNotes !== order.id && (
-                      <Button size="sm" variant="outline" onClick={() => { setEditingNotes(order.id); setNotesValue(order.notes || ""); }} className="text-xs h-7 border-[#e6e9ee] text-[#425466] hover:bg-[#f6f9fc]">
-                        {order.notes ? "Edit" : "Add Notes"}
-                      </Button>
-                    )}
-                  </div>
-                  {editingNotes === order.id ? (
-                    <div className="space-y-2">
-                      <Textarea value={notesValue} onChange={e => setNotesValue(e.target.value)} placeholder="Add notes for this order…" className="bg-[#f6f9fc] border-[#e6e9ee] text-[#425466] text-xs rounded-xl" rows={3} />
-                      <div className="flex gap-2">
-                        <Button size="sm" onClick={() => updateOrderNotes(order.id, notesValue)} disabled={updating} className="bg-orange-500 hover:bg-orange-600 text-white text-xs h-7">Save</Button>
-                        <Button size="sm" variant="outline" onClick={() => { setEditingNotes(null); setNotesValue(""); }} className="text-xs h-7 border-[#e6e9ee] text-[#697386]">Cancel</Button>
+                  {detailOrder.payment_status === 'paid' ? (
+                    <div className="flex items-center gap-2 p-3 bg-[#def7ec]/60 border border-[#def7ec] rounded-xl">
+                      <CheckCircle2 className="w-4 h-4 text-[#0e9f6e] shrink-0" />
+                      <div>
+                        <p className="text-sm font-semibold text-[#0e9f6e]">Payment received</p>
+                        <p className="text-xs text-[#697386]">Funds will appear in your account within 1–2 business days.</p>
                       </div>
                     </div>
-                  ) : order.notes ? (
-                    <p className="text-xs text-[#425466] bg-[#f6f9fc] border border-[#e6e9ee] p-3 rounded-xl">{order.notes}</p>
+                  ) : !agencyStripe.onboardingComplete ? (
+                    <div className="flex items-center gap-2 p-3 bg-[#fff4ed] border border-orange-200 rounded-xl text-xs text-[#ea580c]">
+                      <AlertTriangle className="w-4 h-4 shrink-0" />
+                      Set up Payments in Settings to enable payment links.
+                    </div>
+                  ) : !detailOrder.price_cents ? (
+                    <div className="p-3 bg-[#f6f9fc] border border-[#e6e9ee] rounded-xl text-xs text-[#697386]">
+                      Set a quote on this order to generate a payment link.
+                    </div>
                   ) : (
-                    <p className="text-xs text-[#697386] italic">No notes added yet</p>
-                  )}
-                </div>
+                    <div className="space-y-3">
+                      {/* Status indicator */}
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${sheetCheckoutUrl ? 'bg-[#0e9f6e]' : 'bg-[#9fb3c8]'}`} />
+                        <span className="text-xs text-[#697386]">
+                          {sheetCheckoutUrl
+                            ? detailOrder.stripe_session_id ? 'Active payment link' : 'Link ready'
+                            : detailOrder.stripe_session_id ? 'Link exists — click to retrieve' : 'No link yet'}
+                        </span>
+                        {detailOrder.stripe_session_id && (
+                          <span className="ml-auto text-[10px] text-[#9fb3c8]">Session: …{detailOrder.stripe_session_id.slice(-8)}</span>
+                        )}
+                      </div>
 
-                {/* Actions */}
-                <div className="pt-4 border-t border-[#e6e9ee] space-y-3">
-                  {/* Payment row */}
-                  {order.payment_status !== 'paid' && agencyStripe.onboardingComplete && (
-                    <div className="space-y-2">
-                      <p className="text-xs font-semibold text-[#697386] flex items-center gap-1">
-                        <CreditCard className="w-3.5 h-3.5" /> Payment
-                      </p>
-                      {quotingOrder === order.id ? (
-                        <div className="flex items-center gap-2">
-                          <div className="relative">
-                            <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#697386] text-xs">$</span>
+                      {/* URL display */}
+                      {sheetCheckoutUrl && (
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
                             <Input
-                              type="number" min="0.50" step="0.01"
-                              value={quoteInput} onChange={e => setQuoteInput(e.target.value)} placeholder="0.00"
-                              className="pl-6 bg-[#f6f9fc] border-[#e6e9ee] text-[#425466] w-32 h-8 text-xs rounded-xl"
-                              data-testid={`input-quote-${order.id}`}
+                              readOnly
+                              value={sheetCheckoutUrl}
+                              className="bg-[#f6f9fc] border-[#e6e9ee] text-[#425466] text-xs h-9 rounded-xl"
                             />
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-9 shrink-0 border-[#e6e9ee] hover:bg-[#f6f9fc]"
+                              onClick={copySheetLink}
+                              data-testid="button-sheet-copy-link"
+                            >
+                              {sheetCopied
+                                ? <CheckCircle2 className="w-3.5 h-3.5 text-[#0e9f6e]" />
+                                : <Copy className="w-3.5 h-3.5 text-[#697386]" />}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-9 shrink-0 border-[#e6e9ee] hover:bg-[#f6f9fc]"
+                              onClick={() => window.open(sheetCheckoutUrl, '_blank')}
+                              data-testid="button-sheet-open-link"
+                            >
+                              <ExternalLink className="w-3.5 h-3.5 text-[#697386]" />
+                            </Button>
                           </div>
-                          <Button size="sm" onClick={() => submitQuote(order.id)} disabled={updating} className="h-8 bg-orange-500 hover:bg-orange-600 text-white text-xs">
-                            {updating ? <Loader2 className="w-3 h-3 animate-spin" /> : "Set Quote"}
-                          </Button>
-                          <Button size="sm" variant="ghost" onClick={() => { setQuotingOrder(null); setQuoteInput(""); }} className="h-8 text-[#697386] text-xs">Cancel</Button>
-                        </div>
-                      ) : (
-                        <div className="flex flex-wrap items-center gap-2">
-                          <Button size="sm" variant="outline"
-                            onClick={() => { setQuotingOrder(order.id); setQuoteInput(order.price_cents ? (order.price_cents / 100).toFixed(2) : ""); }}
-                            className="h-8 border-[#e6e9ee] text-[#425466] hover:bg-[#f6f9fc] text-xs"
-                            data-testid={`button-set-quote-${order.id}`}
-                          >
-                            <DollarSign className="w-3 h-3 mr-1" />
-                            {order.price_cents ? `Edit Quote ($${(order.price_cents / 100).toFixed(2)})` : "Set Quote"}
-                          </Button>
-                          {order.price_cents && order.payment_status !== 'awaiting_payment' && (
-                            <Button size="sm" onClick={() => sendPaymentLink(order)} disabled={sendingPaymentLink === order.id}
-                              className="h-8 bg-[#7c3aed] hover:bg-[#6d28d9] text-white text-xs"
-                              data-testid={`button-send-payment-link-${order.id}`}
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              onClick={() => { if (detailOrder) getCheckoutLink(detailOrder, false); }}
+                              disabled={fetchingLink}
+                              variant="outline"
+                              className="flex-1 h-8 border-[#e6e9ee] text-[#425466] hover:bg-[#f6f9fc] text-xs"
+                              data-testid="button-sheet-refresh-link"
                             >
-                              {sendingPaymentLink === order.id
-                                ? <><Loader2 className="w-3 h-3 animate-spin mr-1" />Creating…</>
-                                : <><CreditCard className="w-3 h-3 mr-1" />Send Payment Link</>}
+                              {fetchingLink
+                                ? <><Loader2 className="w-3 h-3 animate-spin mr-1.5" />Refreshing…</>
+                                : <><RefreshCw className="w-3 h-3 mr-1.5" />Refresh link</>}
                             </Button>
-                          )}
-                          {order.payment_status === 'awaiting_payment' && !checkoutUrls[order.id] && (
-                            <Button size="sm" onClick={() => sendPaymentLink(order)} disabled={sendingPaymentLink === order.id}
-                              variant="outline" className="h-8 border-[#e6e9ee] text-[#7c3aed] hover:bg-[#f5f3ff] text-xs"
-                              data-testid={`button-resend-payment-link-${order.id}`}
+                            <Button
+                              size="sm"
+                              onClick={() => { if (detailOrder) getCheckoutLink(detailOrder, true); }}
+                              disabled={sendingLinkEmail}
+                              className="flex-1 h-8 bg-[#7c3aed] hover:bg-[#6d28d9] text-white text-xs"
+                              data-testid="button-sheet-send-link"
                             >
-                              {sendingPaymentLink === order.id
-                                ? <><Loader2 className="w-3 h-3 animate-spin mr-1" />Creating…</>
-                                : <><CreditCard className="w-3 h-3 mr-1" />Resend Link</>}
+                              {sendingLinkEmail
+                                ? <><Loader2 className="w-3 h-3 animate-spin mr-1.5" />Sending…</>
+                                : <><Send className="w-3 h-3 mr-1.5" />Send to client</>}
                             </Button>
-                          )}
+                          </div>
                         </div>
+                      )}
+
+                      {/* Get / Retrieve link button */}
+                      {!sheetCheckoutUrl && (
+                        <Button
+                          onClick={() => { if (detailOrder) getCheckoutLink(detailOrder, false); }}
+                          disabled={fetchingLink}
+                          className="w-full h-9 bg-orange-500 hover:bg-orange-600 text-white text-sm"
+                          data-testid="button-sheet-get-link"
+                        >
+                          {fetchingLink
+                            ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Retrieving…</>
+                            : <><CreditCard className="w-4 h-4 mr-2" />
+                              {detailOrder.stripe_session_id ? 'Get payment link' : 'Generate payment link'}</>}
+                        </Button>
                       )}
                     </div>
                   )}
+                </div>
 
-                  {/* Status + invoice row */}
-                  <div className="flex items-center justify-between flex-wrap gap-2">
-                    <div className="flex items-center gap-3">
-                      <Label htmlFor={`status-${order.id}`} className="text-xs text-[#697386] font-medium">Status:</Label>
-                      <Select value={order.status} onValueChange={s => updateOrderStatus(order.id, s)} disabled={updating}>
-                        <SelectTrigger className="w-44 h-8 text-xs bg-[#f6f9fc] border-[#e6e9ee] text-[#425466] rounded-xl">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="pending">Pending</SelectItem>
-                          <SelectItem value="quoted">Quoted</SelectItem>
-                          <SelectItem value="awaiting_payment">Awaiting Payment</SelectItem>
-                          <SelectItem value="paid">Paid</SelectItem>
-                          <SelectItem value="in_progress">In Progress</SelectItem>
-                          <SelectItem value="completed">Completed</SelectItem>
-                          <SelectItem value="cancelled">Cancelled</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {updating && <Loader2 className="h-4 w-4 animate-spin text-orange-500" />}
+                {/* Customer brief / notes */}
+                {detailOrder.notes && (
+                  <div className="px-6 py-4 border-b border-[#e6e9ee]">
+                    <h3 className="text-[10px] font-semibold text-[#697386] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                      <FileText className="w-3.5 h-3.5" /> Customer Brief
+                    </h3>
+                    <p className="text-sm text-[#425466] leading-relaxed bg-[#f6f9fc] border border-[#e6e9ee] rounded-xl p-3">
+                      {detailOrder.notes}
+                    </p>
+                  </div>
+                )}
+
+                {/* Send invoice */}
+                <div className="px-6 py-4">
+                  <h3 className="text-[10px] font-semibold text-[#697386] uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5" /> Invoice
+                  </h3>
+                  <Button
+                    onClick={() => sendInvoice(detailOrder.id)}
+                    disabled={sendingInvoice === detailOrder.id}
+                    className="w-full h-9 bg-orange-500 hover:bg-orange-600 text-white text-sm"
+                    data-testid="button-sheet-send-invoice"
+                  >
+                    {sendingInvoice === detailOrder.id
+                      ? <><Loader2 className="h-4 w-4 animate-spin mr-2" />Sending…</>
+                      : <><Send className="h-4 w-4 mr-2" />Send Invoice to Client</>}
+                  </Button>
+                  <p className="text-[10px] text-[#9fb3c8] text-center mt-2">
+                    Sends a branded PDF invoice to {detailOrder.customer_email}
+                  </p>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <Loader2 className="w-6 h-6 animate-spin text-orange-500" />
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
+
+      {/* ── Main order list ──────────────────────────────────────────────────── */}
+      <div className="space-y-5">
+        {/* Header */}
+        <div className="flex flex-wrap justify-between items-center gap-4">
+          <h2 className="text-xl font-bold text-[#0a2540]">Order Management</h2>
+          <div className="flex items-center gap-3">
+            {!agencyStripe.onboardingComplete && (
+              <div className="flex items-center gap-1.5 text-xs text-[#ea580c] bg-[#fff4ed] border border-orange-200 rounded-xl px-3 py-1.5">
+                <AlertTriangle className="w-3.5 h-3.5" />
+                <span>Set up Payments in Settings to enable payment links</span>
+              </div>
+            )}
+            <div className="flex items-center gap-2">
+              <Label htmlFor="status-filter" className="text-xs text-[#697386] whitespace-nowrap font-medium">Filter:</Label>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-44 h-8 text-xs bg-white border-[#e6e9ee] text-[#425466] rounded-xl">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Orders</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="quoted">Quoted</SelectItem>
+                  <SelectItem value="awaiting_payment">Awaiting Payment</SelectItem>
+                  <SelectItem value="paid">Paid</SelectItem>
+                  <SelectItem value="in_progress">In Progress</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+
+        {/* Empty state */}
+        {orders.length === 0 ? (
+          <div className="bg-white rounded-xl border border-[#e6e9ee] shadow-[0_1px_3px_rgba(10,37,64,.06)]">
+            <div className="flex flex-col items-center justify-center py-16 gap-3">
+              <div className="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center">
+                <ShoppingBag className="w-7 h-7 text-orange-400" />
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-semibold text-[#0a2540]">No Orders Found</p>
+                <p className="text-xs text-[#697386] mt-1 max-w-xs">
+                  {statusFilter === "all"
+                    ? "You haven't received any orders yet. Share your agency site to start getting orders."
+                    : `No ${formatStatus(statusFilter).toLowerCase()} orders found.`}
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {orders.map((order) => (
+              <div key={order.id} className="bg-white rounded-xl border border-[#e6e9ee] shadow-[0_1px_3px_rgba(10,37,64,.06)] hover:shadow-[0_4px_16px_rgba(10,37,64,.08)] transition-shadow">
+                {/* Card header */}
+                <div className="px-5 py-4 border-b border-[#e6e9ee]">
+                  <div className="flex justify-between items-start gap-3">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
+                          <User className="h-3.5 w-3.5 text-orange-500" />
+                        </div>
+                        {/* Clickable customer name → opens detail sheet */}
+                        <button
+                          onClick={() => openDetail(order)}
+                          className="font-semibold text-[#0a2540] hover:text-orange-500 hover:underline transition-colors cursor-pointer text-left"
+                          data-testid={`button-open-detail-${order.id}`}
+                        >
+                          {order.customer_name}
+                        </button>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-3 text-xs text-[#697386]">
+                        <div className="flex items-center gap-1"><Mail className="h-3 w-3" />{order.customer_email}</div>
+                        {order.customer_phone && <div className="flex items-center gap-1"><Phone className="h-3 w-3" />{order.customer_phone}</div>}
+                        {order.customer_company && <div className="flex items-center gap-1"><Building className="h-3 w-3" />{order.customer_company}</div>}
+                      </div>
                     </div>
+                    <div className="text-right space-y-1.5 shrink-0">
+                      <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold ${STATUS_CHIP[order.status] || 'bg-[#eef2f7] text-[#697386]'}`}>
+                        {formatStatus(order.status)}
+                      </span>
+                      {order.payment_status !== 'unpaid' && order.payment_status in PAYMENT_CHIP && (
+                        <div className="flex justify-end">
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${PAYMENT_CHIP[order.payment_status]}`}>
+                            {order.payment_status === 'paid' && <CheckCircle2 className="w-2.5 h-2.5" />}
+                            {order.payment_status === 'paid' ? 'Paid' : 'Awaiting Payment'}
+                          </span>
+                        </div>
+                      )}
+                      <div className="text-base font-bold text-orange-500">
+                        {order.price_cents ? `$${(order.price_cents / 100).toFixed(2)}` : `$${order.total_amount}`}
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-                    <Button
-                      onClick={() => sendInvoice(order.id)}
-                      disabled={sendingInvoice === order.id}
-                      className="bg-orange-500 hover:bg-orange-600 text-white text-xs h-8"
+                {/* Card body */}
+                <div className="px-5 py-4 space-y-4">
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-[#697386]">
+                    <div className="flex items-center gap-1"><Calendar className="h-3 w-3" />Ordered: {new Date(order.created_at).toLocaleDateString()}</div>
+                    <div className="flex items-center gap-1"><Package className="h-3 w-3" /><span>ID: {order.id.slice(0, 8)}</span></div>
+                    <button
+                      onClick={() => openDetail(order)}
+                      className="flex items-center gap-1 text-orange-500 hover:text-orange-600 transition-colors ml-auto"
+                      data-testid={`button-view-detail-${order.id}`}
                     >
-                      {sendingInvoice === order.id
-                        ? <><Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />Sending…</>
-                        : <><Send className="h-3.5 w-3.5 mr-1.5" />Send Invoice</>}
-                    </Button>
+                      <ExternalLink className="h-3 w-3" /> View details
+                    </button>
+                  </div>
+
+                  {/* Order items */}
+                  {order.customer_order_items && order.customer_order_items.length > 0 && (
+                    <div className="space-y-1.5">
+                      <h4 className="text-xs font-semibold text-[#0a2540]">Order Items</h4>
+                      <div className="space-y-1">
+                        {order.customer_order_items.map(item => (
+                          <div key={item.id} className="flex justify-between items-center bg-[#f6f9fc] border border-[#e6e9ee] px-3 py-2 rounded-xl">
+                            <div>
+                              <span className="text-xs font-medium text-[#0a2540]">{item.service_name}</span>
+                              {item.service_description && <p className="text-[10px] text-[#697386]">{item.service_description}</p>}
+                            </div>
+                            <span className="text-xs font-semibold text-[#0a2540]">{item.quantity}× ${item.price}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Paid notice */}
+                  {order.payment_status === 'paid' && (
+                    <div className="flex items-center gap-2 p-3 bg-[#def7ec]/50 border border-[#def7ec] rounded-xl text-xs text-[#0e9f6e]">
+                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                      <div>
+                        <p className="font-semibold">Payment received</p>
+                        <p className="opacity-80">Funds will appear in your payment account within 1–2 business days.</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Checkout URL (cached on current session) */}
+                  {checkoutUrls[order.id] && order.payment_status !== 'paid' && (
+                    <div className="space-y-1.5">
+                      <p className="text-xs font-semibold text-[#697386]">Payment link — share with customer:</p>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          readOnly
+                          value={checkoutUrls[order.id]}
+                          className="bg-[#f6f9fc] border-[#e6e9ee] text-[#425466] text-xs h-8 rounded-xl"
+                          data-testid={`input-checkout-url-${order.id}`}
+                        />
+                        <Button size="sm" variant="outline" className="h-8 shrink-0 border-[#e6e9ee]" onClick={() => copyCheckoutUrl(order.id, checkoutUrls[order.id])} data-testid={`button-copy-url-${order.id}`}>
+                          {copiedUrl === order.id ? <CheckCircle2 className="w-3.5 h-3.5 text-[#0e9f6e]" /> : <Copy className="w-3.5 h-3.5" />}
+                        </Button>
+                        <Button size="sm" variant="outline" className="h-8 shrink-0 border-[#e6e9ee]" onClick={() => window.open(checkoutUrls[order.id], '_blank')} data-testid={`button-open-url-${order.id}`}>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Notes */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <FileText className="h-3.5 w-3.5 text-[#697386]" />
+                        <h4 className="text-xs font-semibold text-[#0a2540]">Notes</h4>
+                      </div>
+                      {editingNotes !== order.id && (
+                        <Button size="sm" variant="outline" onClick={() => { setEditingNotes(order.id); setNotesValue(order.notes || ""); }} className="text-xs h-7 border-[#e6e9ee] text-[#425466] hover:bg-[#f6f9fc]">
+                          {order.notes ? "Edit" : "Add Notes"}
+                        </Button>
+                      )}
+                    </div>
+                    {editingNotes === order.id ? (
+                      <div className="space-y-2">
+                        <Textarea value={notesValue} onChange={e => setNotesValue(e.target.value)} placeholder="Add notes for this order…" className="bg-[#f6f9fc] border-[#e6e9ee] text-[#425466] text-xs rounded-xl" rows={3} />
+                        <div className="flex gap-2">
+                          <Button size="sm" onClick={() => updateOrderNotes(order.id, notesValue)} disabled={updating} className="bg-orange-500 hover:bg-orange-600 text-white text-xs h-7">Save</Button>
+                          <Button size="sm" variant="outline" onClick={() => { setEditingNotes(null); setNotesValue(""); }} className="text-xs h-7 border-[#e6e9ee] text-[#697386]">Cancel</Button>
+                        </div>
+                      </div>
+                    ) : order.notes ? (
+                      <p className="text-xs text-[#425466] bg-[#f6f9fc] border border-[#e6e9ee] p-3 rounded-xl">{order.notes}</p>
+                    ) : (
+                      <p className="text-xs text-[#697386] italic">No notes added yet</p>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="pt-4 border-t border-[#e6e9ee] space-y-3">
+                    {/* Payment row */}
+                    {order.payment_status !== 'paid' && agencyStripe.onboardingComplete && (
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold text-[#697386] flex items-center gap-1">
+                          <CreditCard className="w-3.5 h-3.5" /> Payment
+                        </p>
+                        {quotingOrder === order.id ? (
+                          <div className="flex items-center gap-2">
+                            <div className="relative">
+                              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#697386] text-xs">$</span>
+                              <Input
+                                type="number" min="0.50" step="0.01"
+                                value={quoteInput} onChange={e => setQuoteInput(e.target.value)} placeholder="0.00"
+                                className="pl-6 bg-[#f6f9fc] border-[#e6e9ee] text-[#425466] w-32 h-8 text-xs rounded-xl"
+                                data-testid={`input-quote-${order.id}`}
+                              />
+                            </div>
+                            <Button size="sm" onClick={() => submitQuote(order.id)} disabled={updating} className="h-8 bg-orange-500 hover:bg-orange-600 text-white text-xs">
+                              {updating ? <Loader2 className="w-3 h-3 animate-spin" /> : "Set Quote"}
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => { setQuotingOrder(null); setQuoteInput(""); }} className="h-8 text-[#697386] text-xs">Cancel</Button>
+                          </div>
+                        ) : (
+                          <div className="flex flex-wrap items-center gap-2">
+                            <Button size="sm" variant="outline"
+                              onClick={() => { setQuotingOrder(order.id); setQuoteInput(order.price_cents ? (order.price_cents / 100).toFixed(2) : ""); }}
+                              className="h-8 border-[#e6e9ee] text-[#425466] hover:bg-[#f6f9fc] text-xs"
+                              data-testid={`button-set-quote-${order.id}`}
+                            >
+                              <DollarSign className="w-3 h-3 mr-1" />
+                              {order.price_cents ? `Edit Quote ($${(order.price_cents / 100).toFixed(2)})` : "Set Quote"}
+                            </Button>
+                            {order.price_cents && order.payment_status !== 'awaiting_payment' && (
+                              <Button size="sm" onClick={() => sendPaymentLink(order)} disabled={sendingPaymentLink === order.id}
+                                className="h-8 bg-[#7c3aed] hover:bg-[#6d28d9] text-white text-xs"
+                                data-testid={`button-send-payment-link-${order.id}`}
+                              >
+                                {sendingPaymentLink === order.id
+                                  ? <><Loader2 className="w-3 h-3 animate-spin mr-1" />Creating…</>
+                                  : <><CreditCard className="w-3 h-3 mr-1" />Send Payment Link</>}
+                              </Button>
+                            )}
+                            {order.payment_status === 'awaiting_payment' && !checkoutUrls[order.id] && (
+                              <Button size="sm" onClick={() => sendPaymentLink(order)} disabled={sendingPaymentLink === order.id}
+                                variant="outline" className="h-8 border-[#e6e9ee] text-[#7c3aed] hover:bg-[#f5f3ff] text-xs"
+                                data-testid={`button-resend-payment-link-${order.id}`}
+                              >
+                                {sendingPaymentLink === order.id
+                                  ? <><Loader2 className="w-3 h-3 animate-spin mr-1" />Creating…</>
+                                  : <><CreditCard className="w-3 h-3 mr-1" />Resend Link</>}
+                              </Button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Status + invoice row */}
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-3">
+                        <Label htmlFor={`status-${order.id}`} className="text-xs text-[#697386] font-medium">Status:</Label>
+                        <Select value={order.status} onValueChange={s => updateOrderStatus(order.id, s)} disabled={updating}>
+                          <SelectTrigger className="w-44 h-8 text-xs bg-[#f6f9fc] border-[#e6e9ee] text-[#425466] rounded-xl">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="quoted">Quoted</SelectItem>
+                            <SelectItem value="awaiting_payment">Awaiting Payment</SelectItem>
+                            <SelectItem value="paid">Paid</SelectItem>
+                            <SelectItem value="in_progress">In Progress</SelectItem>
+                            <SelectItem value="completed">Completed</SelectItem>
+                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {updating && <Loader2 className="h-4 w-4 animate-spin text-orange-500" />}
+                      </div>
+
+                      <Button
+                        onClick={() => sendInvoice(order.id)}
+                        disabled={sendingInvoice === order.id}
+                        className="bg-orange-500 hover:bg-orange-600 text-white text-xs h-8"
+                      >
+                        {sendingInvoice === order.id
+                          ? <><Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />Sending…</>
+                          : <><Send className="h-3.5 w-3.5 mr-1.5" />Send Invoice</>}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   );
 };

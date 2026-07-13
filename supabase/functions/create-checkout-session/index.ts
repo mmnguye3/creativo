@@ -128,8 +128,9 @@ serve(async (req) => {
         const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
         const dollars = (priceCents / 100).toFixed(2);
         await resend.emails.send({
-          from: `${agency.agency_name} <onboarding@resend.dev>`,
+          from: `${agency.agency_name} <invoices@cretivo.io>`,
           to: [order.customer_email],
+          reply_to: agency.contact_email || undefined,
           subject: `Your payment link from ${agency.agency_name} — $${dollars}`,
           html: `
             <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
