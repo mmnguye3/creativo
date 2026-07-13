@@ -279,7 +279,7 @@ const AgencySettingsForm = () => {
 
   const copySubdomainUrl = () => {
     if (subdomain) {
-      const url = `${window.location.protocol}//${window.location.host}?subdomain=${subdomain}`;
+      const url = `${window.location.origin}/${subdomain}`;
       navigator.clipboard.writeText(url);
       toast({ title: "Copied!", description: "Subdomain URL copied to clipboard." });
     }
@@ -313,12 +313,12 @@ const AgencySettingsForm = () => {
                 <h3 className="font-semibold">Your Agency Website</h3>
                 <p className="text-sm text-muted-foreground">Share this link with your clients</p>
                 <code className="text-sm bg-muted px-2 py-1 rounded mt-2 inline-block">
-                  {window.location.protocol}//{window.location.host}?subdomain={subdomain}
+                  {window.location.origin}/{subdomain}
                 </code>
               </div>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" onClick={copySubdomainUrl}>Copy Link</Button>
-                <Button variant="outline" size="sm" onClick={() => window.open(`${window.location.protocol}//${window.location.host}?subdomain=${subdomain}`, '_blank')}>Preview</Button>
+                <Button variant="outline" size="sm" onClick={() => window.open(`${window.location.origin}/${subdomain}`, '_blank')}>Preview</Button>
               </div>
             </div>
           </CardContent>

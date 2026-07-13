@@ -413,7 +413,7 @@ const SubdomainManagement = () => {
                       placeholder="clientname"
                     />
                     <p className="text-sm text-muted-foreground mt-1">
-                      Will be: {newSubdomain.subdomain || 'subdomain'}.cretivo.io
+                      Will be: {window.location.origin}/{newSubdomain.subdomain || 'slug'}
                     </p>
                   </div>
                   <div>
@@ -855,7 +855,7 @@ const SubdomainManagement = () => {
                     variant="ghost" 
                     size="sm" 
                     className="h-6 w-6 p-0"
-                    onClick={() => window.open(`${window.location.protocol}//${window.location.host}?subdomain=${subdomain.subdomain}`, '_blank')}
+                    onClick={() => window.open(`${window.location.origin}/${subdomain.subdomain}`, '_blank')}
                   >
                     <ExternalLink className="h-3 w-3" />
                   </Button>
