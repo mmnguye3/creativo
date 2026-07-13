@@ -5,7 +5,7 @@ import { useAdmin } from '@/hooks/useAdmin';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
-  LayoutDashboard, Package, Building2, Sparkles, Users, Globe, Settings,
+  LayoutDashboard, Package, Building2, Sparkles, Users, Settings,
   Plus, Search, Bell, Menu, X, LogOut, ChevronRight, Zap,
   ShoppingCart, FileText, ExternalLink, ShieldAlert
 } from 'lucide-react';
@@ -22,7 +22,7 @@ import UserManagement from '@/components/admin/UserManagement';
 import SubdomainManagement from '@/components/admin/SubdomainManagement';
 import AdminCompliance from '@/components/admin/AdminCompliance';
 
-type Section = 'overview' | 'orders' | 'agencies' | 'ai-generations' | 'users' | 'subdomains' | 'compliance' | 'settings';
+type Section = 'overview' | 'orders' | 'agencies' | 'ai-generations' | 'users' | 'compliance' | 'settings';
 
 const NAV_ITEMS: { id: Section; label: string; icon: React.ElementType }[] = [
   { id: 'overview',        label: 'Dashboard',      icon: LayoutDashboard },
@@ -30,7 +30,6 @@ const NAV_ITEMS: { id: Section; label: string; icon: React.ElementType }[] = [
   { id: 'agencies',        label: 'Agencies',        icon: Building2 },
   { id: 'ai-generations',  label: 'AI Generations',  icon: Sparkles },
   { id: 'users',           label: 'Users',           icon: Users },
-  { id: 'subdomains',      label: 'Subdomains',      icon: Globe },
   { id: 'compliance',      label: 'Compliance',      icon: ShieldAlert },
   { id: 'settings',        label: 'Settings',        icon: Settings },
 ];
@@ -41,7 +40,6 @@ const SECTION_TITLES: Record<Section, string> = {
   agencies:        'Agencies',
   'ai-generations': 'AI Generations',
   users:           'User Management',
-  subdomains:      'Subdomains',
   compliance:      'Content Compliance',
   settings:        'Settings',
 };
@@ -501,7 +499,6 @@ const AdminDashboard = () => {
       case 'orders':
         return <AllOrdersSection />;
       case 'agencies':
-      case 'subdomains':
         return (
           <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-5">
             <SubdomainManagement />

@@ -172,7 +172,7 @@ const SubdomainManagement = () => {
     if (!newSubdomain.subdomain || !newSubdomain.user_id) {
       toast({
         title: "Error",
-        description: "Subdomain and user are required",
+        description: "URL slug and user are required",
         variant: "destructive",
       });
       return;
@@ -203,7 +203,7 @@ const SubdomainManagement = () => {
 
       toast({
         title: "Success",
-        description: "Subdomain and agency settings created successfully",
+        description: "Agency created successfully",
       });
 
       setCreateDialogOpen(false);
@@ -383,21 +383,21 @@ const SubdomainManagement = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Subdomains ({subdomains.length})</h3>
+        <h3 className="text-lg font-semibold">Agencies ({subdomains.length})</h3>
         
         {/* CREATE DIALOG */}
         <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="h-4 w-4 mr-2" />
-              Create Subdomain
+              Create Agency
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-4xl max-h-[90vh]">
             <DialogHeader>
-              <DialogTitle>Create New Subdomain & Agency Settings</DialogTitle>
+              <DialogTitle>Create New Agency</DialogTitle>
               <DialogDescription>
-                Configure subdomain and all agency branding settings in one place
+                Configure the agency's site URL slug and branding settings
               </DialogDescription>
             </DialogHeader>
             <ScrollArea className="h-[70vh] pr-4">
@@ -405,7 +405,7 @@ const SubdomainManagement = () => {
                 {/* Subdomain Basic Info */}
                 <div className="space-y-4 pb-4 border-b">
                   <div>
-                    <Label htmlFor="subdomain">Subdomain *</Label>
+                    <Label htmlFor="subdomain">Site URL Slug *</Label>
                     <Input
                       id="subdomain"
                       value={newSubdomain.subdomain}
@@ -627,7 +627,7 @@ const SubdomainManagement = () => {
                 Cancel
               </Button>
               <Button onClick={createSubdomain}>
-                Create Subdomain & Settings
+                Create Agency
               </Button>
             </div>
           </DialogContent>
@@ -837,7 +837,7 @@ const SubdomainManagement = () => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Subdomain</TableHead>
+            <TableHead>Agency / URL Slug</TableHead>
             <TableHead>User</TableHead>
             <TableHead>Agency Name</TableHead>
             <TableHead>Status</TableHead>
