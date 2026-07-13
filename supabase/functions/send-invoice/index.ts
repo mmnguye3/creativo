@@ -246,11 +246,16 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send the invoice email
     const emailResponse = await resend.emails.send({
-      from: `${agencyData.agency_name} <onboarding@resend.dev>`,
+      from: `${agencyData.agency_name} <invoices@cretivo.io>`,
       to: [orderData.customer_email],
+      reply_to: agencyData.contact_email || undefined,
       subject: `Invoice ${invoiceNumber} from ${agencyData.agency_name}`,
       html: invoiceHTML,
     });
+
+    if (emailResponse.error) {
+      throw new Error(`Email delivery failed: ${emailResponse.error.message}`);
+    }
 
     console.log("Invoice email sent successfully:", emailResponse);
 

@@ -213,8 +213,8 @@ export const OrderManagement = () => {
       if (data.success) {
         toast({ title: "Invoice Sent!", description: `Invoice ${data.invoiceNumber} sent to customer.` });
       } else throw new Error(data.error);
-    } catch {
-      toast({ title: "Error", description: "Failed to send invoice.", variant: "destructive" });
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Failed to send invoice.", variant: "destructive" });
     } finally {
       setSendingInvoice(null);
     }
