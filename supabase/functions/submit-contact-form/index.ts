@@ -35,6 +35,24 @@ const handler = async (req: Request): Promise<Response> => {
     const formData: ContactFormData = await req.json();
     console.log("Form data received:", { ...formData, message: "[REDACTED]" });
 
+    // Validate required fields up front so malformed payloads get a clear 400
+    // instead of a generic database error.
+    const missing = (["name", "email", "subject", "message"] as const).filter(
+      (f) => typeof formData[f] !== "string" || !formData[f].trim()
+    );
+    if (missing.length > 0) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: `Missing required field(s): ${missing.join(", ")}`,
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;

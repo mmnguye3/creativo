@@ -35,11 +35,17 @@ const WhiteLabelContact = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          agency_id: agencySettings.user_id,
-          customer_name: formData.name,
-          customer_email: formData.email,
-          customer_phone: formData.phone,
-          message: formData.message
+          name: formData.name,
+          email: formData.email,
+          company: formData.company || undefined,
+          subject: `[${agencySettings.agency_name}] ${
+            formData.inquiryType === "quote" ? "Quote request"
+            : formData.inquiryType === "support" ? "Support request"
+            : "General inquiry"
+          }`,
+          message: formData.phone
+            ? `${formData.message}\n\nPhone: ${formData.phone}`
+            : formData.message
         })
       });
 
