@@ -133,6 +133,104 @@ function ProfileSection({ userId, userEmail }: { userId: string; userEmail: stri
   );
 }
 
+/* ─── First-Login Password Change Screen ─── */
+function ChangePasswordScreen({ userId, userEmail }: { userId: string; userEmail: string }) {
+  const { toast } = useToast();
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password.length < 8) {
+      toast({ title: 'Too short', description: 'Password must be at least 8 characters.', variant: 'destructive' });
+      return;
+    }
+    if (password !== confirm) {
+      toast({ title: "Passwords don't match", variant: 'destructive' });
+      return;
+    }
+    setSaving(true);
+    try {
+      const { error: pwErr } = await supabase.auth.updateUser({ password });
+      if (pwErr) throw pwErr;
+      await supabase.auth.updateUser({ data: { must_change_password: false } });
+      await supabase.from('profiles').update({ must_change_password: false }).eq('id', userId);
+      toast({ title: 'Password set!', description: 'Welcome to your dashboard.' });
+      window.location.reload();
+    } catch (err: any) {
+      toast({ title: 'Failed to set password', description: err.message, variant: 'destructive' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FDF8F4] flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-orange-500 rounded-2xl mb-4 shadow-lg shadow-orange-200">
+            <span className="text-white font-black text-2xl">C</span>
+          </div>
+          <h1 className="text-2xl font-bold text-stone-800 mb-2">Set Your Password</h1>
+          <p className="text-stone-500 text-sm max-w-xs mx-auto">
+            Your account was created with a temporary password. Set a permanent one to continue.
+          </p>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 space-y-5">
+          <div className="bg-orange-50 border border-orange-200 rounded-xl px-4 py-3">
+            <p className="text-xs text-orange-700">
+              Signed in as <strong>{userEmail}</strong>
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <Label className="text-stone-700 text-xs font-medium">New Password</Label>
+              <Input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="Min. 8 characters"
+                className="bg-white text-stone-800 border-stone-200 focus-visible:ring-orange-400 focus-visible:ring-offset-white"
+                required
+                minLength={8}
+                autoFocus
+                data-testid="input-new-password"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-stone-700 text-xs font-medium">Confirm New Password</Label>
+              <Input
+                type="password"
+                value={confirm}
+                onChange={e => setConfirm(e.target.value)}
+                placeholder="Repeat your password"
+                className="bg-white text-stone-800 border-stone-200 focus-visible:ring-orange-400 focus-visible:ring-offset-white"
+                required
+                data-testid="input-confirm-password"
+              />
+            </div>
+            <Button
+              type="submit"
+              disabled={saving || !password || !confirm}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-xl py-2.5"
+              data-testid="button-set-password"
+            >
+              {saving ? 'Setting password…' : 'Set Password & Continue →'}
+            </Button>
+          </form>
+
+          <p className="text-center text-xs text-stone-400">
+            Password must be at least 8 characters.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Wrapper for existing dark components → light surface ─── */
 function LightWrapper({ children }: { children: React.ReactNode }) {
   return (
@@ -181,6 +279,10 @@ const Dashboard = () => {
   }
 
   if (!user) return <Navigate to="/auth" replace />;
+
+  if (user.user_metadata?.must_change_password === true) {
+    return <ChangePasswordScreen userId={user.id} userEmail={user.email ?? ''} />;
+  }
 
   const firstName = profile?.first_name || '';
   const lastName = profile?.last_name || '';

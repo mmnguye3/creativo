@@ -90,6 +90,28 @@ serve(async (req) => {
 
         console.log(`[stripe-webhook] ✓ Order ${orderId} marked as paid`);
 
+        // Resolve the agency owner's user_id for the activity log
+        // customer_orders.agency_id = agency_settings.id — look up the user_id
+        const { data: agencyOwner } = await supabase
+          .from("agency_settings")
+          .select("user_id")
+          .eq("id", order.agency_id)
+          .maybeSingle();
+
+        if (agencyOwner?.user_id) {
+          const dollars = ((session.amount_total ?? 0) / 100).toFixed(2);
+          await supabase.from("order_activity" as any).insert({
+            order_id:       orderId,
+            agency_user_id: agencyOwner.user_id,
+            event_type:     "paid",
+            description:    `Payment of $${dollars} received via Stripe`,
+            metadata:       {
+              stripe_session_id: session.id,
+              amount_cents:      session.amount_total,
+            },
+          });
+        }
+
         // Notify the agency via email
         await notifyAgencyOfPayment(order.agency_id, orderId, order.customer_name, session.amount_total ?? 0);
         break;

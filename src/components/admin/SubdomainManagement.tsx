@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from '@/hooks/use-toast';
-import { Plus, Edit, Trash2, ExternalLink } from 'lucide-react';
+import { Plus, Edit, Trash2, ExternalLink, CheckCircle2, Copy, Loader2, Eye, EyeOff } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 
 interface Subdomain {
@@ -57,7 +57,16 @@ const SubdomainManagement = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingSubdomain, setEditingSubdomain] = useState<Subdomain | null>(null);
   const [newSubdomain, setNewSubdomain] = useState({ subdomain: '', user_id: '' });
-  
+
+  // ── Add Agency dialog state ────────────────────────────────────────────────
+  const [addOpen, setAddOpen] = useState(false);
+  const [addForm, setAddForm] = useState({ agencyName: '', email: '', slug: '' });
+  const [addLoading, setAddLoading] = useState(false);
+  const [addResult, setAddResult] = useState<{
+    tempPassword: string; emailSent: boolean; email: string; slug: string;
+  } | null>(null);
+  const [showTempPw, setShowTempPw] = useState(false);
+
   // Agency settings form state
   const [agencySettings, setAgencySettings] = useState<AgencySettingsForm>({
     agency_name: '',
@@ -166,6 +175,63 @@ const SubdomainManagement = () => {
     } catch (error: any) {
       console.error('Error fetching users:', error)
     }
+  };
+
+  const handleAddAgency = async () => {
+    const { agencyName, email, slug } = addForm;
+
+    if (!agencyName.trim() || !email.trim() || !slug.trim()) {
+      toast({ title: 'All fields are required', variant: 'destructive' });
+      return;
+    }
+
+    const cleanSlug = slug.trim().toLowerCase();
+    if (
+      !/^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/.test(cleanSlug) ||
+      cleanSlug.length < 2 ||
+      cleanSlug.length > 63
+    ) {
+      toast({
+        title: 'Invalid slug',
+        description: 'Use 2–63 lowercase letters, numbers, or hyphens (no leading/trailing hyphens).',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (subdomains.some(s => s.subdomain === cleanSlug)) {
+      toast({ title: 'Slug already taken', description: `"${cleanSlug}" is already in use.`, variant: 'destructive' });
+      return;
+    }
+
+    setAddLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-create-agency', {
+        body: { agencyName: agencyName.trim(), email: email.trim(), slug: cleanSlug },
+      });
+
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error ?? 'Failed to create agency');
+
+      setAddResult({
+        tempPassword: data.tempPassword,
+        emailSent:    data.emailSent,
+        email:        data.email,
+        slug:         data.slug,
+      });
+      fetchSubdomains();
+    } catch (err: any) {
+      toast({ title: 'Failed to create agency', description: err.message, variant: 'destructive' });
+    } finally {
+      setAddLoading(false);
+    }
+  };
+
+  const closeAddDialog = () => {
+    setAddOpen(false);
+    setAddResult(null);
+    setAddForm({ agencyName: '', email: '', slug: '' });
+    setShowTempPw(false);
   };
 
   const createSubdomain = async () => {
@@ -395,251 +461,161 @@ const SubdomainManagement = () => {
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold">Agencies ({subdomains.length})</h3>
         
-        {/* CREATE DIALOG */}
-        <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+        {/* ADD AGENCY DIALOG — atomic: creates login + all agency records in one shot */}
+        <Dialog open={addOpen} onOpenChange={(open) => { if (!open) closeAddDialog(); else setAddOpen(true); }}>
           <DialogTrigger asChild>
-            <Button>
+            <Button data-testid="button-add-agency">
               <Plus className="h-4 w-4 mr-2" />
-              Create Agency
+              Add Agency
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-4xl max-h-[90vh]">
+          <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Create New Agency</DialogTitle>
+              <DialogTitle>{addResult ? 'Agency Created!' : 'Add New Agency'}</DialogTitle>
               <DialogDescription>
-                Configure the agency's site URL slug and branding settings
+                {addResult
+                  ? 'The agency account has been fully provisioned.'
+                  : 'Creates a login account, subdomain, and settings in one step.'}
               </DialogDescription>
             </DialogHeader>
-            <ScrollArea className="h-[70vh] pr-4">
-              <div className="space-y-6">
-                {/* Subdomain Basic Info */}
-                <div className="space-y-4 pb-4 border-b">
+
+            {addResult ? (
+              /* ── SUCCESS STATE ─────────────────────────────────────────────── */
+              <div className="space-y-4 pt-1">
+                <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-3">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
                   <div>
-                    <Label htmlFor="subdomain">Site URL Slug *</Label>
-                    <Input
-                      id="subdomain"
-                      value={newSubdomain.subdomain}
-                      onChange={(e) => setNewSubdomain({ ...newSubdomain, subdomain: e.target.value.toLowerCase() })}
-                      placeholder="clientname"
-                    />
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Will be: {window.location.origin}/{newSubdomain.subdomain || 'slug'}
+                    <p className="font-semibold text-sm text-emerald-800">Account provisioned</p>
+                    <p className="text-xs text-emerald-700 mt-0.5">
+                      {addResult.email} &nbsp;·&nbsp; /{addResult.slug}
                     </p>
-                  </div>
-                  <div>
-                    <Label htmlFor="user">Assign to User *</Label>
-                    <Select value={newSubdomain.user_id} onValueChange={(value) => setNewSubdomain({ ...newSubdomain, user_id: value })}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a user" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {users.map((user) => (
-                          <SelectItem key={user.id} value={user.id}>
-                            {user.email}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
                   </div>
                 </div>
 
-                {/* Agency Settings Tabs */}
-                <Tabs defaultValue="branding" className="w-full">
-                  <TabsList className="grid w-full grid-cols-4">
-                    <TabsTrigger value="branding">Branding</TabsTrigger>
-                    <TabsTrigger value="content">Content</TabsTrigger>
-                    <TabsTrigger value="features">Features</TabsTrigger>
-                    <TabsTrigger value="seo">SEO</TabsTrigger>
-                  </TabsList>
+                {addResult.emailSent ? (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-sm text-blue-700">
+                    ✉️ Welcome email with credentials sent to <strong>{addResult.email}</strong>
+                  </div>
+                ) : (
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+                    <p className="text-sm font-semibold text-amber-800 mb-0.5">⚠️ Email failed — share credentials manually</p>
+                    <p className="text-xs text-amber-700">Copy the temporary password below and send it to the agency owner.</p>
+                  </div>
+                )}
 
-                  <TabsContent value="branding" className="space-y-4 mt-4">
-                    <div>
-                      <Label htmlFor="agency_name">Agency Name *</Label>
-                      <Input
-                        id="agency_name"
-                        value={agencySettings.agency_name}
-                        onChange={(e) => setAgencySettings({ ...agencySettings, agency_name: e.target.value })}
-                        placeholder="Acme Design Agency"
-                      />
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-medium text-muted-foreground">Temporary Password</Label>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 font-mono bg-muted border rounded px-3 py-2 text-sm tracking-wider select-all">
+                      {showTempPw ? addResult.tempPassword : '••••••••••••••••'}
                     </div>
-                    <div>
-                      <Label htmlFor="logo_url">Logo URL</Label>
-                      <Input
-                        id="logo_url"
-                        value={agencySettings.logo_url}
-                        onChange={(e) => setAgencySettings({ ...agencySettings, logo_url: e.target.value })}
-                        placeholder="https://example.com/logo.png"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="primary_color">Primary Color</Label>
-                        <Input
-                          id="primary_color"
-                          type="color"
-                          value={agencySettings.primary_color}
-                          onChange={(e) => setAgencySettings({ ...agencySettings, primary_color: e.target.value })}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="secondary_color">Secondary Color</Label>
-                        <Input
-                          id="secondary_color"
-                          type="color"
-                          value={agencySettings.secondary_color}
-                          onChange={(e) => setAgencySettings({ ...agencySettings, secondary_color: e.target.value })}
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="contact_email">Contact Email</Label>
-                        <Input
-                          id="contact_email"
-                          type="email"
-                          value={agencySettings.contact_email}
-                          onChange={(e) => setAgencySettings({ ...agencySettings, contact_email: e.target.value })}
-                          placeholder="info@agency.com"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="contact_phone">Contact Phone</Label>
-                        <Input
-                          id="contact_phone"
-                          value={agencySettings.contact_phone}
-                          onChange={(e) => setAgencySettings({ ...agencySettings, contact_phone: e.target.value })}
-                          placeholder="+1 (737) 257-0958"
-                        />
-                      </div>
-                    </div>
-                  </TabsContent>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-9 w-9 shrink-0"
+                      onClick={() => setShowTempPw(v => !v)}
+                      title={showTempPw ? 'Hide' : 'Show'}
+                    >
+                      {showTempPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-9 w-9 shrink-0"
+                      onClick={() => {
+                        navigator.clipboard.writeText(addResult!.tempPassword);
+                        toast({ title: 'Copied to clipboard' });
+                      }}
+                      title="Copy password"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
 
-                  <TabsContent value="content" className="space-y-4 mt-4">
-                    <div>
-                      <Label htmlFor="hero_title">Hero Title</Label>
-                      <Input
-                        id="hero_title"
-                        value={agencySettings.hero_title}
-                        onChange={(e) => setAgencySettings({ ...agencySettings, hero_title: e.target.value })}
-                        placeholder="Professional Design Services"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="hero_subtitle">Hero Subtitle</Label>
-                      <Textarea
-                        id="hero_subtitle"
-                        value={agencySettings.hero_subtitle}
-                        onChange={(e) => setAgencySettings({ ...agencySettings, hero_subtitle: e.target.value })}
-                        placeholder="Transform your business with our expert team"
-                        rows={3}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="about_content">About Content</Label>
-                      <Textarea
-                        id="about_content"
-                        value={agencySettings.about_content}
-                        onChange={(e) => setAgencySettings({ ...agencySettings, about_content: e.target.value })}
-                        placeholder="Tell visitors about your agency..."
-                        rows={4}
-                      />
-                    </div>
-                  </TabsContent>
+                <p className="text-xs text-muted-foreground">
+                  The agency will be prompted to set a permanent password on first login.
+                </p>
 
-                  <TabsContent value="features" className="space-y-4 mt-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label>Services Section</Label>
-                        <p className="text-sm text-muted-foreground">Display services on the site</p>
-                      </div>
-                      <Switch
-                        checked={agencySettings.services_enabled}
-                        onCheckedChange={(checked) => setAgencySettings({ ...agencySettings, services_enabled: checked })}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label>Features Section</Label>
-                        <p className="text-sm text-muted-foreground">Display features on the site</p>
-                      </div>
-                      <Switch
-                        checked={agencySettings.features_enabled}
-                        onCheckedChange={(checked) => setAgencySettings({ ...agencySettings, features_enabled: checked })}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label>Testimonials Section</Label>
-                        <p className="text-sm text-muted-foreground">Display testimonials</p>
-                      </div>
-                      <Switch
-                        checked={agencySettings.testimonials_enabled}
-                        onCheckedChange={(checked) => setAgencySettings({ ...agencySettings, testimonials_enabled: checked })}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label>Pricing Section</Label>
-                        <p className="text-sm text-muted-foreground">Display pricing</p>
-                      </div>
-                      <Switch
-                        checked={agencySettings.pricing_enabled}
-                        onCheckedChange={(checked) => setAgencySettings({ ...agencySettings, pricing_enabled: checked })}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label>Hide "Powered By"</Label>
-                        <p className="text-sm text-muted-foreground">Remove branding</p>
-                      </div>
-                      <Switch
-                        checked={agencySettings.hide_powered_by}
-                        onCheckedChange={(checked) => setAgencySettings({ ...agencySettings, hide_powered_by: checked })}
-                      />
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="seo" className="space-y-4 mt-4">
-                    <div>
-                      <Label htmlFor="meta_title">Meta Title</Label>
-                      <Input
-                        id="meta_title"
-                        value={agencySettings.meta_title}
-                        onChange={(e) => setAgencySettings({ ...agencySettings, meta_title: e.target.value })}
-                        placeholder="Agency Name - Professional Services"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="meta_description">Meta Description</Label>
-                      <Textarea
-                        id="meta_description"
-                        value={agencySettings.meta_description}
-                        onChange={(e) => setAgencySettings({ ...agencySettings, meta_description: e.target.value })}
-                        placeholder="Describe your agency for search engines..."
-                        rows={3}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="favicon_url">Favicon URL</Label>
-                      <Input
-                        id="favicon_url"
-                        value={agencySettings.favicon_url}
-                        onChange={(e) => setAgencySettings({ ...agencySettings, favicon_url: e.target.value })}
-                        placeholder="https://example.com/favicon.ico"
-                      />
-                    </div>
-                  </TabsContent>
-                </Tabs>
+                <div className="flex justify-end pt-1">
+                  <Button onClick={closeAddDialog} data-testid="button-add-agency-done">
+                    Done
+                  </Button>
+                </div>
               </div>
-            </ScrollArea>
-            <div className="flex justify-end gap-2 pt-4 border-t">
-              <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={createSubdomain}>
-                Create Agency
-              </Button>
-            </div>
+            ) : (
+              /* ── FORM STATE ───────────────────────────────────────────────── */
+              <div className="space-y-4 pt-1">
+                <div>
+                  <Label htmlFor="add-agency-name">Agency Name *</Label>
+                  <Input
+                    id="add-agency-name"
+                    value={addForm.agencyName}
+                    onChange={e => setAddForm(f => ({ ...f, agencyName: e.target.value }))}
+                    placeholder="Acme Design Co."
+                    data-testid="input-add-agency-name"
+                    autoFocus
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="add-agency-email">Email Address *</Label>
+                  <Input
+                    id="add-agency-email"
+                    type="email"
+                    value={addForm.email}
+                    onChange={e => setAddForm(f => ({ ...f, email: e.target.value }))}
+                    placeholder="owner@acmedesign.com"
+                    data-testid="input-add-agency-email"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    A temporary password and login instructions will be emailed to this address.
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="add-agency-slug">Site URL Slug *</Label>
+                  <Input
+                    id="add-agency-slug"
+                    value={addForm.slug}
+                    onChange={e =>
+                      setAddForm(f => ({
+                        ...f,
+                        slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''),
+                      }))
+                    }
+                    placeholder="acme"
+                    data-testid="input-add-agency-slug"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Agency site:{' '}
+                    <span className="font-mono">
+                      {window.location.origin}/{addForm.slug || 'slug'}
+                    </span>
+                  </p>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-1">
+                  <Button variant="outline" onClick={closeAddDialog}>
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleAddAgency}
+                    disabled={addLoading}
+                    data-testid="button-add-agency-submit"
+                  >
+                    {addLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Creating…
+                      </>
+                    ) : (
+                      'Create Agency'
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
       </div>

@@ -10,3 +10,4 @@
 - [OpenAI image fallback](openai-image-fallback.md) — user's OpenAI key lacks dall-e-3; gpt-image-1 (b64-only) is the working fallback when fal.ai balance is exhausted.
 - [fal.ai API quirks](fal-api-quirks.md) — 401=invalid key vs 403=exhausted balance; ideogram v3 rendering_speed values changed (STANDARD→BALANCED); check [fal] logs when fallback masks errors.
 - [Image-alert e2e testing](image-alert-e2e.md) — OpenAI model overrides now bypass fal AND its health tracking; force a fal fallback with a bogus fal model string instead; choice params are title-case.
+- [order_activity RLS pattern](order-activity-rls.md) — new order_activity table uses agency_user_id = auth.uid() for RLS (simpler than joining through agency_settings); service-role clients in edge fns bypass RLS so they can insert for any user_id.

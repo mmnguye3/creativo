@@ -125,6 +125,23 @@ serve(async (req) => {
 
     console.log(`[deliver-order] ✓ Order ${orderId} marked as delivered`);
 
+    // ── Log delivery activity (non-fatal) ─────────────────────────────────
+    try {
+      await supabaseAdmin.from("order_activity" as any).insert({
+        order_id:       orderId,
+        agency_user_id: user.id,
+        event_type:     "delivered",
+        description:    `${filePaths.length} file${filePaths.length !== 1 ? "s" : ""} delivered to ${order.customer_email}`,
+        metadata:       {
+          file_count: filePaths.length,
+          file_names: filePaths.map(f => f.name),
+          delivery_note_preview: deliveryNote ? deliveryNote.trim().slice(0, 120) : null,
+        },
+      });
+    } catch (actErr) {
+      console.error("[deliver-order] activity log failed (non-fatal):", actErr);
+    }
+
     // ── Send delivery email to customer ───────────────────────────────────
     const orderRef = order.id.slice(0, 8).toUpperCase();
 
