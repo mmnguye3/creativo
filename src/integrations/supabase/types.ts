@@ -270,10 +270,13 @@ export type Database = {
           customer_email: string
           customer_name: string
           customer_phone: string | null
+          due_date: string | null
           id: string
+          internal_notes: Json
           notes: string | null
           payment_status: string
           price_cents: number | null
+          priority: string | null
           status: string | null
           stripe_session_id: string | null
           total_amount: number | null
@@ -286,10 +289,13 @@ export type Database = {
           customer_email: string
           customer_name: string
           customer_phone?: string | null
+          due_date?: string | null
           id?: string
+          internal_notes?: Json
           notes?: string | null
           payment_status?: string
           price_cents?: number | null
+          priority?: string | null
           status?: string | null
           stripe_session_id?: string | null
           total_amount?: number | null
@@ -302,10 +308,13 @@ export type Database = {
           customer_email?: string
           customer_name?: string
           customer_phone?: string | null
+          due_date?: string | null
           id?: string
+          internal_notes?: Json
           notes?: string | null
           payment_status?: string
           price_cents?: number | null
+          priority?: string | null
           status?: string | null
           stripe_session_id?: string | null
           total_amount?: number | null
@@ -409,6 +418,7 @@ export type Database = {
           first_name: string | null
           id: string
           last_name: string | null
+          must_change_password: boolean
           phone: string | null
           suspended: boolean
           under_review: boolean
@@ -422,6 +432,7 @@ export type Database = {
           first_name?: string | null
           id: string
           last_name?: string | null
+          must_change_password?: boolean
           phone?: string | null
           suspended?: boolean
           under_review?: boolean
@@ -435,6 +446,7 @@ export type Database = {
           first_name?: string | null
           id?: string
           last_name?: string | null
+          must_change_password?: boolean
           phone?: string | null
           suspended?: boolean
           under_review?: boolean

@@ -90,13 +90,9 @@ serve(async (req) => {
 
         console.log(`[stripe-webhook] ✓ Order ${orderId} marked as paid`);
 
-        // Resolve the agency owner's user_id for the activity log
-        // customer_orders.agency_id = agency_settings.id — look up the user_id
-        const { data: agencyOwner } = await supabase
-          .from("agency_settings")
-          .select("user_id")
-          .eq("id", order.agency_id)
-          .maybeSingle();
+        // customer_orders.agency_id references auth.users(id) — it IS the
+        // agency owner's user_id, so use it directly for the activity log
+        const agencyOwner = { user_id: order.agency_id };
 
         if (agencyOwner?.user_id) {
           const dollars = ((session.amount_total ?? 0) / 100).toFixed(2);
@@ -161,10 +157,11 @@ async function notifyAgencyOfPayment(
   amountTotal: number
 ) {
   try {
+    // agencyId here is the agency owner's user id (customer_orders.agency_id)
     const { data: agency } = await supabase
       .from("agency_settings")
       .select("agency_name, contact_email")
-      .eq("id", agencyId)
+      .eq("user_id", agencyId)
       .maybeSingle();
 
     if (!agency?.contact_email) return;

@@ -51,11 +51,12 @@ serve(async (req) => {
       throw new Error(`Order not found: ${orderErr?.message ?? "no data"}`);
     }
 
-    // Fetch agency branding via agency_id (= agency_settings.id)
+    // Fetch agency branding — customer_orders.agency_id references
+    // auth.users(id), so match on agency_settings.user_id
     const { data: agency, error: agencyErr } = await supabase
       .from("agency_settings")
       .select("agency_name, logo_url, primary_color, contact_email")
-      .eq("id", order.agency_id)
+      .eq("user_id", order.agency_id)
       .maybeSingle();
 
     if (agencyErr || !agency) {

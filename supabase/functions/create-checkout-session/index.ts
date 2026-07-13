@@ -58,11 +58,12 @@ serve(async (req) => {
     if (!agency.stripe_onboarding_complete) throw new Error("Stripe onboarding is not complete — finish setting up your payment account first");
 
     // Verify the order belongs to this agency
+    // customer_orders.agency_id references auth.users(id)
     const { data: order, error: orderError } = await supabase
       .from("customer_orders")
       .select("id, customer_name, customer_email, status, payment_status, stripe_session_id")
       .eq("id", orderId)
-      .eq("agency_id", agency.id)
+      .eq("agency_id", user.id)
       .maybeSingle();
 
     if (orderError) throw orderError;

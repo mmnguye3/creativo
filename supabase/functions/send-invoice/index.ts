@@ -231,7 +231,7 @@ const handler = async (req: Request): Promise<Response> => {
         )
       `)
       .eq('id', orderId)
-      .eq('agency_id', agencyData.id)
+      .eq('agency_id', user.id)
       .single();
 
     if (orderError || !orderData) {

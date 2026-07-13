@@ -70,11 +70,12 @@ serve(async (req) => {
     }
 
     // ── Verify order belongs to this agency ───────────────────────────────
+    // customer_orders.agency_id references auth.users(id)
     const { data: order, error: orderErr } = await supabaseUser
       .from("customer_orders")
       .select("id, customer_name, customer_email, status")
       .eq("id", orderId)
-      .eq("agency_id", agency.id)
+      .eq("agency_id", user.id)
       .maybeSingle();
 
     if (orderErr || !order) {

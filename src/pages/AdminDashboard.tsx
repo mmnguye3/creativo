@@ -67,15 +67,16 @@ interface AIGeneration {
 }
 
 const STATUS_CHIP: Record<string, string> = {
-  completed:   'bg-green-100 text-green-700',
-  in_progress: 'bg-orange-100 text-orange-700',
-  'in-progress': 'bg-orange-100 text-orange-700',
-  processing:  'bg-blue-100 text-blue-700',
-  pending:     'bg-stone-100 text-stone-600',
-  cancelled:   'bg-red-100 text-red-600',
-  delayed:     'bg-yellow-100 text-yellow-700',
-  draft:       'bg-purple-100 text-purple-700',
-  failed:      'bg-red-100 text-red-600',
+  completed:     'bg-[#def7ec] text-[#0e9f6e]',
+  in_progress:   'bg-[#fff4ed] text-[#ea580c]',
+  'in-progress': 'bg-[#fff4ed] text-[#ea580c]',
+  processing:    'bg-[#e1effe] text-[#1c64f2]',
+  pending:       'bg-[#eef2f7] text-[#697386]',
+  cancelled:     'bg-[#fee2e2] text-[#ef4444]',
+  delayed:       'bg-[#fef9c3] text-[#ca8a04]',
+  draft:         'bg-[#eef2f7] text-[#697386]',
+  failed:        'bg-[#fee2e2] text-[#ef4444]',
+  paid:          'bg-[#e1effe] text-[#1c64f2]',
 };
 
 function statusLabel(s: string) {
@@ -122,17 +123,33 @@ function AllOrdersSection() {
 
   const filtered = statusFilter === 'all' ? orders : orders.filter(o => o.status === statusFilter);
 
-  if (loading) return <div className="flex items-center justify-center py-20 text-stone-400 text-sm">Loading orders…</div>;
+  if (loading) return (
+    <div className="bg-white rounded-xl border border-[#e6e9ee] shadow-[0_1px_3px_rgba(10,37,64,.06)] overflow-hidden">
+      <div className="px-5 py-4 border-b border-[#e6e9ee]">
+        <div className="h-4 w-28 bg-[#e6e9ee] rounded animate-pulse mb-1.5" />
+        <div className="h-3 w-44 bg-[#e6e9ee] rounded animate-pulse" />
+      </div>
+      <div className="p-5 space-y-3">
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="flex gap-4">
+            <div className="h-3 flex-1 bg-[#e6e9ee] rounded animate-pulse" />
+            <div className="h-3 w-24 bg-[#e6e9ee] rounded animate-pulse" />
+            <div className="h-3 w-16 bg-[#e6e9ee] rounded animate-pulse" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-stone-100">
+    <div className="bg-white rounded-xl border border-[#e6e9ee] shadow-[0_1px_3px_rgba(10,37,64,.06)] overflow-hidden">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-[#e6e9ee]">
         <div>
-          <h3 className="font-semibold text-stone-800">All Orders</h3>
-          <p className="text-xs text-stone-400 mt-0.5">{orders.length} total orders across all agencies</p>
+          <h3 className="font-semibold text-[#0a2540]">All Orders</h3>
+          <p className="text-xs text-[#697386] mt-0.5">{orders.length} total orders across all agencies</p>
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="h-8 text-xs w-[130px] bg-stone-50 border-stone-200 rounded-xl">
+          <SelectTrigger className="h-8 text-xs w-[130px] bg-[#f6f9fc] border-[#e6e9ee] rounded-xl">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -146,38 +163,43 @@ function AllOrdersSection() {
       </div>
       <div className="overflow-x-auto">
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-stone-400">
-            <Package className="w-12 h-12 mb-2 opacity-20" />
-            <p className="text-sm">No orders found</p>
+          <div className="flex flex-col items-center justify-center py-16 gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center">
+              <Package className="w-6 h-6 text-orange-400" />
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-semibold text-[#0a2540]">No orders found</p>
+              <p className="text-xs text-[#697386] mt-0.5">Orders will appear here once placed.</p>
+            </div>
           </div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-stone-100">
+              <tr className="bg-[#f6f9fc] border-b border-[#e6e9ee]">
                 {['Customer', 'Email', 'Company', 'Agency', 'Amount', 'Status', 'Date', 'Actions'].map(h => (
-                  <th key={h} className="text-left px-4 py-3 text-xs font-medium text-stone-400 whitespace-nowrap">{h}</th>
+                  <th key={h} className="text-left px-4 py-3 text-[10px] font-semibold text-[#697386] tracking-wide uppercase whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-stone-50">
+            <tbody className="divide-y divide-[#e6e9ee]">
               {filtered.map(order => (
-                <tr key={order.id} className="hover:bg-stone-50/60 transition-colors">
-                  <td className="px-4 py-3 font-medium text-stone-800 text-xs">{order.customer_name}</td>
-                  <td className="px-4 py-3 text-xs text-stone-500">{order.customer_email}</td>
-                  <td className="px-4 py-3 text-xs text-stone-400">{order.customer_company || '—'}</td>
-                  <td className="px-4 py-3 text-xs text-stone-500" data-testid={`text-agency-${order.id}`}>{order.agencyName || 'Unknown'}</td>
-                  <td className="px-4 py-3 text-xs font-semibold text-stone-800">${(order.total_amount || 0).toFixed(2)}</td>
+                <tr key={order.id} className="hover:bg-[#fafcfe] transition-colors">
+                  <td className="px-4 py-3 font-medium text-[#0a2540] text-xs">{order.customer_name}</td>
+                  <td className="px-4 py-3 text-xs text-[#425466]">{order.customer_email}</td>
+                  <td className="px-4 py-3 text-xs text-[#697386]">{order.customer_company || '—'}</td>
+                  <td className="px-4 py-3 text-xs text-[#425466]" data-testid={`text-agency-${order.id}`}>{order.agencyName || 'Unknown'}</td>
+                  <td className="px-4 py-3 text-xs font-semibold text-[#0a2540]">${(order.total_amount || 0).toFixed(2)}</td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium ${STATUS_CHIP[order.status] || 'bg-stone-100 text-stone-600'}`}>
+                    <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium ${STATUS_CHIP[order.status] || 'bg-[#eef2f7] text-[#697386]'}`}>
                       {statusLabel(order.status)}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-xs text-stone-400">
+                  <td className="px-4 py-3 text-xs text-[#697386]">
                     {new Date(order.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' })}
                   </td>
                   <td className="px-4 py-3">
                     <Select value={order.status} onValueChange={v => updateStatus(order.id, v)}>
-                      <SelectTrigger className="h-6 text-[10px] w-[100px] bg-stone-50 border-stone-200 rounded-lg">
+                      <SelectTrigger className="h-6 text-[10px] w-[100px] bg-[#f6f9fc] border-[#e6e9ee] rounded-lg">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -223,19 +245,35 @@ function AIGenerationsSection() {
     (typeFilter === 'all' || g.content_type === typeFilter)
   );
 
-  if (loading) return <div className="flex items-center justify-center py-20 text-stone-400 text-sm">Loading generations…</div>;
+  if (loading) return (
+    <div className="bg-white rounded-xl border border-[#e6e9ee] shadow-[0_1px_3px_rgba(10,37,64,.06)] overflow-hidden">
+      <div className="px-5 py-4 border-b border-[#e6e9ee]">
+        <div className="h-4 w-32 bg-[#e6e9ee] rounded animate-pulse mb-1.5" />
+        <div className="h-3 w-40 bg-[#e6e9ee] rounded animate-pulse" />
+      </div>
+      <div className="p-5 space-y-3">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="flex gap-4">
+            <div className="h-3 w-24 bg-[#e6e9ee] rounded animate-pulse" />
+            <div className="h-3 flex-1 bg-[#e6e9ee] rounded animate-pulse" />
+            <div className="h-3 w-14 bg-[#e6e9ee] rounded animate-pulse" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
-        <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-stone-100">
+      <div className="bg-white rounded-xl border border-[#e6e9ee] shadow-[0_1px_3px_rgba(10,37,64,.06)] overflow-hidden">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-[#e6e9ee]">
           <div>
-            <h3 className="font-semibold text-stone-800">AI Generations</h3>
-            <p className="text-xs text-stone-400 mt-0.5">{generations.length} total generations</p>
+            <h3 className="font-semibold text-[#0a2540]">AI Generations</h3>
+            <p className="text-xs text-[#697386] mt-0.5">{generations.length} total generations</p>
           </div>
           <div className="flex gap-2 flex-wrap">
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="h-8 text-xs w-[110px] bg-stone-50 border-stone-200 rounded-xl">
+              <SelectTrigger className="h-8 text-xs w-[110px] bg-[#f6f9fc] border-[#e6e9ee] rounded-xl">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -247,7 +285,7 @@ function AIGenerationsSection() {
               </SelectContent>
             </Select>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="h-8 text-xs w-[110px] bg-stone-50 border-stone-200 rounded-xl">
+              <SelectTrigger className="h-8 text-xs w-[110px] bg-[#f6f9fc] border-[#e6e9ee] rounded-xl">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -261,37 +299,42 @@ function AIGenerationsSection() {
         </div>
         <div className="overflow-x-auto">
           {filtered.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-stone-400">
-              <Sparkles className="w-12 h-12 mb-2 opacity-20" />
-              <p className="text-sm">No generations found</p>
+            <div className="flex flex-col items-center justify-center py-16 gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-orange-400" />
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-semibold text-[#0a2540]">No generations found</p>
+                <p className="text-xs text-[#697386] mt-0.5">AI generations will appear here once created.</p>
+              </div>
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-stone-100">
+                <tr className="bg-[#f6f9fc] border-b border-[#e6e9ee]">
                   {['Service', 'Description', 'Type', 'Status', 'Date', ''].map(h => (
-                    <th key={h} className="text-left px-4 py-3 text-xs font-medium text-stone-400 whitespace-nowrap">{h}</th>
+                    <th key={h} className="text-left px-4 py-3 text-[10px] font-semibold text-[#697386] tracking-wide uppercase whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-stone-50">
+              <tbody className="divide-y divide-[#e6e9ee]">
                 {filtered.slice(0, 50).map(g => (
-                  <tr key={g.id} className="hover:bg-stone-50/60 transition-colors">
-                    <td className="px-4 py-3 text-xs font-medium text-stone-700 whitespace-nowrap">
+                  <tr key={g.id} className="hover:bg-[#fafcfe] transition-colors">
+                    <td className="px-4 py-3 text-xs font-medium text-[#0a2540] whitespace-nowrap">
                       {g.service_type?.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) || '—'}
                     </td>
-                    <td className="px-4 py-3 text-xs text-stone-500 max-w-[200px]">
+                    <td className="px-4 py-3 text-xs text-[#425466] max-w-[200px]">
                       <p className="truncate">{g.description || '—'}</p>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="text-[10px] bg-stone-100 text-stone-600 px-2 py-0.5 rounded-full font-medium">{g.content_type}</span>
+                      <span className="text-[10px] bg-[#eef2f7] text-[#697386] px-2 py-0.5 rounded-full font-medium">{g.content_type}</span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium ${STATUS_CHIP[g.status] || 'bg-stone-100 text-stone-600'}`}>
+                      <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium ${STATUS_CHIP[g.status] || 'bg-[#eef2f7] text-[#697386]'}`}>
                         {statusLabel(g.status)}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-stone-400 whitespace-nowrap">
+                    <td className="px-4 py-3 text-xs text-[#697386] whitespace-nowrap">
                       {new Date(g.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' })}
                     </td>
                     <td className="px-4 py-3">
@@ -330,26 +373,26 @@ function AIGenerationsSection() {
 
 function SettingsSection() {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 max-w-2xl">
-      <h3 className="font-semibold text-stone-800 mb-1">Platform Settings</h3>
-      <p className="text-sm text-stone-400 mb-6">System configuration and platform health</p>
-      <div className="space-y-4">
+    <div className="bg-white rounded-xl shadow-[0_1px_3px_rgba(10,37,64,.06)] border border-[#e6e9ee] p-6 max-w-2xl">
+      <h3 className="font-semibold text-[#0a2540] mb-1">Platform Settings</h3>
+      <p className="text-sm text-[#697386] mb-6">System configuration and platform health</p>
+      <div className="space-y-1">
         {[
-          { label: 'Database', status: 'Healthy', color: 'text-green-600 bg-green-50' },
-          { label: 'Authentication', status: 'Active', color: 'text-green-600 bg-green-50' },
-          { label: 'AI Services (OpenAI)', status: 'Operational', color: 'text-green-600 bg-green-50' },
-          { label: 'Edge Functions', status: 'Deployed', color: 'text-green-600 bg-green-50' },
-          { label: 'Storage', status: 'Available', color: 'text-green-600 bg-green-50' },
+          { label: 'Database', status: 'Healthy' },
+          { label: 'Authentication', status: 'Active' },
+          { label: 'AI Services (OpenAI)', status: 'Operational' },
+          { label: 'Edge Functions', status: 'Deployed' },
+          { label: 'Storage', status: 'Available' },
         ].map(item => (
-          <div key={item.label} className="flex items-center justify-between py-3 border-b border-stone-100 last:border-0">
-            <span className="text-sm text-stone-700 font-medium">{item.label}</span>
-            <span className={`text-xs font-medium px-3 py-1 rounded-full ${item.color}`}>{item.status}</span>
+          <div key={item.label} className="flex items-center justify-between py-3 border-b border-[#e6e9ee] last:border-0">
+            <span className="text-sm text-[#425466] font-medium">{item.label}</span>
+            <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#def7ec] text-[#0e9f6e]">{item.status}</span>
           </div>
         ))}
       </div>
-      <div className="mt-6 pt-4 border-t border-stone-100">
-        <p className="text-xs text-stone-400">Supabase Project: <span className="font-mono text-stone-600">ukabvhdvfajudrtqnfpm</span></p>
-        <p className="text-xs text-stone-400 mt-1">Region: US East (us-east-1)</p>
+      <div className="mt-6 pt-4 border-t border-[#e6e9ee]">
+        <p className="text-xs text-[#697386]">Supabase Project: <span className="font-mono text-[#425466]">ukabvhdvfajudrtqnfpm</span></p>
+        <p className="text-xs text-[#697386] mt-1">Region: US East (us-east-1)</p>
       </div>
     </div>
   );
@@ -390,10 +433,10 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FDF8F4] flex items-center justify-center">
+      <div className="min-h-screen bg-[#f6f9fc] flex items-center justify-center">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full border-2 border-orange-500 border-t-transparent animate-spin" />
-          <span className="text-stone-500">Loading admin dashboard…</span>
+          <span className="text-[#697386]">Loading admin dashboard…</span>
         </div>
       </div>
     );
@@ -452,8 +495,8 @@ const AdminDashboard = () => {
                 collapsed ? 'justify-center px-0 py-3' : 'px-3 py-2.5'
               } ${
                 active
-                  ? 'bg-stone-100 text-stone-900 font-semibold shadow-sm'
-                  : 'text-zinc-400 hover:text-white hover:bg-white/10'
+                  ? 'bg-white/[0.12] text-white font-semibold'
+                  : 'text-[#9fb3c8] hover:text-white hover:bg-white/10'
               }`}
               title={collapsed ? label : undefined}
             >
@@ -474,13 +517,13 @@ const AdminDashboard = () => {
             </Avatar>
             <div className="min-w-0 flex-1">
               <p className="text-xs font-semibold text-white truncate">{adminName}</p>
-              <p className="text-[10px] text-zinc-500 truncate">Administrator</p>
+              <p className="text-[10px] text-[#9fb3c8]/70 truncate">Administrator</p>
             </div>
           </div>
         )}
         <button
           onClick={handleSignOut}
-          className={`flex items-center gap-2 text-zinc-500 hover:text-red-400 transition-colors text-xs rounded-lg hover:bg-white/5 ${
+          className={`flex items-center gap-2 text-[#9fb3c8] hover:text-red-400 transition-colors text-xs rounded-lg hover:bg-white/5 ${
             collapsed ? 'w-10 h-10 justify-center p-0' : 'w-full px-2 py-2'
           }`}
           title={collapsed ? 'Sign Out' : undefined}
@@ -500,7 +543,7 @@ const AdminDashboard = () => {
         return <AllOrdersSection />;
       case 'agencies':
         return (
-          <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-5">
+          <div className="bg-white rounded-xl shadow-[0_1px_3px_rgba(10,37,64,.06)] border border-[#e6e9ee] p-5">
             <SubdomainManagement />
           </div>
         );
@@ -508,7 +551,7 @@ const AdminDashboard = () => {
         return <AIGenerationsSection />;
       case 'users':
         return (
-          <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-5">
+          <div className="bg-white rounded-xl shadow-[0_1px_3px_rgba(10,37,64,.06)] border border-[#e6e9ee] p-5">
             <UserManagement />
           </div>
         );
@@ -522,10 +565,10 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#FDF8F4] overflow-hidden">
+    <div className="flex h-screen bg-[#f6f9fc] overflow-hidden">
       {/* ── Desktop / Tablet Sidebar ── */}
       <aside
-        className={`hidden md:flex flex-col bg-zinc-950 flex-shrink-0 transition-all duration-300 h-screen sticky top-0 ${
+        className={`hidden md:flex flex-col bg-[#0a1f33] flex-shrink-0 transition-all duration-300 h-screen sticky top-0 ${
           sidebarCollapsed ? 'w-[72px]' : 'w-60'
         }`}
       >
@@ -536,7 +579,7 @@ const AdminDashboard = () => {
       {mobileSidebarOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/60" onClick={() => setMobileSidebarOpen(false)} />
-          <aside className="relative w-64 bg-zinc-950 h-full flex flex-col z-10 shadow-2xl">
+          <aside className="relative w-64 bg-[#0a1f33] h-full flex flex-col z-10 shadow-2xl">
             <button
               onClick={() => setMobileSidebarOpen(false)}
               className="absolute top-4 right-4 text-zinc-400 hover:text-white p-1"
@@ -551,10 +594,10 @@ const AdminDashboard = () => {
       {/* ── Main content area ── */}
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         {/* Top bar */}
-        <header className="flex-shrink-0 h-16 bg-white border-b border-stone-100 flex items-center gap-3 px-4 md:px-6 shadow-sm">
+        <header className="flex-shrink-0 h-16 bg-white border-b border-[#e6e9ee] flex items-center gap-3 px-4 md:px-6 shadow-[0_1px_2px_rgba(10,37,64,.04)]">
           {/* Toggle sidebar / mobile hamburger */}
           <button
-            className="text-stone-400 hover:text-stone-700 transition-colors p-1.5 rounded-lg hover:bg-stone-100"
+            className="text-[#697386] hover:text-[#0a2540] transition-colors p-1.5 rounded-lg hover:bg-[#f6f9fc]"
             onClick={() => {
               if (window.innerWidth < 768) setMobileSidebarOpen(true);
               else setSidebarCollapsed(prev => !prev);
@@ -565,27 +608,27 @@ const AdminDashboard = () => {
           </button>
 
           {/* Page title */}
-          <h1 className="font-bold text-stone-800 text-base md:text-lg leading-none">
+          <h1 className="font-bold text-[#0a2540] text-base md:text-lg leading-none">
             {SECTION_TITLES[activeSection]}
           </h1>
 
           {/* Search */}
           <div className="flex-1 max-w-xs mx-auto hidden sm:block">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9fb3c8]" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search…"
-                className="w-full h-8 pl-9 pr-4 rounded-xl bg-stone-100 border border-stone-200 text-sm text-stone-700 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400/40 focus:border-orange-400"
+                className="w-full h-8 pl-9 pr-4 rounded-xl bg-[#f6f9fc] border border-[#e6e9ee] text-sm text-[#425466] placeholder:text-[#9fb3c8] focus:outline-none focus:ring-2 focus:ring-orange-400/40 focus:border-orange-400"
               />
             </div>
           </div>
 
           <div className="ml-auto flex items-center gap-3">
             {/* Notification bell */}
-            <button className="relative text-stone-400 hover:text-stone-700 transition-colors p-1.5 rounded-lg hover:bg-stone-100">
+            <button className="relative text-[#697386] hover:text-[#0a2540] transition-colors p-1.5 rounded-lg hover:bg-[#f6f9fc]">
               <Bell className="w-5 h-5" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-orange-500 rounded-full" />
             </button>
@@ -596,8 +639,8 @@ const AdminDashboard = () => {
                 <AvatarFallback className="bg-orange-500 text-white text-xs font-bold">{initials}</AvatarFallback>
               </Avatar>
               <div className="hidden sm:block">
-                <p className="text-xs font-semibold text-stone-800 leading-tight">{adminName}</p>
-                <p className="text-[10px] text-stone-400 leading-tight">Administrator</p>
+                <p className="text-xs font-semibold text-[#0a2540] leading-tight">{adminName}</p>
+                <p className="text-[10px] text-[#697386] leading-tight">Administrator</p>
               </div>
             </div>
           </div>
@@ -610,7 +653,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* ── Mobile Bottom Navigation ── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-950 border-t border-white/10 flex z-40">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0a1f33] border-t border-white/10 flex z-40">
         {NAV_ITEMS.slice(0, 5).map(({ id, label, icon: Icon }) => {
           const active = activeSection === id;
           return (

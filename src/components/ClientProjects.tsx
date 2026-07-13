@@ -617,7 +617,6 @@ function OrderDetail({
 export function ClientProjects() {
   const { toast } = useToast();
 
-  const [agencyId,       setAgencyId]       = useState<string | null>(null);
   const [agencyUserId,   setAgencyUserId]   = useState<string | null>(null);
   const [allOrders,      setAllOrders]      = useState<Order[]>([]);
   const [loading,        setLoading]        = useState(true);
@@ -641,14 +640,9 @@ export function ClientProjects() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       setAgencyUserId(user.id);
-      const { data: ag } = await supabase
-        .from('agency_settings')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle();
-      if (!ag) return;
-      setAgencyId(ag.id);
-      await fetchOrders(ag.id);
+      // customer_orders.agency_id references auth.users(id) — the agency
+      // owner's user id, NOT agency_settings.id
+      await fetchOrders(user.id);
     } finally {
       setLoading(false);
     }
@@ -769,7 +763,7 @@ export function ClientProjects() {
       const current = selectedOrder.internal_notes ?? [];
       const { error } = await supabase
         .from('customer_orders')
-        .update({ internal_notes: [...current, note] })
+        .update({ internal_notes: JSON.parse(JSON.stringify([...current, note])) })
         .eq('id', selectedOrder.id);
       if (error) throw error;
       await (supabase as any).from('order_activity').insert({

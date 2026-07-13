@@ -89,40 +89,40 @@ function ProfileSection({ userId, userEmail }: { userId: string; userEmail: stri
   if (!loaded) return <div className="flex justify-center py-16"><div className="w-6 h-6 rounded-full border-2 border-orange-500 border-t-transparent animate-spin" /></div>;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 max-w-xl">
-      <h3 className="font-semibold text-stone-800 mb-1">Profile Information</h3>
-      <p className="text-sm text-stone-400 mb-6">Update your personal information and preferences.</p>
+    <div className="bg-white rounded-xl shadow-[0_1px_3px_rgba(10,37,64,.06)] border border-[#e6e9ee] p-6 max-w-xl">
+      <h3 className="font-semibold text-[#0a2540] mb-1">Profile Information</h3>
+      <p className="text-sm text-[#697386] mb-6">Update your personal information and preferences.</p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <Label className="text-stone-700 text-xs font-medium">First Name</Label>
+            <Label className="text-[#425466] text-xs font-medium">First Name</Label>
             <Input value={firstName} onChange={e => setFirstName(e.target.value)}
               data-testid="input-first-name"
-              className="bg-white text-stone-800 caret-orange-500 placeholder:text-stone-400 border-stone-200 focus-visible:ring-orange-400 focus-visible:ring-offset-white" />
+              className="bg-white text-[#425466] caret-orange-500 placeholder:text-[#9fb3c8] border-[#e6e9ee] focus-visible:ring-orange-400" />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-stone-700 text-xs font-medium">Last Name</Label>
+            <Label className="text-[#425466] text-xs font-medium">Last Name</Label>
             <Input value={lastName} onChange={e => setLastName(e.target.value)}
               data-testid="input-last-name"
-              className="bg-white text-stone-800 caret-orange-500 placeholder:text-stone-400 border-stone-200 focus-visible:ring-orange-400 focus-visible:ring-offset-white" />
+              className="bg-white text-[#425466] caret-orange-500 placeholder:text-[#9fb3c8] border-[#e6e9ee] focus-visible:ring-orange-400" />
           </div>
         </div>
         <div className="space-y-1.5">
-          <Label className="text-stone-700 text-xs font-medium">Email</Label>
+          <Label className="text-[#425466] text-xs font-medium">Email</Label>
           <Input value={userEmail} disabled data-testid="input-email"
-            className="bg-stone-50 text-stone-500 border-stone-200 disabled:opacity-100" />
+            className="bg-[#f6f9fc] text-[#697386] border-[#e6e9ee] disabled:opacity-100" />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-stone-700 text-xs font-medium">Company / Agency Name</Label>
+          <Label className="text-[#425466] text-xs font-medium">Company / Agency Name</Label>
           <Input value={company} onChange={e => setCompany(e.target.value)}
             data-testid="input-company"
-            className="bg-white text-stone-800 caret-orange-500 placeholder:text-stone-400 border-stone-200 focus-visible:ring-orange-400 focus-visible:ring-offset-white" />
+            className="bg-white text-[#425466] caret-orange-500 placeholder:text-[#9fb3c8] border-[#e6e9ee] focus-visible:ring-orange-400" />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-stone-700 text-xs font-medium">Phone</Label>
+          <Label className="text-[#425466] text-xs font-medium">Phone</Label>
           <Input value={phone} onChange={e => setPhone(e.target.value)}
             data-testid="input-phone"
-            className="bg-white text-stone-800 caret-orange-500 placeholder:text-stone-400 border-stone-200 focus-visible:ring-orange-400 focus-visible:ring-offset-white" />
+            className="bg-white text-[#425466] caret-orange-500 placeholder:text-[#9fb3c8] border-[#e6e9ee] focus-visible:ring-orange-400" />
         </div>
         <Button type="submit" disabled={updating}
           className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl px-6">
@@ -166,19 +166,19 @@ function ChangePasswordScreen({ userId, userEmail }: { userId: string; userEmail
   };
 
   return (
-    <div className="min-h-screen bg-[#FDF8F4] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#f6f9fc] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-14 h-14 bg-orange-500 rounded-2xl mb-4 shadow-lg shadow-orange-200">
             <span className="text-white font-black text-2xl">C</span>
           </div>
-          <h1 className="text-2xl font-bold text-stone-800 mb-2">Set Your Password</h1>
-          <p className="text-stone-500 text-sm max-w-xs mx-auto">
+          <h1 className="text-2xl font-bold text-[#0a2540] mb-2">Set Your Password</h1>
+          <p className="text-[#697386] text-sm max-w-xs mx-auto">
             Your account was created with a temporary password. Set a permanent one to continue.
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 space-y-5">
+        <div className="bg-white rounded-xl shadow-[0_1px_3px_rgba(10,37,64,.06)] border border-[#e6e9ee] p-6 space-y-5">
           <div className="bg-orange-50 border border-orange-200 rounded-xl px-4 py-3">
             <p className="text-xs text-orange-700">
               Signed in as <strong>{userEmail}</strong>
@@ -187,13 +187,13 @@ function ChangePasswordScreen({ userId, userEmail }: { userId: string; userEmail
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <Label className="text-stone-700 text-xs font-medium">New Password</Label>
+              <Label className="text-[#425466] text-xs font-medium">New Password</Label>
               <Input
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="Min. 8 characters"
-                className="bg-white text-stone-800 border-stone-200 focus-visible:ring-orange-400 focus-visible:ring-offset-white"
+                className="bg-white text-[#425466] border-[#e6e9ee] focus-visible:ring-orange-400"
                 required
                 minLength={8}
                 autoFocus
@@ -201,13 +201,13 @@ function ChangePasswordScreen({ userId, userEmail }: { userId: string; userEmail
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-stone-700 text-xs font-medium">Confirm New Password</Label>
+              <Label className="text-[#425466] text-xs font-medium">Confirm New Password</Label>
               <Input
                 type="password"
                 value={confirm}
                 onChange={e => setConfirm(e.target.value)}
                 placeholder="Repeat your password"
-                className="bg-white text-stone-800 border-stone-200 focus-visible:ring-orange-400 focus-visible:ring-offset-white"
+                className="bg-white text-[#425466] border-[#e6e9ee] focus-visible:ring-orange-400"
                 required
                 data-testid="input-confirm-password"
               />
@@ -222,7 +222,7 @@ function ChangePasswordScreen({ userId, userEmail }: { userId: string; userEmail
             </Button>
           </form>
 
-          <p className="text-center text-xs text-stone-400">
+          <p className="text-center text-xs text-[#697386]">
             Password must be at least 8 characters.
           </p>
         </div>
@@ -234,7 +234,7 @@ function ChangePasswordScreen({ userId, userEmail }: { userId: string; userEmail
 /* ─── Wrapper for existing dark components → light surface ─── */
 function LightWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-5">
+    <div className="bg-white rounded-xl shadow-[0_1px_3px_rgba(10,37,64,.06)] border border-[#e6e9ee] p-5">
       {children}
     </div>
   );
@@ -269,10 +269,10 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FDF8F4] flex items-center justify-center">
+      <div className="min-h-screen bg-[#f6f9fc] flex items-center justify-center">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full border-2 border-orange-500 border-t-transparent animate-spin" />
-          <span className="text-stone-500">Loading your dashboard…</span>
+          <span className="text-[#697386]">Loading your dashboard…</span>
         </div>
       </div>
     );
@@ -365,8 +365,8 @@ const Dashboard = () => {
                 collapsed ? 'justify-center px-0 py-3' : 'px-3 py-2.5'
               } ${
                 active
-                  ? 'bg-stone-100 text-stone-900 font-semibold shadow-sm'
-                  : 'text-zinc-400 hover:text-white hover:bg-white/10'
+                  ? 'bg-white/[0.12] text-white font-semibold'
+                  : 'text-[#9fb3c8] hover:text-white hover:bg-white/10'
               }`}
               title={collapsed ? label : undefined}
             >
@@ -387,13 +387,13 @@ const Dashboard = () => {
             </Avatar>
             <div className="min-w-0 flex-1">
               <p className="text-xs font-semibold text-white truncate">{displayName}</p>
-              <p className="text-[10px] text-zinc-500 truncate">{agencyName !== displayName ? agencyName : user.email}</p>
+              <p className="text-[10px] text-[#9fb3c8]/70 truncate">{agencyName !== displayName ? agencyName : user.email}</p>
             </div>
           </div>
         )}
         <button
           onClick={handleSignOut}
-          className={`flex items-center gap-2 text-zinc-500 hover:text-red-400 transition-colors text-xs rounded-lg hover:bg-white/5 ${
+          className={`flex items-center gap-2 text-[#9fb3c8] hover:text-red-400 transition-colors text-xs rounded-lg hover:bg-white/5 ${
             collapsed ? 'w-10 h-10 justify-center p-0' : 'w-full px-2 py-2'
           }`}
           title={collapsed ? 'Sign Out' : undefined}
@@ -406,10 +406,10 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="flex h-screen bg-[#FDF8F4] overflow-hidden">
+    <div className="flex h-screen bg-[#f6f9fc] overflow-hidden">
       {/* ── Desktop/Tablet Sidebar ── */}
       <aside
-        className={`hidden md:flex flex-col bg-zinc-950 flex-shrink-0 transition-all duration-300 h-screen sticky top-0 ${
+        className={`hidden md:flex flex-col bg-[#0a1f33] flex-shrink-0 transition-all duration-300 h-screen sticky top-0 ${
           sidebarCollapsed ? 'w-[72px]' : 'w-60'
         }`}
       >
@@ -420,7 +420,7 @@ const Dashboard = () => {
       {mobileSidebarOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/60" onClick={() => setMobileSidebarOpen(false)} />
-          <aside className="relative w-64 bg-zinc-950 h-full flex flex-col z-10 shadow-2xl">
+          <aside className="relative w-64 bg-[#0a1f33] h-full flex flex-col z-10 shadow-2xl">
             <button
               onClick={() => setMobileSidebarOpen(false)}
               className="absolute top-4 right-4 text-zinc-400 hover:text-white p-1"
@@ -435,9 +435,9 @@ const Dashboard = () => {
       {/* ── Main content ── */}
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         {/* Top bar */}
-        <header className="flex-shrink-0 h-16 bg-white border-b border-stone-100 flex items-center gap-3 px-4 md:px-6 shadow-sm">
+        <header className="flex-shrink-0 h-16 bg-white border-b border-[#e6e9ee] flex items-center gap-3 px-4 md:px-6 shadow-[0_1px_2px_rgba(10,37,64,.04)]">
           <button
-            className="text-stone-400 hover:text-stone-700 transition-colors p-1.5 rounded-lg hover:bg-stone-100"
+            className="text-[#697386] hover:text-[#0a2540] transition-colors p-1.5 rounded-lg hover:bg-[#f6f9fc]"
             onClick={() => {
               if (window.innerWidth < 768) setMobileSidebarOpen(true);
               else setSidebarCollapsed(prev => !prev);
@@ -447,25 +447,25 @@ const Dashboard = () => {
             <Menu className="w-5 h-5" />
           </button>
 
-          <h1 className="font-bold text-stone-800 text-base md:text-lg leading-none">
+          <h1 className="font-bold text-[#0a2540] text-base md:text-lg leading-none">
             {SECTION_TITLES[activeSection]}
           </h1>
 
           <div className="flex-1 max-w-xs mx-auto hidden sm:block">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9fb3c8]" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search…"
-                className="w-full h-8 pl-9 pr-4 rounded-xl bg-stone-100 border border-stone-200 text-sm text-stone-700 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400/40 focus:border-orange-400"
+                className="w-full h-8 pl-9 pr-4 rounded-xl bg-[#f6f9fc] border border-[#e6e9ee] text-sm text-[#425466] placeholder:text-[#9fb3c8] focus:outline-none focus:ring-2 focus:ring-orange-400/40 focus:border-orange-400"
               />
             </div>
           </div>
 
           <div className="ml-auto flex items-center gap-3">
-            <button className="relative text-stone-400 hover:text-stone-700 transition-colors p-1.5 rounded-lg hover:bg-stone-100">
+            <button className="relative text-[#697386] hover:text-[#0a2540] transition-colors p-1.5 rounded-lg hover:bg-[#f6f9fc]">
               <Bell className="w-5 h-5" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-orange-500 rounded-full" />
             </button>
@@ -474,8 +474,8 @@ const Dashboard = () => {
                 <AvatarFallback className="bg-orange-500 text-white text-xs font-bold">{initials}</AvatarFallback>
               </Avatar>
               <div className="hidden sm:block">
-                <p className="text-xs font-semibold text-stone-800 leading-tight">{displayName}</p>
-                <p className="text-[10px] text-stone-400 leading-tight">{agencyName !== displayName ? agencyName : 'Vendor'}</p>
+                <p className="text-xs font-semibold text-[#0a2540] leading-tight">{displayName}</p>
+                <p className="text-[10px] text-[#697386] leading-tight">{agencyName !== displayName ? agencyName : 'Vendor'}</p>
               </div>
             </div>
           </div>
@@ -488,7 +488,7 @@ const Dashboard = () => {
       </div>
 
       {/* ── Mobile Bottom Navigation ── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-950 border-t border-white/10 flex z-40">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0a1f33] border-t border-white/10 flex z-40">
         {NAV_ITEMS.slice(0, 5).map(({ id, label, icon: Icon }) => {
           const active = activeSection === id;
           return (
